@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "uz.cordialsoft.easy_ielts"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

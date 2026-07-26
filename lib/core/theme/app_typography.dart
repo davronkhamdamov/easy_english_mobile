@@ -78,4 +78,11 @@ class AppTypography {
     fontWeight: FontWeight.w600,
     letterSpacing: 0.3,
   );
+
+  static const TextStyle code = TextStyle(
+    fontSize: fontSm,
+    fontFamily: 'monospace',
+    fontWeight: FontWeight.w400,
+    height: 1.4,
+  );
 }

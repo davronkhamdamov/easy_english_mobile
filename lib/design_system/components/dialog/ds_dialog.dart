@@ -68,7 +68,7 @@ class DSDialog extends StatelessWidget {
 
     return Center(
       child: Container(
-        maxWidth: 400,
+        constraints: const BoxConstraints(maxWidth: 400),
         margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(AppSpacing.radiusXl),

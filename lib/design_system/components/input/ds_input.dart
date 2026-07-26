@@ -91,12 +91,10 @@ class _DSInputState extends State<DSInput> {
       case DSInputType.email:
         return TextInputType.emailAddress;
       case DSInputType.search:
-        return TextInputType.search;
+      case DSInputType.text:
+        return TextInputType.text;
       case DSInputType.password:
         return TextInputType.visiblePassword;
-      case DSInputType.text:
-      default:
-        return TextInputType.text;
     }
   }
 

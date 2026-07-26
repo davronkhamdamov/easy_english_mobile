@@ -81,7 +81,6 @@ class _DSShowcaseScreenState extends State<DSShowcaseScreen> {
           onBackToOverview: () => setState(() => _activePage = ShowcasePage.overview),
         );
       case ShowcasePage.overview:
-      default:
         return _buildOverviewScreen(context);
     }
   }
@@ -216,25 +215,31 @@ class _DSShowcaseScreenState extends State<DSShowcaseScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.md,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Component Investigation Hub',
-                    style: AppTypography.h2.copyWith(
-                      color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 500),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Component Investigation Hub',
+                      style: AppTypography.h2.copyWith(
+                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Select a component below to open its dedicated investigation page with interactive playground & API specs.',
-                    style: AppTypography.caption.copyWith(
-                      color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                    Text(
+                      'Select a component below to open its dedicated investigation page with interactive playground & API specs.',
+                      style: AppTypography.caption.copyWith(
+                        color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const DSBadge(label: '7 DEDICATED PAGES AVAILABLE', variant: DSBadgeVariant.primary),
             ],
@@ -310,39 +315,51 @@ class _DSShowcaseScreenState extends State<DSShowcaseScreen> {
   Widget _buildStateControlsCard(bool isDark) {
     return DSCard(
       variant: DSCardVariant.outlined,
-      child: Row(
+      child: Wrap(
+        spacing: AppSpacing.sm,
+        runSpacing: AppSpacing.sm,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        alignment: WrapAlignment.spaceBetween,
         children: [
-          Icon(Icons.tune_rounded, color: AppColors.primary, size: 20),
-          AppSpacing.gapHorizontalSm,
-          Text(
-            'Global Showcase State Controls:',
-            style: AppTypography.label.copyWith(
-              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.tune_rounded, color: AppColors.primary, size: 20),
+              AppSpacing.gapHorizontalSm,
+              Text(
+                'Global Showcase State Controls:',
+                style: AppTypography.label.copyWith(
+                  color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                ),
+              ),
+            ],
           ),
-          const Spacer(),
-          FilterChip(
-            label: const Text('Loading Spinner'),
-            selected: _globalLoading,
-            onSelected: (val) => setState(() => _globalLoading = val),
-            selectedColor: AppColors.primaryLight,
-            checkmarkColor: AppColors.primary,
-          ),
-          AppSpacing.gapHorizontalSm,
-          FilterChip(
-            label: const Text('Disabled State'),
-            selected: _globalDisabled,
-            onSelected: (val) => setState(() => _globalDisabled = val),
-            selectedColor: AppColors.primaryLight,
-            checkmarkColor: AppColors.primary,
-          ),
-          AppSpacing.gapHorizontalSm,
-          FilterChip(
-            label: const Text('Error Validation'),
-            selected: _globalError,
-            onSelected: (val) => setState(() => _globalError = val),
-            selectedColor: AppColors.dangerLight,
-            checkmarkColor: AppColors.danger,
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              FilterChip(
+                label: const Text('Loading Spinner'),
+                selected: _globalLoading,
+                onSelected: (val) => setState(() => _globalLoading = val),
+                selectedColor: AppColors.primaryLight,
+                checkmarkColor: AppColors.primary,
+              ),
+              FilterChip(
+                label: const Text('Disabled State'),
+                selected: _globalDisabled,
+                onSelected: (val) => setState(() => _globalDisabled = val),
+                selectedColor: AppColors.primaryLight,
+                checkmarkColor: AppColors.primary,
+              ),
+              FilterChip(
+                label: const Text('Error Validation'),
+                selected: _globalError,
+                onSelected: (val) => setState(() => _globalError = val),
+                selectedColor: AppColors.dangerLight,
+                checkmarkColor: AppColors.danger,
+              ),
+            ],
           ),
         ],
       ),
