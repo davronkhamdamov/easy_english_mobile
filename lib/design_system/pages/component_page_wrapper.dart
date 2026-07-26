@@ -96,9 +96,13 @@ class _ComponentPageWrapperState extends State<ComponentPageWrapper> with Single
           IconButton(
             onPressed: () => widget.themeController.toggleTheme(),
             tooltip: 'Toggle Theme',
-            icon: Icon(
-              isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
-              color: isDark ? AppColors.warning : AppColors.primary,
+            icon: AnimatedSwitcher(
+              duration: AppAnimations.fast,
+              child: Icon(
+                isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                key: ValueKey<bool>(isDark),
+                color: isDark ? AppColors.warning : AppColors.primary,
+              ),
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
