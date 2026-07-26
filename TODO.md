@@ -14,3 +14,14 @@
 - [x] **Phase 3: Interactive Showcase Gallery**
   - [x] 3.1 Build interactive component preview gallery page (`DSShowcaseScreen`)
   - [x] 3.2 Add dark/light mode live toggle and state switches (loading, disabled, error highlights)
+
+- [x] **Phase 4: Dedicated Component Investigation Pages**
+  - [x] 4.1 Create `DSButtonPage` dedicated investigation page (`lib/design_system/pages/button_page.dart`) with interactive playground, variant matrix, generated code snippets & API reference
+  - [x] 4.2 Create `DSInputPage` dedicated investigation page (`lib/design_system/pages/input_page.dart`) with interactive playground, validation state testing & field types showcase
+  - [x] 4.3 Create `DSCardPage` dedicated investigation page (`lib/design_system/pages/card_page.dart`) with interactive playground, glassmorphism blur preview & elevation inspector
+  - [x] 4.4 Create `DSBadgePage` dedicated investigation page (`lib/design_system/pages/badge_page.dart`) with interactive playground, solid/outlined matrices & real-world use cases
+  - [x] 4.5 Create `DSSnackbarPage` dedicated investigation page (`lib/design_system/pages/snackbar_page.dart`) with live toast triggers & static card layout inspector
+  - [x] 4.6 Create `DSDialogPage` dedicated investigation page (`lib/design_system/pages/dialog_page.dart`) with modal trigger launcher, pre-configured use cases & in-page glass preview
+  - [x] 4.7 Create `DSTokensPage` dedicated investigation page (`lib/design_system/pages/tokens_page.dart`) with color swatches, typography inspector & spacing scales
+  - [x] 4.8 Integrate Navigation Hub & routing in `DSShowcaseScreen` to allow 1-click investigation for all components
+
