@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:easy_ielts/main.dart';
+import 'package:easy_english/main.dart';
+
 
 void main() {
   testWidgets('EasyIeltsApp renders showcase screen cleanly', (WidgetTester tester) async {

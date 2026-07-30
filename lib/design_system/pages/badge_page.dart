@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
-import 'component_page_wrapper.dart';
 
 class DSBadgePage extends StatefulWidget {
   final ThemeController themeController;
@@ -258,7 +257,7 @@ DSBadge(
   label: '$_badgeLabel',
   variant: DSBadgeVariant.${_selectedVariant.name},
   isOutlined: $_isOutlined,
-  ${_selectedIconIndex != 0 ? 'icon: const Icon(Icons.${_getIconData()?.name ?? "check"}),' : ''}
+  ${_selectedIconIndex != 0 ? 'icon: const Icon(Icons.star_rounded),' : ''}
 )
 ''';
 

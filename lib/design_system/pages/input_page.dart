@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
-import 'component_page_wrapper.dart';
 
 class DSInputPage extends StatefulWidget {
   final ThemeController themeController;
@@ -393,7 +392,5 @@ DSInput(
       ],
     );
   }
-}86b236e1c56e374363615eb8e6d3ae0f8df
-    );
-  }
 }
+

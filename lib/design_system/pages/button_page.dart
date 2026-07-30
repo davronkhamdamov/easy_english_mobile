@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
-import 'component_page_wrapper.dart';
 
 class DSButtonPage extends StatefulWidget {
   final ThemeController themeController;
@@ -230,7 +229,6 @@ class _DSButtonPageState extends State<DSButtonPage> {
                       decoration: BoxDecoration(
                         color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
                         borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                        fontFamily: 'monospace',
                       ),
                       child: _tapLogs.isEmpty
                           ? Center(

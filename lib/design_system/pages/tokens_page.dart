@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
-import 'component_page_wrapper.dart';
 
 class DSTokensPage extends StatefulWidget {
   final ThemeController themeController;

@@ -1,4 +1,4 @@
-package uz.cordialsoft.easy_ielts
+package uz.cordialsoft.easyenglish
 
 import io.flutter.embedding.android.FlutterActivity
 
