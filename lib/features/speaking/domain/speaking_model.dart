@@ -8,6 +8,8 @@ class SpeakingPrompt {
   final int prepTimeSeconds;
   final int speakingTimeSeconds;
 
+  String get title => topic;
+
   const SpeakingPrompt({
     required this.id,
     required this.part,

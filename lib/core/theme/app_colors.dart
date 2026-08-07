@@ -12,6 +12,11 @@ class AppColors {
   static const Color secondary = Color(0xFF0EA5E9); // Sky Blue
   static const Color secondaryLight = Color(0xFFE0F2FE);
 
+  // Lime / Green Accent (matches login screen progress & icons)
+  static const Color accentGreen = Color(0xFF7CD327); // Vibrant lime green
+  static const Color accentGreenDark = Color(0xFF48782B); // Muted dark green for headphone icon
+  static const Color accentGreenLight = Color(0xFFE8F8D8);
+
   // Status & Feedback Colors
   static const Color success = Color(0xFF10B981); // Emerald
   static const Color successLight = Color(0xFFECFDF5);
@@ -23,14 +28,19 @@ class AppColors {
   static const Color dangerHover = Color(0xFFDC2626);
   static const Color dangerLight = Color(0xFFFEF2F2);
 
+  // Social & Auth Surface Colors
+  static const Color socialAppleBg = Color(0xFF000000);
+  static const Color socialGoogleBg = Color(0xFFF3F4F6);
+  static const Color socialGuestBg = Color(0xFFF3F4F6);
+
   // Light Mode Colors
-  static const Color lightBackground = Color(0xFFF8FAFC);
+  static const Color lightBackground = Color(0xFFFFFFFF); // Clean white as in login design
   static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightSurfaceVariant = Color(0xFFF1F5F9);
-  static const Color lightTextPrimary = Color(0xFF0F172A);
-  static const Color lightTextSecondary = Color(0xFF475569);
-  static const Color lightTextMuted = Color(0xFF94A3B8);
-  static const Color lightBorder = Color(0xFFE2E8F0);
+  static const Color lightSurfaceVariant = Color(0xFFF3F4F6);
+  static const Color lightTextPrimary = Color(0xFF111827);
+  static const Color lightTextSecondary = Color(0xFF4B5563);
+  static const Color lightTextMuted = Color(0xFF9CA3AF);
+  static const Color lightBorder = Color(0xFFE5E7EB);
   static const Color lightGlassBackground = Color(0xCCFFFFFF);
   static const Color lightGlassBorder = Color(0x60FFFFFF);
 

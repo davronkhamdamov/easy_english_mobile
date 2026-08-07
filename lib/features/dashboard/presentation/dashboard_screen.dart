@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import '../../ai_coach/presentation/ai_coach_screen.dart';
+import '../../grammar/presentation/grammar_roadmap_screen.dart';
+import '../../mock_exam/presentation/mock_exam_selection_screen.dart';
+import '../../placement_test/presentation/placement_test_screen.dart';
+import '../../profile/presentation/profile_screen.dart';
+import '../../sentence_builder/presentation/sentence_builder_screen.dart';
+import '../../speaking/presentation/speaking_screen.dart';
+import '../../word_bank/presentation/word_bank_screen.dart';
+import '../../writing/presentation/writing_screen.dart';
 import '../data/dashboard_api_service.dart';
-import '../domain/models/learning_path_model.dart';
 import '../domain/models/achievement_motivation_model.dart';
-import 'widgets/streak_counter_card.dart';
-import 'widgets/motivational_carousel.dart';
+import '../domain/models/learning_path_model.dart';
+import 'new_dashboard_screen.dart';
 import 'widgets/daily_learning_path_widget.dart';
 import 'widgets/milestone_badges_widget.dart';
 
-/// Easy IELTS Student Dashboard integrating Learning Path Engine & Achievement/Motivation Engine.
+/// Easy IELTS Student Dashboard connecting all 9 IELTS Practice Modules & Profile Management.
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
@@ -41,83 +49,39 @@ class _DashboardScreenState extends State<DashboardScreen> {
           _isLoading = false;
         });
       }
-    } catch (e) {
+    } catch (_) {
       if (mounted) {
         setState(() => _isLoading = false);
       }
     }
   }
 
-  void _showFreezeDialog() {
-    final streakInfo = _motivationOverview?.streakInfo;
-    if (streakInfo == null) return;
+  void _handleTaskTap(DailyTask task) {
+    final module = task.moduleType.toLowerCase();
+    Widget targetScreen;
 
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(
-          children: const [
-            Icon(Icons.ac_unit, color: Colors.cyan, size: 28),
-            SizedBox(width: 8),
-            Text('Streak Freeze Shield'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Available Shields: ${streakInfo.streakFreezeCount}',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              streakInfo.streakFreezeAvailable
-                  ? 'Streak Freeze automatically protects your study streak if you miss a single day of practice!'
-                  : 'No shields remaining. Complete milestone goals to earn new Streak Freezes.',
-              style: const TextStyle(color: Colors.black87, fontSize: 13),
-            ),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.cyan.shade50,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.cyan.shade200),
-              ),
-              child: Row(
-                children: const [
-                  Icon(Icons.shield_outlined, color: Colors.cyan, size: 20),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Protection active: Your 7-day streak is safe!',
-                      style: TextStyle(fontSize: 12, color: Colors.cyan),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
+    if (module.contains('vocab') || module.contains('flashcard')) {
+      targetScreen = const WordBankScreen();
+    } else if (module.contains('grammar')) {
+      targetScreen = const GrammarRoadmapScreen();
+    } else if (module.contains('write') || module.contains('essay')) {
+      targetScreen = const WritingScreen();
+    } else if (module.contains('speak')) {
+      targetScreen = const SpeakingScreen();
+    } else if (module.contains('sentence') || module.contains('builder')) {
+      targetScreen = const SentenceBuilderScreen();
+    } else if (module.contains('mock') || module.contains('read') || module.contains('listen')) {
+      targetScreen = const MockExamSelectionScreen();
+    } else {
+      targetScreen = const AICoachScreen();
+    }
+
+    _navigateTo(targetScreen);
   }
 
-  void _handleTaskTap(DailyTask task) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Starting Task: ${task.title} (${task.durationMinutes} mins)'),
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
+  void _navigateTo(Widget screen) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => screen),
     );
   }
 
@@ -135,6 +99,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
               expandedHeight: 180.0,
               floating: false,
               pinned: true,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                  child: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Colors.white.withValues(alpha: 0.2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (_) => const NewDashboardScreen()),
+                      );
+                    },
+                    icon: const Icon(Icons.auto_awesome, size: 16, color: Colors.amberAccent),
+                    label: const Text(
+                      'New Design',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.person_outline, color: Colors.white),
+                  tooltip: 'User Profile',
+                  onPressed: () => _navigateTo(const ProfileScreen()),
+                ),
+              ],
               flexibleSpace: FlexibleSpaceBar(
                 title: const Text('Easy IELTS Dashboard', style: TextStyle(fontWeight: FontWeight.bold)),
                 background: Container(
@@ -170,23 +163,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 1. Streak & Freeze Counter Card
-                      if (_motivationOverview != null)
-                        StreakCounterCard(
-                          streakInfo: _motivationOverview!.streakInfo,
-                          onFreezePressed: _showFreezeDialog,
-                        ),
-                      const SizedBox(height: 18),
-
-                      // 2. Motivational Cards Carousel
-                      if (_motivationOverview != null &&
-                          _motivationOverview!.motivationalCards.isNotEmpty)
-                        MotivationalCarousel(
-                          cards: _motivationOverview!.motivationalCards,
-                        ),
-                      const SizedBox(height: 18),
-
-                      // 3. Daily Learning Path (Today & Tomorrow)
+                      // 1. Daily Learning Path
                       if (_learningPath != null)
                         DailyLearningPathWidget(
                           learningPath: _learningPath!,
@@ -194,7 +171,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                       const SizedBox(height: 18),
 
-                      // 4. Milestone Badges Showcase
+                      // 2. Milestone Badges Showcase
                       if (_motivationOverview != null)
                         MilestoneBadgesWidget(
                           unlockedBadges: _motivationOverview!.unlockedBadges,
@@ -203,7 +180,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       const SizedBox(height: 24),
 
                       Text(
-                        'Practice Modules',
+                        'IELTS Feature Modules',
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -211,19 +188,79 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       const SizedBox(height: 12),
 
-                      // 5. Practice Modules Grid
+                      // 3. Complete Feature Modules Grid
                       GridView.count(
                         crossAxisCount: 2,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
-                        childAspectRatio: 1.3,
+                        childAspectRatio: 1.25,
                         children: [
-                          _practiceCard(context, 'Writing Task 1 & 2', 'AI Band Evaluator', Icons.edit_note, Colors.blue),
-                          _practiceCard(context, 'Speaking Coach', 'AI Pronunciation', Icons.mic, Colors.purple),
-                          _practiceCard(context, 'Word Bank', 'Collocations & CEFR', Icons.menu_book, Colors.amber),
-                          _practiceCard(context, 'Full Mock Test', 'Timed Exam Simulation', Icons.assignment, Colors.teal),
+                          _practiceCard(
+                            context,
+                            'AI Coach Tutor',
+                            '24/7 Guidance & Insights',
+                            Icons.psychology,
+                            Colors.indigo,
+                            () => _navigateTo(const AICoachScreen()),
+                          ),
+                          _practiceCard(
+                            context,
+                            'Writing Lab',
+                            'Task 1 & Task 2 AI Feedback',
+                            Icons.edit_note,
+                            Colors.blue,
+                            () => _navigateTo(const WritingScreen()),
+                          ),
+                          _practiceCard(
+                            context,
+                            'Speaking Coach',
+                            'Whisper AI & Band Score',
+                            Icons.mic,
+                            Colors.purple,
+                            () => _navigateTo(const SpeakingScreen()),
+                          ),
+                          _practiceCard(
+                            context,
+                            'Placement Test',
+                            'Diagnostic Band Evaluator',
+                            Icons.assessment_outlined,
+                            Colors.deepOrange,
+                            () => _navigateTo(const PlacementTestScreen()),
+                          ),
+                          _practiceCard(
+                            context,
+                            'Grammar Master',
+                            'Interactive Drills & Error Taxonomy',
+                            Icons.rule,
+                            Colors.green,
+                            () => _navigateTo(const GrammarRoadmapScreen()),
+                          ),
+                          _practiceCard(
+                            context,
+                            'Sentence Builder',
+                            'Syntax & Complex Structures',
+                            Icons.build_outlined,
+                            Colors.cyan,
+                            () => _navigateTo(const SentenceBuilderScreen()),
+                          ),
+                          _practiceCard(
+                            context,
+                            'Word Bank',
+                            'Spaced Repetition Flashcards',
+                            Icons.menu_book,
+                            Colors.amber,
+                            () => _navigateTo(const WordBankScreen()),
+                          ),
+                          _practiceCard(
+                            context,
+                            'Mock Exams',
+                            'Timed Exam Simulation',
+                            Icons.assignment,
+                            Colors.teal,
+                            () => _navigateTo(const MockExamSelectionScreen()),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 24),
@@ -237,19 +274,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _practiceCard(BuildContext context, String title, String subtitle, IconData icon, Color color) {
+  Widget _practiceCard(
+    BuildContext context,
+    String title,
+    String subtitle,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Navigating to $title...'),
-              duration: const Duration(seconds: 1),
-            ),
-          );
-        },
+        onTap: onTap,
         borderRadius: BorderRadius.circular(16),
         child: Padding(
           padding: const EdgeInsets.all(14.0),

@@ -138,6 +138,7 @@ class _PlacementTestScreenState extends State<PlacementTestScreen>
       // 4. Listening
       PlacementQuestion(
         id: 'q7_listening',
+        skill: DiagnosticSkill.listening,
         audioUrl: 'https://cdn.easyenglish.app/audio/diagnostic_sec1.mp3',
         prompt: 'Audio Transcript: [Lecturer: "The deadline for submitting the environmental impact assessment has been extended from Thursday the 12th to Monday the 16th at noon."]\n\nWhen is the final deadline for the environmental impact assessment?',
         options: [
@@ -152,6 +153,7 @@ class _PlacementTestScreenState extends State<PlacementTestScreen>
       ),
       PlacementQuestion(
         id: 'q8_listening',
+        skill: DiagnosticSkill.listening,
         audioUrl: 'https://cdn.easyenglish.app/audio/diagnostic_sec2.mp3',
         prompt: 'Audio Transcript: [Student: "I was planning to focus my case study on solar microgrids, but Professor Vance suggested offshore wind farms might offer richer data."]\n\nWhat topic did Professor Vance recommend for the case study?',
         options: [
@@ -797,13 +799,14 @@ class _PlacementTestScreenState extends State<PlacementTestScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Banner: Estimated Overall IELTS Band Score
-          Card(
-            elevation: 4,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            gradient: const LinearGradient(
-              colors: [Color(0xFF4F46E5), Color(0xFF0EA5E9)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF4F46E5), Color(0xFF0EA5E9)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
             child: Padding(
               padding: const EdgeInsets.all(24.0),
@@ -826,7 +829,7 @@ class _PlacementTestScreenState extends State<PlacementTestScreen>
                               score.overallBand.toStringAsFixed(1),
                               style: const TextStyle(
                                 fontSize: 44,
-                                fontWeight: FontWeight.extrabold,
+                                fontWeight: FontWeight.w800,
                                 color: Colors.white,
                               ),
                             ),
@@ -1085,7 +1088,7 @@ class _PlacementTestScreenState extends State<PlacementTestScreen>
                   const SizedBox(height: 2),
                   Text(
                     'Band ${score.toStringAsFixed(1)}',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.extrabold, color: color),
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: color),
                   ),
                 ],
               ),

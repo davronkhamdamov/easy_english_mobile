@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../domain/spaced_repetition.dart';
 
 /// Interactive Spaced Repetition Flashcard Review Screen for Easy IELTS.
@@ -27,6 +28,7 @@ class _FlashcardReviewScreenState extends State<FlashcardReviewScreen>
 
   bool _isFlipped = false;
   bool _isPlayingAudio = false;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   // Default fallback IELTS C1/C2 & B2 flashcards if none passed
   static const List<FlashcardItem> _defaultFlashcards = [
@@ -134,6 +136,7 @@ class _FlashcardReviewScreenState extends State<FlashcardReviewScreen>
   @override
   void dispose() {
     _flipController.dispose();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
@@ -173,34 +176,50 @@ class _FlashcardReviewScreenState extends State<FlashcardReviewScreen>
     }
   }
 
-  void _simulateAudioPronunciation(String word) {
+  Future<void> _playAudioPronunciation(String text) async {
+    if (_isPlayingAudio) return;
+
+    final trimmed = text.trim();
+    if (trimmed.isEmpty) return;
+
     setState(() {
       _isPlayingAudio = true;
     });
 
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.volume_up, color: Colors.white, size: 20),
-            const SizedBox(width: 10),
-            Text('Playing audio pronunciation for "$word"'),
-          ],
-        ),
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
+    try {
+      final cleanText = trimmed.replaceAll(RegExp(r'[^\w\s\-]'), '');
+      final isSingleWord = !cleanText.contains(' ');
 
-    Future.delayed(const Duration(milliseconds: 1200), () {
-      if (mounted) {
-        setState(() {
-          _isPlayingAudio = false;
-        });
+      // Use Youdao dictvoice for single words, Google Translate TTS for full sentences
+      final audioUrl = isSingleWord
+          ? 'https://dict.youdao.com/dictvoice?audio=${Uri.encodeComponent(cleanText)}&type=1'
+          : 'https://translate.google.com/translate_tts?ie=UTF-8&q=${Uri.encodeComponent(trimmed)}&tl=en&client=tw-ob';
+
+      await _audioPlayer.stop();
+      await _audioPlayer.play(UrlSource(audioUrl));
+    } catch (e) {
+      debugPrint('Primary TTS Audio playback error: $e');
+      // Secondary fallback attempt with Google Translate TTS
+      try {
+        final fallbackUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&q=${Uri.encodeComponent(trimmed)}&tl=en&client=tw-ob';
+        await _audioPlayer.stop();
+        await _audioPlayer.play(UrlSource(fallbackUrl));
+      } catch (fallbackError) {
+        debugPrint('Fallback TTS error: $fallbackError');
       }
-    });
+    } finally {
+      Future.delayed(const Duration(milliseconds: 1500), () {
+        if (mounted) {
+          setState(() {
+            _isPlayingAudio = false;
+          });
+        }
+      });
+    }
+  }
+
+  void _simulateAudioPronunciation(String word) {
+    _playAudioPronunciation(word);
   }
 
   void _restartSession() {
@@ -495,14 +514,27 @@ class _FlashcardReviewScreenState extends State<FlashcardReviewScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'CONTEXT USAGE',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 1.1,
-                          color: theme.colorScheme.primary,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'CONTEXT USAGE',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.1,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => _playAudioPronunciation(card.example),
+                            child: Icon(
+                              Icons.volume_up_rounded,
+                              size: 16,
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -555,13 +587,29 @@ class _FlashcardReviewScreenState extends State<FlashcardReviewScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  card.word,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF0F172A),
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      card.word,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: Icon(
+                        Icons.volume_up_rounded,
+                        size: 20,
+                        color: theme.colorScheme.primary,
+                      ),
+                      onPressed: () => _playAudioPronunciation(card.word),
+                      tooltip: 'Listen to word',
+                      constraints: const BoxConstraints(),
+                      padding: const EdgeInsets.all(4),
+                    ),
+                  ],
                 ),
                 _buildCefrBadge(card.cefrLevel),
               ],

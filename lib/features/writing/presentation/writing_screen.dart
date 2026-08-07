@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../data/writing_evaluation_service.dart';
 
 /// Writing Task 1 & Task 2 Practice Screen with AI Evaluation Feedback Card.
 class WritingScreen extends StatefulWidget {
@@ -24,29 +25,42 @@ class _WritingScreenState extends State<WritingScreen> {
       _isEvaluating = true;
     });
 
-    // Simulate AI GPT-4o Evaluation latency
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final eval = await WritingEvaluationService().evaluateEssay(
+        essayText: _essayController.text.trim(),
+        prompt: _task2Prompt,
+        taskType: 'task$_selectedTask',
+      );
 
-    setState(() {
-      _isEvaluating = false;
-      _aiEvaluationResult = {
-        'overall_band': 7.0,
-        'task_achievement': 7.5,
-        'coherence_cohesion': 6.5,
-        'lexical_resource': 7.0,
-        'grammar_accuracy': 7.0,
-        'strengths': [
-          'Well-developed body paragraphs with clear topic sentences.',
-          'Effective use of academic connectors (e.g. Furthermore, Consequently).'
-        ],
-        'weaknesses': [
-          'Minor repetition of vocabulary in the conclusion.',
-          'Slight punctuation inaccuracy in paragraph 2.'
-        ],
-        'improved_sample':
-            'While higher education represents a significant financial investment, providing universal tuition-free access fosters economic mobility and innovation...'
-      };
-    });
+      if (mounted) {
+        setState(() {
+          _isEvaluating = false;
+          _aiEvaluationResult = {
+            'overall_band': eval.overallBandScore,
+            'task_achievement': eval.taskAchievementScore,
+            'coherence_cohesion': eval.coherenceCohesionScore,
+            'lexical_resource': eval.lexicalResourceScore,
+            'grammar_accuracy': eval.grammaticalRangeScore,
+            'strengths': eval.strengths,
+            'weaknesses': eval.weaknesses,
+            'grammar_corrections': eval.grammarCorrections,
+            'improved_sample': eval.improvedSample,
+          };
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isEvaluating = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Essay evaluation failed: ${e.toString().replaceAll('Exception: ', '')}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -66,77 +80,82 @@ class _WritingScreenState extends State<WritingScreen> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Task Switcher Tabs
-            Row(
-              children: [
-                ChoiceChip(
-                  label: const Text('Task 1 (Graph/Diagram)'),
-                  selected: _selectedTask == 1,
-                  onSelected: (val) => setState(() => _selectedTask = 1),
-                ),
-                const SizedBox(width: 8),
-                ChoiceChip(
-                  label: const Text('Task 2 (Essay)'),
-                  selected: _selectedTask == 2,
-                  onSelected: (val) => setState(() => _selectedTask = 2),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        behavior: HitTestBehavior.opaque,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Task Switcher Tabs
+              Row(
+                children: [
+                  ChoiceChip(
+                    label: const Text('Task 1 (Graph/Diagram)'),
+                    selected: _selectedTask == 1,
+                    onSelected: (val) => setState(() => _selectedTask = 1),
+                  ),
+                  const SizedBox(width: 8),
+                  ChoiceChip(
+                    label: const Text('Task 2 (Essay)'),
+                    selected: _selectedTask == 2,
+                    onSelected: (val) => setState(() => _selectedTask = 2),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
 
-            // Prompt Card
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Essay Prompt', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
-                    Text(_task2Prompt, style: theme.textTheme.bodyMedium),
-                  ],
+              // Prompt Card
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Essay Prompt', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      Text(_task2Prompt, style: theme.textTheme.bodyMedium),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // Essay Input Area
-            TextField(
-              controller: _essayController,
-              maxLines: 10,
-              decoration: InputDecoration(
-                hintText: 'Type your essay response here...',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                counterText: '${_essayController.text.split(RegExp(r'\s+')).where((w) => w.isNotEmpty).length} words',
+              // Essay Input Area
+              TextField(
+                controller: _essayController,
+                maxLines: 10,
+                onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                decoration: InputDecoration(
+                  hintText: 'Type your essay response here...',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  counterText: '${_essayController.text.split(RegExp(r'\s+')).where((w) => w.isNotEmpty).length} words',
+                ),
+                onChanged: (_) => setState(() {}),
               ),
-              onChanged: (_) => setState(() {}),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-            // Submit Button
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton.icon(
-                onPressed: _isEvaluating ? null : _submitForAIEvaluation,
-                icon: _isEvaluating
-                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Icon(Icons.auto_awesome),
-                label: Text(_isEvaluating ? 'AI Examiner Evaluating...' : 'Evaluate Essay with AI'),
+              // Submit Button
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton.icon(
+                  onPressed: _isEvaluating ? null : _submitForAIEvaluation,
+                  icon: _isEvaluating
+                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Icon(Icons.auto_awesome),
+                  label: Text(_isEvaluating ? 'AI Examiner Evaluating...' : 'Evaluate Essay with AI'),
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            // AI Band Score Card
-            if (_aiEvaluationResult != null) _buildAIEvaluationCard(theme),
-          ],
+              // AI Band Score Card
+              if (_aiEvaluationResult != null) _buildAIEvaluationCard(theme),
+            ],
+          ),
         ),
       ),
     );
@@ -145,74 +164,66 @@ class _WritingScreenState extends State<WritingScreen> {
   Widget _buildAIEvaluationCard(ThemeData theme) {
     final eval = _aiEvaluationResult!;
     return Card(
-      color: theme.colorScheme.surfaceVariant,
+      color: theme.colorScheme.surfaceContainerHighest,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('AI Examiner Evaluation', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    'Band ${eval['overall_band']}',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
+            Text('AI Evaluation Feedback', style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
             const Divider(height: 24),
 
-            // Criteria Scores Grid
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: [
-                _scoreBadge('Task Achievement', eval['task_achievement']),
-                _scoreBadge('Coherence & Cohesion', eval['coherence_cohesion']),
-                _scoreBadge('Lexical Resource', eval['lexical_resource']),
-                _scoreBadge('Grammatical Accuracy', eval['grammar_accuracy']),
-              ],
-            ),
-            const SizedBox(height: 16),
-
             // Strengths
-            Text('Strengths:', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.green)),
-            ...((eval['strengths'] as List).map((s) => Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Row(children: [const Icon(Icons.check_circle, size: 16, color: Colors.green), const SizedBox(width: 6), Expanded(child: Text(s))]),
-                ))),
+            if ((eval['strengths'] as List).isNotEmpty) ...[
+              Text('Strengths:', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.green)),
+              ...((eval['strengths'] as List).map((s) => Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Row(children: [const Icon(Icons.check_circle, size: 16, color: Colors.green), const SizedBox(width: 6), Expanded(child: Text(s.toString()))]),
+                  ))),
+              const SizedBox(height: 12),
+            ],
 
-            const SizedBox(height: 12),
             // Weaknesses
-            Text('Areas for Improvement:', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.orange)),
-            ...((eval['weaknesses'] as List).map((w) => Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Row(children: [const Icon(Icons.warning, size: 16, color: Colors.orange), const SizedBox(width: 6), Expanded(child: Text(w))]),
-                ))),
+            if ((eval['weaknesses'] as List).isNotEmpty) ...[
+              Text('Areas for Improvement:', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.orange)),
+              ...((eval['weaknesses'] as List).map((w) => Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Row(children: [const Icon(Icons.warning, size: 16, color: Colors.orange), const SizedBox(width: 6), Expanded(child: Text(w.toString()))]),
+                  ))),
+              const SizedBox(height: 12),
+            ],
+
+            // Grammar Corrections
+            if ((eval['grammar_corrections'] as List?)?.isNotEmpty ?? false) ...[
+              Text('Grammar Corrections:', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.redAccent)),
+              ...(((eval['grammar_corrections'] as List)).map((g) => Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Row(children: [const Icon(Icons.build_circle, size: 16, color: Colors.redAccent), const SizedBox(width: 6), Expanded(child: Text(g.toString()))]),
+                  ))),
+              const SizedBox(height: 12),
+            ],
+
+            // Improved Sample Answer
+            if ((eval['improved_sample'] as String?)?.isNotEmpty ?? false) ...[
+              Text('Improved Model Sample:', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+              const SizedBox(height: 6),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
+                ),
+                child: Text(
+                  eval['improved_sample'].toString(),
+                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.4, fontStyle: FontStyle.italic),
+                ),
+              ),
+            ],
           ],
         ),
       ),
-    );
-  }
-
-  Widget _scoreBadge(String label, double score) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.white24),
-      ),
-      child: Text('$label: $score', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
     );
   }
 }

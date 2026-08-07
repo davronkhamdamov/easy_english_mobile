@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:record/record.dart';
 import '../../../design_system/design_system.dart';
+import '../data/speaking_evaluation_service.dart';
 import '../domain/speaking_model.dart';
 
 /// IELTS Speaking Practice Screen featuring Part 1/2/3 Cue Cards,
@@ -26,14 +30,19 @@ class _SpeakingScreenState extends State<SpeakingScreen> with TickerProviderStat
   late AnimationController _micPulseController;
   late AnimationController _waveController;
 
-  // Evaluation & Data
+  // Audio Recorder & Evaluation
+  final AudioRecorder _audioRecorder = AudioRecorder();
+  String? _recordedAudioPath;
+
+  bool _isTranscribing = false;
   SpeakingAIEvaluation? _aiEvaluation;
-  String _transcript = '';
+  late TextEditingController _transcriptController;
   double _waveformAmplitude = 0.5;
 
   @override
   void initState() {
     super.initState();
+    _transcriptController = TextEditingController();
     _currentPrompt = SpeakingPrompt.samplePrompts[0];
 
     _micPulseController = AnimationController(
@@ -50,8 +59,10 @@ class _SpeakingScreenState extends State<SpeakingScreen> with TickerProviderStat
   @override
   void dispose() {
     _timer?.cancel();
+    _transcriptController.dispose();
     _micPulseController.dispose();
     _waveController.dispose();
+    _audioRecorder.dispose();
     super.dispose();
   }
 
@@ -68,7 +79,7 @@ class _SpeakingScreenState extends State<SpeakingScreen> with TickerProviderStat
       _state = PracticeState.idle;
       _timerSeconds = 0;
       _aiEvaluation = null;
-      _transcript = '';
+      _transcriptController.clear();
     });
   }
 
@@ -91,13 +102,55 @@ class _SpeakingScreenState extends State<SpeakingScreen> with TickerProviderStat
     });
   }
 
-  void _startRecording() {
+  void _startRecording() async {
     _timer?.cancel();
     HapticFeedback.heavyImpact();
+    _transcriptController.clear();
+    _recordedAudioPath = null;
+
     setState(() {
       _state = PracticeState.recording;
       _timerSeconds = 0;
     });
+
+    final hasPerm = await _audioRecorder.hasPermission();
+    if (hasPerm) {
+      try {
+        final tempDir = await getTemporaryDirectory();
+        final filePath = '${tempDir.path}/speaking_${DateTime.now().millisecondsSinceEpoch}.m4a';
+        _recordedAudioPath = filePath;
+
+        try {
+          await _audioRecorder.start(
+            const RecordConfig(
+              encoder: AudioEncoder.aacLc,
+              sampleRate: 44100,
+              bitRate: 128000,
+              numChannels: 1, // Mono voice recording for maximum gain & clarity
+            ),
+            path: filePath,
+          );
+        } catch (encoderErr) {
+          debugPrint('Mono AAC LC encoder failed, trying default RecordConfig: $encoderErr');
+          await _audioRecorder.start(
+            const RecordConfig(numChannels: 1),
+            path: filePath,
+          );
+        }
+        debugPrint('Audio recording started successfully at: $filePath');
+      } catch (e) {
+        debugPrint('AudioRecorder start exception: $e');
+      }
+    } else {
+      debugPrint('Microphone permission denied for AudioRecorder');
+      if (mounted) {
+        DSSnackbar.show(
+          context,
+          message: 'Microphone permission is required to record audio.',
+          variant: DSSnackbarVariant.danger,
+        );
+      }
+    }
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
@@ -112,85 +165,150 @@ class _SpeakingScreenState extends State<SpeakingScreen> with TickerProviderStat
     });
   }
 
-  void _stopRecording() {
+  void _stopRecording() async {
     _timer?.cancel();
+
+    String? audioPath = _recordedAudioPath;
+    try {
+      if (await _audioRecorder.isRecording()) {
+        final stoppedPath = await _audioRecorder.stop();
+        if (stoppedPath != null && stoppedPath.isNotEmpty) {
+          audioPath = stoppedPath;
+          _recordedAudioPath = stoppedPath;
+        }
+      }
+    } catch (e) {
+      debugPrint('AudioRecorder stop exception: $e');
+    }
+
     HapticFeedback.mediumImpact();
     setState(() {
       _state = PracticeState.recorded;
-      _transcript = _generateSampleTranscript();
+      _isTranscribing = true;
     });
-  }
 
-  void _resetPractice() {
-    _timer?.cancel();
-    setState(() {
-      _state = PracticeState.idle;
-      _timerSeconds = 0;
-      _aiEvaluation = null;
-      _transcript = '';
-    });
-  }
-
-  void _stopTimer() {
-    _timer?.cancel();
-    _state = PracticeState.idle;
-  }
-
-  String _generateSampleTranscript() {
-    if (_selectedPart == 1) {
-      return "My hometown is a vibrant coastal city with rich historical heritage. "
-          "What I cherish most is the seaside promenade and local cafes where residents gather. "
-          "Over recent years, rapid urban developments have modernized public transit while preserving green parks.";
-    } else if (_selectedPart == 2) {
-      return "I would like to describe a memorable high-speed train journey I took from Tokyo to Kyoto last spring. "
-          "I traveled alongside two close university friends during cherry blossom season. "
-          "The scenic views of Mount Fuji passing by were breathtaking. "
-          "This journey taught me to appreciate efficient infrastructure and the beauty of deliberate travel.";
+    if (audioPath != null && audioPath.isNotEmpty && File(audioPath).existsSync()) {
+      try {
+        debugPrint('Sending audio file to Whisper API ($audioPath)...');
+        final whisperTranscript = await SpeakingEvaluationService().transcribeSpeakingAudio(audioPath);
+        if (mounted && whisperTranscript.isNotEmpty) {
+          setState(() {
+            _transcriptController.text = whisperTranscript;
+            _isTranscribing = false;
+          });
+          return;
+        }
+      } catch (e) {
+        debugPrint('Whisper API transcription exception: $e');
+        if (mounted) {
+          DSSnackbar.show(
+            context,
+            message: 'Whisper API error: ${e.toString()}',
+            variant: DSSnackbarVariant.danger,
+          );
+        }
+      }
     } else {
-      return "Looking ahead two decades, urban transit will shift dramatically towards autonomous electric systems. "
-          "Government investments in high-speed rail networks will reduce reliance on private vehicles, "
-          "significantly cutting carbon emissions and optimizing smart city mobility.";
+      debugPrint('No audio file found at $audioPath to send to Whisper API');
+      if (mounted) {
+        DSSnackbar.show(
+          context,
+          message: 'No audio file recorded ($audioPath). Please check microphone permissions.',
+          variant: DSSnackbarVariant.warning,
+        );
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        _isTranscribing = false;
+      });
     }
   }
 
+  void _resetPractice() async {
+    _timer?.cancel();
+    try {
+      if (await _audioRecorder.isRecording()) {
+        await _audioRecorder.stop();
+      }
+    } catch (_) {}
+
+    setState(() {
+      _state = PracticeState.idle;
+      _timerSeconds = 0;
+      _recordedAudioPath = null;
+      _aiEvaluation = null;
+      _transcriptController.clear();
+    });
+  }
+
+  void _stopTimer() async {
+    _timer?.cancel();
+    try {
+      if (await _audioRecorder.isRecording()) {
+        await _audioRecorder.stop();
+      }
+    } catch (_) {}
+    _state = PracticeState.idle;
+  }
+
   Future<void> _evaluateSpeakingWithAI() async {
+    final currentText = _transcriptController.text.trim();
+    if (currentText.isEmpty) {
+      DSSnackbar.show(
+        context,
+        message: 'Please speak into your microphone or type your response first.',
+        variant: DSSnackbarVariant.danger,
+      );
+      return;
+    }
+
     setState(() {
       _state = PracticeState.evaluating;
     });
 
-    // Simulate AI examiner analysis latency
-    await Future.delayed(const Duration(seconds: 2));
-
-    setState(() {
-      _state = PracticeState.evaluated;
-      _aiEvaluation = SpeakingAIEvaluation(
-        id: 'eval_${DateTime.now().millisecondsSinceEpoch}',
-        submissionId: 'sub_123',
-        overallBand: 7.5,
-        fluencyCoherenceBand: 7.5,
-        lexicalResourceBand: 7.0,
-        grammarRangeBand: 7.5,
-        pronunciationBand: 8.0,
-        transcript: _transcript,
-        grammarErrors: const [
-          "Original: 'I am traveling last year'... Correction: 'I traveled last year'",
-          "Original: 'It make me feel happy'... Correction: 'It makes me feel happy'"
-        ],
-        vocabularyTips: const [
-          "Upgrade 'vibrant city' to 'bustling metropolis' for higher Lexical Resource.",
-          "Use collocations like 'foster cross-cultural connections' and 'sustainable infrastructure'."
-        ],
-        strengths: const [
-          "Excellent natural intonation and fluid delivery without undue hesitation.",
-          "Cohesive structure with logical discourse markers (e.g., 'Looking ahead', 'significantly')."
-        ],
-        areasForImprovement: const [
-          "Ensure consistent past tense verb inflection during story narration.",
-          "Incorporate a broader range of complex conditional sentences for Band 8+ Grammar."
-        ],
-        evaluatedAt: DateTime.now(),
+    try {
+      final res = await SpeakingEvaluationService().evaluateSpeaking(
+        audioFilePath: _recordedAudioPath,
+        part: _selectedPart,
+        prompt: _currentPrompt.title,
+        transcript: currentText,
       );
-    });
+
+      if (mounted) {
+        setState(() {
+          _state = PracticeState.evaluated;
+          _aiEvaluation = SpeakingAIEvaluation(
+            id: 'eval_${DateTime.now().millisecondsSinceEpoch}',
+            submissionId: 'sub_${DateTime.now().millisecondsSinceEpoch}',
+            overallBand: res.overallBandScore,
+            fluencyCoherenceBand: res.fluencyScore,
+            lexicalResourceBand: res.lexicalResourceScore,
+            grammarRangeBand: res.grammarScore,
+            pronunciationBand: res.pronunciationScore,
+            transcript: res.transcription.isNotEmpty ? res.transcription : currentText,
+            grammarErrors: res.grammarErrors,
+            vocabularyTips: res.vocabularyTips,
+            strengths: res.strengths,
+            areasForImprovement: res.areasForImprovement,
+            evaluatedAt: DateTime.now(),
+          );
+        });
+      }
+    } catch (e) {
+      debugPrint('AI Evaluation Error: $e');
+      if (mounted) {
+        setState(() {
+          _state = PracticeState.recorded;
+        });
+        DSSnackbar.show(
+          context,
+          message: 'Evaluation failed: ${e.toString().replaceAll('Exception: ', '')}',
+          variant: DSSnackbarVariant.danger,
+        );
+      }
+    }
   }
 
   String _formatDuration(int totalSeconds) {
@@ -234,32 +352,37 @@ class _SpeakingScreenState extends State<SpeakingScreen> with TickerProviderStat
           )
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Part Switcher Tabs (Part 1 / Part 2 / Part 3)
-            _buildPartSelector(theme, isDark),
-            const SizedBox(height: 16),
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        behavior: HitTestBehavior.opaque,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Part Switcher Tabs (Part 1 / Part 2 / Part 3)
+              _buildPartSelector(theme, isDark),
+              const SizedBox(height: 16),
 
-            // Cue Card Prompt Widget
-            _buildPromptCard(theme, isDark),
-            const SizedBox(height: 20),
+              // Cue Card Prompt Widget
+              _buildPromptCard(theme, isDark),
+              const SizedBox(height: 20),
 
-            // Animated Timer & Waveform Controls Card
-            _buildRecordingControllerCard(theme, isDark),
-            const SizedBox(height: 20),
+              // Animated Timer & Waveform Controls Card
+              _buildRecordingControllerCard(theme, isDark),
+              const SizedBox(height: 20),
 
-            // Audio Transcript Display Card
-            if (_transcript.isNotEmpty) _buildTranscriptCard(theme, isDark),
+              // Audio Transcript Display Card
+              if (_transcriptController.text.isNotEmpty || _state == PracticeState.recorded || _isTranscribing)
+                _buildTranscriptCard(theme, isDark),
 
-            // AI Band Score Evaluation Card
-            if (_state == PracticeState.evaluating) _buildLoadingEvaluationCard(theme),
-            if (_state == PracticeState.evaluated && _aiEvaluation != null)
-              _buildAIEvaluationCard(theme, isDark),
-          ],
+              // AI Band Score Evaluation Card
+              if (_state == PracticeState.evaluating) _buildLoadingEvaluationCard(theme),
+              if (_state == PracticeState.evaluated && _aiEvaluation != null)
+                _buildAIEvaluationCard(theme, isDark),
+            ],
+          ),
         ),
       ),
     );
@@ -632,26 +755,50 @@ class _SpeakingScreenState extends State<SpeakingScreen> with TickerProviderStat
                     ),
                   ],
                 ),
-                IconButton(
-                  icon: const Icon(Icons.copy_rounded, size: 18),
-                  tooltip: 'Copy Transcript',
-                  onPressed: () {
-                    Clipboard.setData(ClipboardData(text: _transcript));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Transcript copied to clipboard')),
-                    );
-                  },
-                ),
+                if (_isTranscribing)
+                  const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+                  )
+                else
+                  IconButton(
+                    icon: const Icon(Icons.copy_rounded, size: 18),
+                    tooltip: 'Copy Transcript',
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: _transcriptController.text));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Transcript copied to clipboard')),
+                      );
+                    },
+                  ),
               ],
             ),
             const Divider(height: 16),
-            Text(
-              '"$_transcript"',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontStyle: FontStyle.italic,
-                height: 1.4,
+            if (_isTranscribing) ...[
+              const LinearProgressIndicator(color: AppColors.primary),
+              const SizedBox(height: 12),
+              Center(
+                child: Text(
+                  'Transcribing audio via OpenAI Whisper API...',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
-            ),
+            ] else
+              TextField(
+                controller: _transcriptController,
+                maxLines: 4,
+                onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                decoration: InputDecoration(
+                  hintText: 'Edit or type spoken response here...',
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                  isDense: true,
+                ),
+                style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
+              ),
           ],
         ),
       ),
@@ -711,89 +858,9 @@ class _SpeakingScreenState extends State<SpeakingScreen> with TickerProviderStat
                     ),
                   ],
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [AppColors.primary, AppColors.secondary],
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
-                      )
-                    ],
-                  ),
-                  child: Text(
-                    'Band ${eval.overallBand}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
               ],
             ),
             const Divider(height: 24),
-
-            // 4 Core IELTS Criteria Breakdown Cards
-            Text(
-              'Criteria Performance Breakdown',
-              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _buildCriteriaTile(
-                    theme,
-                    'Fluency & Coherence',
-                    eval.fluencyCoherenceBand,
-                    Icons.record_voice_over_rounded,
-                    AppColors.primary,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _buildCriteriaTile(
-                    theme,
-                    'Lexical Resource',
-                    eval.lexicalResourceBand,
-                    Icons.menu_book_rounded,
-                    AppColors.secondary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildCriteriaTile(
-                    theme,
-                    'Grammar Range',
-                    eval.grammarRangeBand,
-                    Icons.spellcheck_rounded,
-                    AppColors.warning,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _buildCriteriaTile(
-                    theme,
-                    'Pronunciation',
-                    eval.pronunciationBand,
-                    Icons.graphic_eq_rounded,
-                    AppColors.success,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
 
             // Strengths
             if (eval.strengths.isNotEmpty) ...[
@@ -834,51 +901,6 @@ class _SpeakingScreenState extends State<SpeakingScreen> with TickerProviderStat
             ],
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildCriteriaTile(
-    ThemeData theme,
-    String title,
-    double score,
-    IconData icon,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.25)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 16, color: color),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  title,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '$score',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-        ],
       ),
     );
   }

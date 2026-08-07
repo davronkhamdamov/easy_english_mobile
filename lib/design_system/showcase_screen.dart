@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'design_system.dart';
+import '../core/debug/api_debugger_screen.dart';
 
 enum ShowcasePage {
   overview,
+  login,
   button,
   input,
   card,
@@ -10,6 +12,7 @@ enum ShowcasePage {
   snackbar,
   dialog,
   tokens,
+  apiDebugger,
 }
 
 class DSShowcaseScreen extends StatefulWidget {
@@ -45,6 +48,22 @@ class _DSShowcaseScreenState extends State<DSShowcaseScreen> {
   @override
   Widget build(BuildContext context) {
     switch (_activePage) {
+      case ShowcasePage.apiDebugger:
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => setState(() => _activePage = ShowcasePage.overview),
+            ),
+            title: const Text('API Debugger'),
+          ),
+          body: const ApiDebuggerScreen(),
+        );
+      case ShowcasePage.login:
+        return DSLoginPage(
+          themeController: widget.themeController,
+          onBackToOverview: () => setState(() => _activePage = ShowcasePage.overview),
+        );
       case ShowcasePage.button:
         return DSButtonPage(
           themeController: widget.themeController,
@@ -201,6 +220,8 @@ class _DSShowcaseScreenState extends State<DSShowcaseScreen> {
   // --- NAVIGATION HUB GRID ---
   Widget _buildNavigationHubCard(bool isDark) {
     final navItems = [
+      {'page': ShowcasePage.apiDebugger, 'title': 'API Call Inspector', 'desc': 'Real-time Network Logger • cURL • Headers • Payload', 'icon': Icons.api_rounded, 'color': AppColors.primary},
+      {'page': ShowcasePage.login, 'title': 'Login Screen', 'desc': 'Full Auth Flow • Vector Hero • Social Pills', 'icon': Icons.lock_open_rounded, 'color': AppColors.accentGreenDark},
       {'page': ShowcasePage.button, 'title': 'DSButton', 'desc': '5 Variants • 3 Sizes • Animations', 'icon': Icons.smart_button_rounded, 'color': AppColors.primary},
       {'page': ShowcasePage.input, 'title': 'DSInput', 'desc': 'Text • Password • Email • Search', 'icon': Icons.input_rounded, 'color': AppColors.secondary},
       {'page': ShowcasePage.card, 'title': 'DSCard', 'desc': 'Elevated • Outlined • Glassmorphism', 'icon': Icons.crop_portrait_rounded, 'color': AppColors.success},
@@ -209,6 +230,7 @@ class _DSShowcaseScreenState extends State<DSShowcaseScreen> {
       {'page': ShowcasePage.dialog, 'title': 'DSDialog', 'desc': 'Glass Modal • Backdrop Blur', 'icon': Icons.open_in_new_rounded, 'color': AppColors.primaryHover},
       {'page': ShowcasePage.tokens, 'title': 'Design Tokens', 'desc': 'Colors • Typography • Shadows', 'icon': Icons.token_rounded, 'color': AppColors.secondary},
     ];
+
 
     return DSCard(
       variant: DSCardVariant.elevated,

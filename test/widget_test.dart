@@ -3,13 +3,14 @@ import 'package:easy_english/main.dart';
 
 
 void main() {
-  testWidgets('EasyIeltsApp renders showcase screen cleanly', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('EasyIeltsApp renders login screen as default home screen cleanly', (WidgetTester tester) async {
     await tester.pumpWidget(const EasyIeltsApp());
-    await tester.pumpAndSettle();
+    await tester.pump();
+    await tester.pump();
 
-    // Verify that Design System Spec and Component Investigation Hub exist
-    expect(find.text('Design System Spec'), findsOneWidget);
-    expect(find.text('Component Investigation Hub'), findsOneWidget);
+    // Verify that LoginScreen header and social buttons exist
+    expect(find.text('Better sound. Better focus.'), findsOneWidget);
+    expect(find.text('Continue with Google'), findsOneWidget);
+    expect(find.text('Continue with Apple'), findsOneWidget);
   });
 }

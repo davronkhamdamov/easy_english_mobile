@@ -1,4 +1,4 @@
-import 'package:easy_ielts/core/errors/failure.dart';
+import 'failure.dart';
 
 /// Sealed functional Result type for handling operations cleanly.
 sealed class Result<T> {

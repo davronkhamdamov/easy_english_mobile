@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "807835399839",
+    "project_id": "easy-english-67ec4",
+    "storage_bucket": "easy-english-67ec4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807835399839:android:65c00d86c2bda63e3214aa",
+        "android_client_info": {
+          "package_name": "uz.cordialsoft.easyenglish"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "807835399839-38g8v2779271seuk4iqqhkggmflle73q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uz.cordialsoft.easyenglish",
+            "certificate_hash": "80f727d68e29ad1a618e4c2903d060972c7a3862"
+          }
+        },
+        {
+          "client_id": "807835399839-upd5ot5revikdm65u3pael2r450d9rq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbg0Y1ac4y6HmKuqcruqdiqD2i2D8TUtI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "807835399839-upd5ot5revikdm65u3pael2r450d9rq3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
