@@ -1,0 +1,47 @@
+{
+  "module_title": "IELTS Writing Lab Modules",
+  "description": "Production-ready IELTS Writing Task 1 Academic report and Writing Task 2 Opinion Essay prompts with official Band 9.0 model answers and rubric analyses.",
+  "total_tasks": 2,
+  "tasks": [
+    {
+      "id": "w_task1_academic_01",
+      "task_type": "Task 1 Academic",
+      "chart_type": "Bar Chart",
+      "title": "Global Renewable Energy Generation Investment (2015 - 2025)",
+      "prompt_text": "The bar chart below illustrates annual financial investments (in billions of US dollars) allocated towards three primary renewable energy sectors—Solar, Wind, and Hydroelectric power—across four regions between 2015 and 2025.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant.",
+      "estimated_minutes": 20,
+      "recommended_word_count": "150-180 words",
+      "model_answer": {
+        "target_band": 9.0,
+        "word_count": 172,
+        "text": "The bar chart compares regional capital expenditure on solar, wind, and hydroelectric energy sectors over a ten-year period from 2015 to 2025.\n\nOverall, global funding for solar and wind energy registered significant growth, whereas investments in hydroelectric power remained comparatively modest and stable. Furthermore, Europe and Asia-Pacific consistently outspent North America and Latin America across all three categories.\n\nIn 2015, Europe led global solar investment at $45 billion, followed closely by Asia-Pacific at $38 billion. By 2025, Asia-Pacific surged dramatically to surpass Europe, reaching a peak of $92 billion compared to Europe's $80 billion. Conversely, North American solar funding expanded more moderately, climbing from $22 billion to $45 billion over the same decade.\n\nRegarding wind infrastructure, European expenditure surged from $50 billion in 2015 to $85 billion by 2025, maintaining its dominant market position. In contrast, global hydroelectric capital commitments exhibited minimal fluctuation, remaining stabilized between $10 billion and $25 billion per region throughout the entire ten-year timeframe."
+      },
+      "rubric_breakdown": {
+        "task_achievement": "Band 9.0: Provides a clear, comprehensive overview of major trends and contrasts (solar surge in Asia-Pacific vs stable hydroelectricity). All key features are accurately reported and highlighted without misrepresenting data.",
+        "coherence_and_cohesion": "Band 9.0: Paragraphing is logically structured (Overview -> Solar trends -> Wind & Hydroelectric trends). Cohesive devices ('Overall', 'Furthermore', 'Conversely', 'Regarding') are executed seamlessly without mechanical repetition.",
+        "lexical_resource": "Band 9.0: Uses sophisticated, varied financial and statistical vocabulary naturally ('capital expenditure', 'registered significant growth', 'surged dramatically', 'exhibited minimal fluctuation').",
+        "grammatical_range_and_accuracy": "Band 9.0: Implements a diverse range of complex structures error-free (participial clauses, contrastive subordinators, passive verb forms)."
+      }
+    },
+    {
+      "id": "w_task2_opinion_01",
+      "task_type": "Task 2 Essay",
+      "essay_type": "Opinion Essay",
+      "title": "Universal Free University Education",
+      "prompt_text": "Some educational experts argue that university tuition fees should be completely eliminated, making higher education free for all students regardless of financial background.\n\nTo what extent do you agree or disagree with this opinion?",
+      "estimated_minutes": 40,
+      "recommended_word_count": "250-300 words",
+      "model_answer": {
+        "target_band": 9.0,
+        "word_count": 278,
+        "text": "Whether tertiary education should be fully funded by government taxation remains a central debate in public policy. While critics contend that universal tuition coverage imposes a prohibitive fiscal burden on state budgets, I firmly agree that eliminating university tuition fees yields profound socioeconomic benefits that far outweigh the initial public expenditure.\n\nFirst and foremost, tuition-free higher education dismantles systemic socioeconomic barriers, creating a genuine meritocracy. When academic admission is decoupled from personal wealth, exceptionally talented individuals from disadvantaged socioeconomic strata gain equal access to professional qualifications. Consequently, this democratization of higher learning increases social mobility and reduces persistent income inequality. For instance, Nordic nations offering tuition-free university systems consistently report higher social mobility index ratings and lower wealth disparities than countries burdened by high student debt loads.\n\nFurthermore, state investment in tertiary education generates substantial economic dividends through human capital enrichment. Modern knowledge-based economies depend heavily on highly skilled specialists in engineering, medicine, and technology. By waiving tuition fees, governments incentivize greater university enrollment, thereby expanding the high-skilled workforce. This workforce drives technological innovation, attracts foreign direct investment, and ultimately expands the national tax base, effectively reimbursing the public treasury over the long term.\n\nAdmittedly, opponents argue that free tuition may strain public finances and potentially compromise university facility quality. However, this fiscal concern can be mitigated by implementing targeted progressive taxation on high-earning corporate entities and maintaining selective academic admission criteria to manage student numbers efficiently.\n\nIn conclusion, making university education free for all qualified students is not an unaffordable expense, but rather a vital long-term investment. Governments should prioritize funding tertiary education to cultivate an equitable, innovative, and economically robust society."
+      },
+      "rubric_breakdown": {
+        "task_achievement": "Band 9.0: Fully addresses all parts of the prompt with a crystal-clear, well-developed thesis throughout ('firmly agree'). Main ideas are extended and supported with relevant evidence.",
+        "coherence_and_cohesion": "Band 9.0: Flawless progression between body paragraphs (Democratization & Social Mobility -> Economic Dividends & Human Capital -> Addressing Counterarguments -> Synthesis). Transitions are organic and logical.",
+        "lexical_resource": "Band 9.0: Employs precise C1/C2 academic vocabulary with natural collocation ('prohibitive fiscal burden', 'dismantles systemic socioeconomic barriers', 'human capital enrichment', 'progressive taxation').",
+        "grammatical_range_and_accuracy": "Band 9.0: Complete mastery of complex syntax including nominalized phrases, conditional clauses, and passive structures without grammatical errors."
+      }
+    }
+  ]
+}

@@ -1,0 +1,327 @@
+{
+  "module_title": "Academic Vocabulary Flashcard Bank (Band 7.0 - 9.0)",
+  "description": "20 high-frequency C1/C2 academic vocabulary flashcards categorized by core IELTS essay and speaking topics.",
+  "total_words": 20,
+  "words": [
+    {
+      "id": "vocab_01",
+      "word": "Exacerbate",
+      "ipa_pronunciation": "/ɪɡˈzæs.ə.beɪt/",
+      "part_of_speech": "verb",
+      "definition": "To make a problem, bad situation, or negative condition worse or more intense.",
+      "cefr_level": "C1",
+      "topic": "Environment",
+      "academic_collocations": [
+        "exacerbate environmental degradation",
+        "further exacerbate the problem",
+        "exacerbate existing inequalities"
+      ],
+      "synonyms": ["aggravate", "worsen", "compound"],
+      "example_sentence": "Uncontrolled urban sprawl will only exacerbate existing traffic congestion and air pollution in metropolitan areas."
+    },
+    {
+      "id": "vocab_02",
+      "word": "Depletion",
+      "ipa_pronunciation": "/dɪˈpliː.ʃən/",
+      "part_of_speech": "noun",
+      "definition": "A significant reduction in the quantity or number of something, especially natural resources.",
+      "cefr_level": "C1",
+      "topic": "Environment",
+      "academic_collocations": [
+        "depletion of natural resources",
+        "ozone layer depletion",
+        "rapid groundwater depletion"
+      ],
+      "synonyms": ["exhaustion", "consumption", "diminution"],
+      "example_sentence": "Overfishing has led to the severe depletion of marine stocks in coastal waters."
+    },
+    {
+      "id": "vocab_03",
+      "word": "Mitigate",
+      "ipa_pronunciation": "/ˈmɪt.ɪ.ɡeɪt/",
+      "part_of_speech": "verb",
+      "definition": "To make something less harmful, severe, serious, or painful.",
+      "cefr_level": "C1",
+      "topic": "Environment",
+      "academic_collocations": [
+        "mitigate climate risks",
+        "mitigate negative impacts",
+        "mitigate potential damage"
+      ],
+      "synonyms": ["alleviate", "attenuate", "mollify"],
+      "example_sentence": "Investing in renewable energy infrastructure is essential to mitigate the catastrophic impacts of climate change."
+    },
+    {
+      "id": "vocab_04",
+      "word": "Biodiversity",
+      "ipa_pronunciation": "/ˌbaɪ.əʊ.daɪˈvɜː.sə.ti/",
+      "part_of_speech": "noun",
+      "definition": "The variety of plant and animal life in a particular habitat or ecosystem.",
+      "cefr_level": "C1",
+      "topic": "Environment",
+      "academic_collocations": [
+        "preserve aquatic biodiversity",
+        "loss of biodiversity",
+        "threaten global biodiversity"
+      ],
+      "synonyms": ["ecological variety", "species diversity", "biological richness"],
+      "example_sentence": "Deforestation in tropical rainforests poses a severe threat to global biodiversity."
+    },
+    {
+      "id": "vocab_05",
+      "word": "Proliferation",
+      "ipa_pronunciation": "/prəˌlɪf.əˈreɪ.ʃən/",
+      "part_of_speech": "noun",
+      "definition": "A rapid and dramatic increase in the number or amount of something.",
+      "cefr_level": "C2",
+      "topic": "Technology",
+      "academic_collocations": [
+        "proliferation of smart devices",
+        "curb nuclear proliferation",
+        "rapid market proliferation"
+      ],
+      "synonyms": ["expansion", "multiplication", "burgeoning"],
+      "example_sentence": "The proliferation of generative artificial intelligence tools has fundamentally reshaped higher education assessments."
+    },
+    {
+      "id": "vocab_06",
+      "word": "Automation",
+      "ipa_pronunciation": "/ˌɔː.təˈmeɪ.ʃən/",
+      "part_of_speech": "noun",
+      "definition": "The use of largely automatic equipment in a system or operation.",
+      "cefr_level": "C1",
+      "topic": "Technology",
+      "academic_collocations": [
+        "industrial robotics automation",
+        "replace manual labor with automation",
+        "widespread office automation"
+      ],
+      "synonyms": ["mechanization", "computerization", "robotics"],
+      "example_sentence": "Widespread industrial automation has significantly enhanced manufacturing efficiency while triggering workforce restructuring."
+    },
+    {
+      "id": "vocab_07",
+      "word": "Ubiquitous",
+      "ipa_pronunciation": "/juːˈbɪk.wɪ.təs/",
+      "part_of_speech": "adjective",
+      "definition": "Present, appearing, or found everywhere in daily life.",
+      "cefr_level": "C2",
+      "topic": "Technology",
+      "academic_collocations": [
+        "become increasingly ubiquitous",
+        "ubiquitous mobile connectivity",
+        "ubiquitous presence of social media"
+      ],
+      "synonyms": ["omnipresent", "pervasive", "universal"],
+      "example_sentence": "Smartphones have become so ubiquitous that living without digital connectivity is virtually impossible for modern urbanites."
+    },
+    {
+      "id": "vocab_08",
+      "word": "Obsolescence",
+      "ipa_pronunciation": "/ˌɒb.səˈles.əns/",
+      "part_of_speech": "noun",
+      "definition": "The process of becoming outdated or no longer used or useful.",
+      "cefr_level": "C2",
+      "topic": "Technology",
+      "academic_collocations": [
+        "planned technological obsolescence",
+        "risk of skill obsolescence",
+        "accelerate product obsolescence"
+      ],
+      "synonyms": ["outdatedness", "antiquation", "supersession"],
+      "example_sentence": "Rapid advances in microchip architecture accelerate the planned obsolescence of consumer electronic devices."
+    },
+    {
+      "id": "vocab_09",
+      "word": "Homogenization",
+      "ipa_pronunciation": "/həˌmɒdʒ.ə.naɪˈzeɪ.ʃən/",
+      "part_of_speech": "noun",
+      "definition": "The process of making things uniform, similar, or identical across regions.",
+      "cefr_level": "C2",
+      "topic": "Globalization",
+      "academic_collocations": [
+        "cultural homogenization",
+        "economic homogenization",
+        "resist global homogenization"
+      ],
+      "synonyms": ["standardization", "uniformity", "assimilation"],
+      "example_sentence": "Critics argue that international mass media contributes to the cultural homogenization of indigenous traditions."
+    },
+    {
+      "id": "vocab_10",
+      "word": "Interdependence",
+      "ipa_pronunciation": "/ˌɪn.tə.dɪˈpen.dəns/",
+      "part_of_speech": "noun",
+      "definition": "The mutual reliance between two or more groups, nations, or organizations.",
+      "cefr_level": "C1",
+      "topic": "Globalization",
+      "academic_collocations": [
+        "global economic interdependence",
+        "foster mutual interdependence",
+        "complex trade interdependence"
+      ],
+      "synonyms": ["interconnectedness", "mutuality", "symbiosis"],
+      "example_sentence": "The pandemic highlighted the profound economic interdependence of global supply chains."
+    },
+    {
+      "id": "vocab_11",
+      "word": "Sovereignty",
+      "ipa_pronunciation": "/ˈsɒv.rɪn.ti/",
+      "part_of_speech": "noun",
+      "definition": "Supreme power, authority, or self-governing status of a state.",
+      "cefr_level": "C1",
+      "topic": "Globalization",
+      "academic_collocations": [
+        "national territorial sovereignty",
+        "infringe upon state sovereignty",
+        "assert regulatory sovereignty"
+      ],
+      "synonyms": ["autonomy", "self-determination", "independence"],
+      "example_sentence": "Multinational corporate agreements often raise concerns regarding the erosion of national economic sovereignty."
+    },
+    {
+      "id": "vocab_12",
+      "word": "Disparity",
+      "ipa_pronunciation": "/dɪˈspær.ə.ti/",
+      "part_of_speech": "noun",
+      "definition": "A great difference or noticeable inequality between conditions or groups.",
+      "cefr_level": "C1",
+      "topic": "Globalization",
+      "academic_collocations": [
+        "stark socioeconomic disparity",
+        "widen regional disparities",
+        "address income disparity"
+      ],
+      "synonyms": ["inequality", "imbalance", "discrepancy"],
+      "example_sentence": "Despite global economic growth, the wealth disparity between developed and developing nations continues to widen."
+    },
+    {
+      "id": "vocab_13",
+      "word": "Pedagogy",
+      "ipa_pronunciation": "/ˈped.ə.ɡɒdʒ.i/",
+      "part_of_speech": "noun",
+      "definition": "The method, strategy, and practice of teaching academic subjects.",
+      "cefr_level": "C2",
+      "topic": "Education",
+      "academic_collocations": [
+        "innovative classroom pedagogy",
+        "student-centered pedagogy",
+        "adopt digital pedagogy"
+      ],
+      "synonyms": ["teaching methodology", "educational science", "instructional doctrine"],
+      "example_sentence": "Modern educators advocate adopting a student-centered pedagogy to foster critical thinking skills."
+    },
+    {
+      "id": "vocab_14",
+      "word": "Cognitive",
+      "ipa_pronunciation": "/ˈkɒɡ.nə.tɪv/",
+      "part_of_speech": "adjective",
+      "definition": "Relating to mental processes of perception, memory, judgment, and reasoning.",
+      "cefr_level": "C1",
+      "topic": "Education",
+      "academic_collocations": [
+        "stimulate cognitive development",
+        "enhance cognitive abilities",
+        "reduce cognitive load"
+      ],
+      "synonyms": ["intellectual", "mental", "perceptual"],
+      "example_sentence": "Early childhood bilingual education has been proven to enhance long-term cognitive flexibility."
+    },
+    {
+      "id": "vocab_15",
+      "word": "Egalitarian",
+      "ipa_pronunciation": "/ɪˌɡæl.ɪˈteə.ri.ən/",
+      "part_of_speech": "adjective",
+      "definition": "Believing in or promoting equal rights and opportunities for all individuals.",
+      "cefr_level": "C2",
+      "topic": "Education",
+      "academic_collocations": [
+        "egalitarian educational system",
+        "promote egalitarian principles",
+        "foster an egalitarian society"
+      ],
+      "synonyms": ["democratic", "fair", "unbiased"],
+      "example_sentence": "A truly egalitarian public school system ensures equal access to STEM learning resources regardless of household income."
+    },
+    {
+      "id": "vocab_16",
+      "word": "Curriculum",
+      "ipa_pronunciation": "/kəˈrɪk.jə.ləm/",
+      "part_of_speech": "noun",
+      "definition": "The subjects comprising a course of study in a school or college.",
+      "cefr_level": "C1",
+      "topic": "Education",
+      "academic_collocations": [
+        "standardized national curriculum",
+        "reform academic curriculum",
+        "extracurricular curriculum activities"
+      ],
+      "synonyms": ["syllabus", "course of study", "educational program"],
+      "example_sentence": "Integrating practical coding skills into the secondary school curriculum prepares students for future digital job markets."
+    },
+    {
+      "id": "vocab_17",
+      "word": "Efficacy",
+      "ipa_pronunciation": "/ˈef.ɪ.kə.si/",
+      "part_of_speech": "noun",
+      "definition": "The ability to produce a desired or intended result; effectiveness.",
+      "cefr_level": "C2",
+      "topic": "Public Health",
+      "academic_collocations": [
+        "demonstrate clinical efficacy",
+        "evaluate vaccine efficacy",
+        "enhance treatment efficacy"
+      ],
+      "synonyms": ["effectiveness", "potency", "usefulness"],
+      "example_sentence": "Rigorous clinical trials are necessary to verify the safety and efficacy of novel therapeutic drugs."
+    },
+    {
+      "id": "vocab_18",
+      "word": "Epidemiology",
+      "ipa_pronunciation": "/ˌep.ɪ.diː.miˈɒl.ə.dʒi/",
+      "part_of_speech": "noun",
+      "definition": "The branch of medicine dealing with the incidence, distribution, and control of diseases.",
+      "cefr_level": "C2",
+      "topic": "Public Health",
+      "academic_collocations": [
+        "advances in epidemiology",
+        "apply field epidemiology",
+        "epidemiology disease tracking"
+      ],
+      "synonyms": ["disease surveillance", "public health science", "outbreak analysis"],
+      "example_sentence": "Modern epidemiology relies on big data analytics to trace virus transmission pathways across major international hubs."
+    },
+    {
+      "id": "vocab_19",
+      "word": "Sedentary",
+      "ipa_pronunciation": "/ˈsed.ən.tər.i/",
+      "part_of_speech": "adjective",
+      "definition": "Characterized by or requiring much sitting and little physical exercise.",
+      "cefr_level": "C1",
+      "topic": "Public Health",
+      "academic_collocations": [
+        "lead a sedentary lifestyle",
+        "combat sedentary behavior",
+        "sedentary desk occupations"
+      ],
+      "synonyms": ["inactive", "desk-bound", "stationary"],
+      "example_sentence": "Adopting a sedentary lifestyle dramatically increases the risk of chronic cardiovascular conditions among office workers."
+    },
+    {
+      "id": "vocab_20",
+      "word": "Preventative",
+      "ipa_pronunciation": "/prɪˈven.tə.tɪv/",
+      "part_of_speech": "adjective",
+      "definition": "Designed or intended to deter or prevent something, especially disease or illness.",
+      "cefr_level": "C1",
+      "topic": "Public Health",
+      "academic_collocations": [
+        "preventative healthcare measures",
+        "implement preventative strategies",
+        "preventative medicine initiatives"
+      ],
+      "synonyms": ["precautionary", "prophylactic", "protective"],
+      "example_sentence": "Allocating public healthcare budgets toward preventative care reduces long-term hospitalization expenditure."
+    }
+  ]
+}

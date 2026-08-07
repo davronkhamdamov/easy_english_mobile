@@ -1,0 +1,103 @@
+{
+  "module_title": "IELTS Speaking Practice Cards",
+  "description": "Full 3-Part IELTS Speaking Test module featuring warm-up questions, Cue Card topic, analytical discussion questions, and an annotated Band 8.5 sample audio transcript.",
+  "test_card": {
+    "id": "spk_card_01",
+    "topic": "Technology & Problem Solving",
+    "part_1": {
+      "topic_title": "Technology & Daily Habits",
+      "duration": "4-5 minutes",
+      "questions": [
+        {
+          "id": "p1_q1",
+          "question": "How often do you use digital devices for study or work during the day?",
+          "ideal_response_notes": "Aim for 2-3 sentences. Use frequency adverbs and specific device examples."
+        },
+        {
+          "id": "p1_q2",
+          "question": "What is the most useful mobile application you rely on every day?",
+          "ideal_response_notes": "Mention functionality, user interface, and why it saves time."
+        },
+        {
+          "id": "p1_q3",
+          "question": "Do you think people spend too much time staring at screens nowadays?",
+          "ideal_response_notes": "Express a clear stance on screen time balanced with work necessities."
+        },
+        {
+          "id": "p1_q4",
+          "question": "Did you use internet technology as much when you were a young child?",
+          "ideal_response_notes": "Contrast past habits with current digital reliance using past simple vs present perfect."
+        }
+      ]
+    },
+    "part_2": {
+      "cue_card_title": "Describe a time you solved a difficult problem using technology",
+      "preparation_time": "1 minute",
+      "speaking_time": "1-2 minutes",
+      "bullet_points": [
+        "What the problem was",
+        "What technology or digital tool you decided to use",
+        "How you went about solving the issue step by step",
+        "And explain how you felt after successfully resolving the situation."
+      ],
+      "sample_transcript_band_8_5": {
+        "target_band": 8.5,
+        "duration_seconds": 115,
+        "transcript_text": "I'd like to talk about an instance during my final year of university when our student group faced a major crisis while working on our capstone research project. About three days before the submission deadline, our central database server crashed, resulting in the corruption of several critical data files.\n\nTo tackle this setback, I decided to utilize an open-source data recovery command-line software combined with a cloud-based backup system. First, I ran a thorough diagnostic scan on the damaged storage drives to isolate uncorrupted sector fragments. Next, using Python automation scripts, I systematically reconstructed the corrupted CSV tables line by line, comparing checksum hashes against our earlier cloud log snapshots.\n\nIt took approximately eight hours of non-stop trouble-shooting, but by midnight, we managed to restore nearly 98% of our lost dataset. When the final validation script cleared without errors, I felt an immense sense of relief and satisfaction. Not only did we meet the deadline, but the experience also bolstered my confidence in handling high-pressure technical challenges under tight time constraints.",
+        "annotations": [
+          {
+            "phrase": "capstone research project",
+            "type": "Vocabulary",
+            "note": "High-level academic collocation referring to a culminating university project."
+          },
+          {
+            "phrase": "tackle this setback",
+            "type": "Vocabulary",
+            "note": "Natural Band 8.5 idiomatic phrase for problem solving."
+          },
+          {
+            "phrase": "isolate uncorrupted sector fragments",
+            "type": "Lexical Resource",
+            "note": "Precise domain-specific terminology demonstrating lexical flexibility."
+          },
+          {
+            "phrase": "Not only did we meet the deadline, but...",
+            "type": "Grammar",
+            "note": "Advanced adverbial inversion displaying complex grammatical range."
+          },
+          {
+            "phrase": "trouble-shooting / validation / constraint",
+            "type": "Pronunciation",
+            "note": "Clear word stress on multi-syllabic technical words without hesitation."
+          }
+        ]
+      }
+    },
+    "part_3": {
+      "topic_title": "Analytical Discussion: Automation, AI & Human Cognition",
+      "duration": "4-5 minutes",
+      "questions": [
+        {
+          "id": "p3_q1",
+          "question": "In what ways might over-reliance on artificial intelligence diminish human critical thinking skills?",
+          "analytical_angle": "Discuss cognitive laziness, loss of analytical problem-solving habits, and potential educational solutions."
+        },
+        {
+          "id": "p3_q2",
+          "question": "Do you believe older generations face significant challenges adapting to rapidly evolving technological tools?",
+          "analytical_angle": "Contrast digital natives with digital immigrants, evaluating accessibility design and lifelong learning programs."
+        },
+        {
+          "id": "p3_q3",
+          "question": "How can governments ensure equitable access to high-speed internet in remote or rural communities?",
+          "analytical_angle": "Analyze state infrastructure subsidies, satellite broadband initiatives, and public-private partnerships."
+        },
+        {
+          "id": "p3_q4",
+          "question": "Some experts predict that future technological automation will displace more jobs than it creates. To what extent do you agree?",
+          "analytical_angle": "Evaluate historical economic transitions (Industrial Revolution vs Digital Age) and workforce retraining requirements."
+        }
+      ]
+    }
+  }
+}

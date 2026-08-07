@@ -1,0 +1,254 @@
+{
+  "test_info": {
+    "title": "IELTS Diagnostic Placement Test",
+    "description": "Comprehensive 15-question diagnostic test evaluating Reading, Listening, and Academic Grammar to determine starting CEFR level and IELTS Band prediction.",
+    "total_questions": 15,
+    "time_limit_minutes": 25,
+    "version": "1.0"
+  },
+  "sections": [
+    {
+      "section_id": "reading_diagnostic",
+      "skill": "reading",
+      "title": "Academic Reading Section",
+      "passage": {
+        "title": "The Rise of Autonomous Urban Micro-Mobility",
+        "content": "In recent years, metropolitan transport networks have experienced a paradigm shift driven by autonomous micro-mobility solutions. Electric scooters and light autonomous pods are increasingly deployed across European cities to mitigate inner-city traffic congestion and decrease carbon emissions. Critics argue that insufficient infrastructure, such as dedicated lanes and regulated parking zones, poses safety hazards for pedestrians. However, preliminary empirical studies conducted in Copenhagen demonstrate a 14% reduction in peak-hour vehicle traffic following the integration of geo-fenced micro-mobility lanes. Urban planners emphasize that for these initiatives to succeed long-term, municipal governance must enforce strict speed limits, mandate helmet usage, and integrate public transit fares into unified digital ticketing systems. Furthermore, advances in solid-state battery technology promise to extend vehicle operation ranges by 40%, making micro-mobility a viable competitor to short-distance urban rail transit."
+      },
+      "questions": [
+        {
+          "id": "r1",
+          "question_number": 1,
+          "question_type": "multiple_choice",
+          "question_text": "What is the primary objective of deploying autonomous micro-mobility solutions in metropolitan areas?",
+          "options": [
+            "To replace high-speed regional rail systems",
+            "To alleviate urban traffic congestion and lower carbon emissions",
+            "To eliminate municipal transit authorities",
+            "To generate revenue through parking fines"
+          ],
+          "correct_answer": "To alleviate urban traffic congestion and lower carbon emissions",
+          "explanation": "The text states that electric scooters and autonomous pods are deployed 'to mitigate inner-city traffic congestion and decrease carbon emissions'."
+        },
+        {
+          "id": "r2",
+          "question_number": 2,
+          "question_type": "true_false_not_given",
+          "question_text": "Empirical studies in Copenhagen proved that pedestrians experienced fewer accidents after micro-mobility lanes were built.",
+          "options": ["TRUE", "FALSE", "NOT GIVEN"],
+          "correct_answer": "NOT GIVEN",
+          "explanation": "The passage mentions a 14% reduction in peak-hour vehicle traffic in Copenhagen, but does not state whether pedestrian accident rates decreased."
+        },
+        {
+          "id": "r3",
+          "question_number": 3,
+          "question_type": "true_false_not_given",
+          "question_text": "Urban planners consider unified ticketing systems essential for the long-term success of micro-mobility initiatives.",
+          "options": ["TRUE", "FALSE", "NOT GIVEN"],
+          "correct_answer": "TRUE",
+          "explanation": "The text highlights that urban planners emphasize integrating public transit fares into unified digital ticketing systems for long-term success."
+        },
+        {
+          "id": "r4",
+          "question_number": 4,
+          "question_type": "multiple_choice",
+          "question_text": "According to the passage, what technological advancement will increase the operating range of micro-mobility vehicles?",
+          "options": [
+            "Solar panel roofs",
+            "Solid-state battery technology",
+            "Wireless charging pads",
+            "Regenerative braking systems"
+          ],
+          "correct_answer": "Solid-state battery technology",
+          "explanation": "The passage explicitly notes that 'advances in solid-state battery technology promise to extend vehicle operation ranges by 40%'."
+        },
+        {
+          "id": "r5",
+          "question_number": 5,
+          "question_type": "heading_matching",
+          "question_text": "Which heading best summarizes the main focus of the passage?",
+          "options": [
+            "The History of Municipal Rail Transit",
+            "Challenges and Potential of Autonomous Micro-Mobility in Modern Cities",
+            "How Solid-State Batteries Function",
+            "Pedestrian Safety and Traffic Violations"
+          ],
+          "correct_answer": "Challenges and Potential of Autonomous Micro-Mobility in Modern Cities",
+          "explanation": "The passage discusses both benefits (reducing congestion/emissions) and challenges (infrastructure, safety regulations) of autonomous urban micro-mobility."
+        }
+      ]
+    },
+    {
+      "section_id": "listening_diagnostic",
+      "skill": "listening",
+      "title": "Listening Section - Dialogue & Form Completion",
+      "transcript": {
+        "title": "University Library Membership Enrolment",
+        "speakers": ["Library Assistant", "International Student"],
+        "text": "Assistant: Good morning, welcome to the St. Jude University Library. How can I help you today?\nStudent: Hello! I'd like to apply for a postgraduate student membership card.\nAssistant: Certainly. I'll just take your details. Could I have your full name, please?\nStudent: Yes, it's Julian Vance. That's V-A-N-C-E.\nAssistant: Great. And your university registration number?\nStudent: It's PG-884029.\nAssistant: Thank you. Which faculty are you enrolled in?\nStudent: Environmental Science. My specialization is Renewable Energy Systems.\nAssistant: Excellent. For postgraduate members, the standard borrowing limit is 12 books at any one time, for up to 30 days. However, reference journals must remain inside the quiet reading room on Floor 3.\nStudent: Understood. Is there a fee for reserving research articles online?\nStudent: No, online reservations are completely free. However, late returns incur a fine of 50 pence per day per item.\nAssistant: Got it. Thank you very much!"
+      },
+      "questions": [
+        {
+          "id": "l1",
+          "question_number": 6,
+          "question_type": "form_completion",
+          "question_text": "Applicant Surname: ____",
+          "correct_answer": "Vance",
+          "acceptable_answers": ["Vance", "VANCE"],
+          "explanation": "The student spells out his surname: V-A-N-C-E."
+        },
+        {
+          "id": "l2",
+          "question_number": 7,
+          "question_type": "form_completion",
+          "question_text": "University Registration Code: ____",
+          "correct_answer": "PG-884029",
+          "acceptable_answers": ["PG-884029", "PG884029"],
+          "explanation": "The student provides the registration code PG-884029."
+        },
+        {
+          "id": "l3",
+          "question_number": 8,
+          "question_type": "form_completion",
+          "question_text": "Academic Department: Department of ____ Science",
+          "correct_answer": "Environmental",
+          "acceptable_answers": ["Environmental", "environmental"],
+          "explanation": "The student states he is in Environmental Science."
+        },
+        {
+          "id": "l4",
+          "question_number": 9,
+          "question_type": "form_completion",
+          "question_text": "Maximum borrowing allowance for postgraduates: ____ books",
+          "correct_answer": "12",
+          "acceptable_answers": ["12", "twelve"],
+          "explanation": "The assistant confirms the borrowing limit is 12 books."
+        },
+        {
+          "id": "l5",
+          "question_number": 10,
+          "question_type": "form_completion",
+          "question_text": "Location of reference journals: Quiet Reading Room on Floor ____",
+          "correct_answer": "3",
+          "acceptable_answers": ["3", "Three", "Floor 3"],
+          "explanation": "The assistant mentions reference journals are on Floor 3."
+        }
+      ]
+    },
+    {
+      "section_id": "grammar_diagnostic",
+      "skill": "grammar",
+      "title": "Academic Grammar Assessment",
+      "questions": [
+        {
+          "id": "g1",
+          "question_number": 11,
+          "question_type": "multiple_choice",
+          "question_text": "Had the municipal council invested in flood defenses earlier, the severity of the damage ____ significantly reduced.",
+          "options": [
+            "would be",
+            "would have been",
+            "will have been",
+            "had been"
+          ],
+          "correct_answer": "would have been",
+          "explanation": "Inverted third conditional structure: 'Had + Subject + Past Participle ..., Subject + would have + Past Participle'."
+        },
+        {
+          "id": "g2",
+          "question_number": 12,
+          "question_type": "multiple_choice",
+          "question_text": "The research committee demanded that the thesis ____ resubmitted before the end of the academic term.",
+          "options": [
+            "is",
+            "be",
+            "was",
+            "would be"
+          ],
+          "correct_answer": "be",
+          "explanation": "Subjunctive mood structure following verbs of recommendation/demand ('demanded that + subject + base verb')."
+        },
+        {
+          "id": "g3",
+          "question_number": 13,
+          "question_type": "multiple_choice",
+          "question_text": "Modern telecommunication networks, ____ rely heavily on subsea fiber-optic cables, transfer petabytes of data daily.",
+          "options": [
+            "that",
+            "which",
+            "what",
+            "where"
+          ],
+          "correct_answer": "which",
+          "explanation": "Non-defining relative clause adding extra information about a non-human antecedent requires 'which' preceded by a comma."
+        },
+        {
+          "id": "g4",
+          "question_number": 14,
+          "question_type": "multiple_choice",
+          "question_text": "Rarely ____ such a swift economic recovery during a global supply chain crisis.",
+          "options": [
+            "economists have observed",
+            "have economists observed",
+            "do economists observing",
+            "economists observe"
+          ],
+          "correct_answer": "have economists observed",
+          "explanation": "Negative adverbial inversion: 'Rarely + auxiliary verb + subject + main verb'."
+        },
+        {
+          "id": "g5",
+          "question_number": 15,
+          "question_type": "multiple_choice",
+          "question_text": "By the time the new environmental legislation takes effect next year, carbon emissions ____ by 15%.",
+          "options": [
+            "will decrease",
+            "will have decreased",
+            "are decreasing",
+            "have decreased"
+          ],
+          "correct_answer": "will have decreased",
+          "explanation": "Future Perfect tense is used for an action that will be completed before a specified point in the future ('By the time...')."
+        }
+      ]
+    }
+  ],
+  "band_mapping": [
+    {
+      "score_range": "0-3",
+      "predicted_band": 4.0,
+      "cefr_level": "B1 - Limited User",
+      "recommendation": "Focus on foundational grammar structures, essential academic vocabulary, and basic listening comprehension."
+    },
+    {
+      "score_range": "4-6",
+      "predicted_band": 5.0,
+      "cefr_level": "B1 - Modest User",
+      "recommendation": "Work on complex sentence structures, basic academic collocations, and scanning strategies for reading."
+    },
+    {
+      "score_range": "7-9",
+      "predicted_band": 6.0,
+      "cefr_level": "B2 - Competent User",
+      "recommendation": "Target band 7.0 vocabulary, practice paragraph cohesion, and refine listening note-taking accuracy."
+    },
+    {
+      "score_range": "10-12",
+      "predicted_band": 7.0,
+      "cefr_level": "C1 - Good User",
+      "recommendation": "Focus on advanced grammatical inversion, nuanced lexical resource, and precise Task 1 data reporting."
+    },
+    {
+      "score_range": "13-14",
+      "predicted_band": 8.0,
+      "cefr_level": "C1/C2 - Very Good User",
+      "recommendation": "Refine subtle stylistic coherence in writing and achieve natural fluency with high-level academic idioms in speaking."
+    },
+    {
+      "score_range": "15",
+      "predicted_band": 8.5,
+      "cefr_level": "C2 - Expert User",
+      "recommendation": "Maintain peak exam readiness with timed full-length mock exams and sophisticated analytical essay writing."
+    }
+  ]
+}

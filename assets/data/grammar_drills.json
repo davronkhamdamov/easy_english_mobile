@@ -1,0 +1,147 @@
+{
+  "module_title": "Grammar Master Drills",
+  "description": "Targeted interactive grammar practice targeting high-frequency errors in IELTS Writing and Speaking.",
+  "total_items": 10,
+  "items": [
+    {
+      "id": "gdrill_01",
+      "category": "Subject-Verb Agreement",
+      "difficulty": "Intermediate",
+      "sentence_with_error": "The rapid growth of suburban housing developments have placed immense pressure on local public transportation systems.",
+      "correct_sentence": "The rapid growth of suburban housing developments has placed immense pressure on local public transportation systems.",
+      "explanation": "The head noun of the subject noun phrase is 'growth' (singular), not 'developments' (plural). Therefore, the singular verb 'has placed' must be used.",
+      "options": [
+        "growth of suburban housing developments have placed",
+        "growth of suburban housing developments has placed",
+        "growth of suburban housing developments were placing",
+        "growth of suburban housing developments having placed"
+      ]
+    },
+    {
+      "id": "gdrill_02",
+      "category": "Subject-Verb Agreement",
+      "difficulty": "Advanced",
+      "sentence_with_error": "Neither the increase in international tariffs nor the fluctuations in currency exchange rates affects small businesses equally.",
+      "correct_sentence": "Neither the increase in international tariffs nor the fluctuations in currency exchange rates affect small businesses equally.",
+      "explanation": "When using 'neither... nor', the verb agrees with the closer subject noun phrase. Since 'fluctuations' is plural, the plural verb form 'affect' is required.",
+      "options": [
+        "nor the fluctuations in currency exchange rates affects",
+        "nor the fluctuations in currency exchange rates affect",
+        "nor the fluctuations in currency exchange rates is affecting",
+        "nor the fluctuations in currency exchange rates has affected"
+      ]
+    },
+    {
+      "id": "gdrill_03",
+      "category": "Article Usage",
+      "difficulty": "Beginner",
+      "sentence_with_error": "Government should allocate more funding towards renewable energy sources to protect environment.",
+      "correct_sentence": "The government should allocate more funding towards renewable energy sources to protect the environment.",
+      "explanation": "Definite articles 'the' are required before singular countable nouns referring to specific administrative bodies ('the government') and unique global entities ('the environment').",
+      "options": [
+        "Government should allocate... to protect environment.",
+        "The government should allocate... to protect the environment.",
+        "A government should allocate... to protect a environment.",
+        "Governments should allocate... to protect an environment."
+      ]
+    },
+    {
+      "id": "gdrill_04",
+      "category": "Article Usage",
+      "difficulty": "Intermediate",
+      "sentence_with_error": "Excessive urbanization poses serious threat to biodiversity in developing nations.",
+      "correct_sentence": "Excessive urbanization poses a serious threat to biodiversity in developing nations.",
+      "explanation": "'Threat' in this context is a singular countable noun and requires the indefinite article 'a' before the modifying adjective 'serious'.",
+      "options": [
+        "poses serious threat to",
+        "poses a serious threat to",
+        "poses the serious threat to",
+        "poses an serious threat to"
+      ]
+    },
+    {
+      "id": "gdrill_05",
+      "category": "Conditional Sentences (2nd & 3rd)",
+      "difficulty": "Intermediate",
+      "sentence_with_error": "If governments implemented stricter recycling regulations, landfill waste decreased significantly.",
+      "correct_sentence": "If governments implemented stricter recycling regulations, landfill waste would decrease significantly.",
+      "explanation": "In Second Conditional sentences (hypothetical present/future), the structure is 'If + Past Simple, Subject + would + Base Verb'.",
+      "options": [
+        "landfill waste decreased significantly.",
+        "landfill waste would decrease significantly.",
+        "landfill waste will decrease significantly.",
+        "landfill waste had decreased significantly."
+      ]
+    },
+    {
+      "id": "gdrill_06",
+      "category": "Conditional Sentences (2nd & 3rd)",
+      "difficulty": "Advanced",
+      "sentence_with_error": "If public transit authorities had modernized high-speed rail lines earlier, commute times would be reduced decades ago.",
+      "correct_sentence": "If public transit authorities had modernized high-speed rail lines earlier, commute times would have been reduced decades ago.",
+      "explanation": "In Third Conditional sentences (unreal past action and result), the main clause requires 'would have been + Past Participle'.",
+      "options": [
+        "commute times would be reduced decades ago.",
+        "commute times would have been reduced decades ago.",
+        "commute times will have been reduced decades ago.",
+        "commute times had been reduced decades ago."
+      ]
+    },
+    {
+      "id": "gdrill_07",
+      "category": "Passive Voice",
+      "difficulty": "Intermediate",
+      "sentence_with_error": "A dramatic rise in plastic waste reported by marine biologists during the last global summit.",
+      "correct_sentence": "A dramatic rise in plastic waste was reported by marine biologists during the last global summit.",
+      "explanation": "Passive voice requires a auxiliary verb 'be' matching the tense and singular subject: 'was reported'. Without 'was', the sentence lacks a finite verb.",
+      "options": [
+        "plastic waste reported by marine biologists",
+        "plastic waste was reported by marine biologists",
+        "plastic waste reporting by marine biologists",
+        "plastic waste has reported by marine biologists"
+      ]
+    },
+    {
+      "id": "gdrill_08",
+      "category": "Passive Voice",
+      "difficulty": "Advanced",
+      "sentence_with_error": "Substantial financial resources must dedicate to upgrading national healthcare facilities.",
+      "correct_sentence": "Substantial financial resources must be dedicated to upgrading national healthcare facilities.",
+      "explanation": "Modal passive structure requires 'modal verb + be + Past Participle': 'must be dedicated'.",
+      "options": [
+        "must dedicate to upgrading",
+        "must be dedicated to upgrading",
+        "must have dedicated to upgrading",
+        "must dedicating to upgrading"
+      ]
+    },
+    {
+      "id": "gdrill_09",
+      "category": "Dependent Clauses",
+      "difficulty": "Intermediate",
+      "sentence_with_error": "Although automation increases industrial productivity, but it frequently leads to job displacement in traditional manufacturing.",
+      "correct_sentence": "Although automation increases industrial productivity, it frequently leads to job displacement in traditional manufacturing.",
+      "explanation": "Do not use both a subordinating conjunction ('Although') and a coordinating conjunction ('but') to connect the same two clauses.",
+      "options": [
+        "Although automation increases industrial productivity, but it frequently leads",
+        "Although automation increases industrial productivity, it frequently leads",
+        "Because automation increases industrial productivity, but it frequently leads",
+        "Despite automation increases industrial productivity, it frequently leads"
+      ]
+    },
+    {
+      "id": "gdrill_10",
+      "category": "Dependent Clauses",
+      "difficulty": "Advanced",
+      "sentence_with_error": "Students who engage in extracurricular research projects, they develop stronger analytical problem-solving skills.",
+      "correct_sentence": "Students who engage in extracurricular research projects develop stronger analytical problem-solving skills.",
+      "explanation": "Avoid redundant subject pronouns ('they') immediately following a complex noun phrase modified by a relative clause ('Students who engage...').",
+      "options": [
+        "research projects, they develop stronger",
+        "research projects develop stronger",
+        "research projects which they develop stronger",
+        "research projects having developed stronger"
+      ]
+    }
+  ]
+}

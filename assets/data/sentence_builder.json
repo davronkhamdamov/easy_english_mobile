@@ -1,0 +1,79 @@
+{
+  "module_title": "Sentence Builder & Academic Syntax Lab",
+  "description": "Interactive word-reconstruction exercises demonstrating the contrast between Band 6.5 basic complex sentences and Band 8.0+ advanced academic structures.",
+  "total_tasks": 8,
+  "tasks": [
+    {
+      "id": "sb_01",
+      "target_band": 8.0,
+      "grammar_feature": "Negative Adverbial Inversion",
+      "jumbled_words": ["Not", "only", "does", "education", "foster", "literacy,", "but", "it", "also", "drives", "economic", "growth."],
+      "correct_sentence": "Not only does education foster literacy, but it also drives economic growth.",
+      "band_6_5_contrast_sentence": "Education fosters literacy and it also helps economic growth.",
+      "structural_explanation": "Fronting the negative adverbial phrase 'Not only' triggers subject-auxiliary inversion ('does education foster'), demonstrating high-level grammatical range (Band 8.0+)."
+    },
+    {
+      "id": "sb_02",
+      "target_band": 8.5,
+      "grammar_feature": "Inverted Third Conditional",
+      "jumbled_words": ["Had", "governments", "enforced", "stricter", "emissions", "standards,", "environmental", "degradation", "would", "have", "been", "substantially", "mitigated."],
+      "correct_sentence": "Had governments enforced stricter emissions standards, environmental degradation would have been substantially mitigated.",
+      "band_6_5_contrast_sentence": "If governments enforced stricter rules on pollution, damage to the environment would be less.",
+      "structural_explanation": "Omitting 'if' and placing auxiliary 'Had' before the subject creates an elegant inverted conditional structure prized in academic writing."
+    },
+    {
+      "id": "sb_03",
+      "target_band": 8.0,
+      "grammar_feature": "Nominalization for Academic Tone",
+      "jumbled_words": ["The", "rapid", "expansion", "of", "urban", "infrastructure", "inevitably", "leads", "to", "the", "depletion", "of", "natural", "habitats."],
+      "correct_sentence": "The rapid expansion of urban infrastructure inevitably leads to the depletion of natural habitats.",
+      "band_6_5_contrast_sentence": "Because cities are expanding rapidly, natural habitats are being destroyed quickly.",
+      "structural_explanation": "Replacing verbal clauses ('cities are expanding rapidly') with nominalized noun phrases ('rapid expansion', 'depletion') elevates writing to formal academic style."
+    },
+    {
+      "id": "sb_04",
+      "target_band": 8.0,
+      "grammar_feature": "Fronted Participial Clause",
+      "jumbled_words": ["Recognizing", "the", "urgency", "of", "climate", "change,", "policymakers", "are", "implementing", "ambitious", "renewable", "energy", "targets."],
+      "correct_sentence": "Recognizing the urgency of climate change, policymakers are implementing ambitious renewable energy targets.",
+      "band_6_5_contrast_sentence": "Policymakers know that climate change is urgent, so they are setting new energy targets.",
+      "structural_explanation": "A present participial clause ('Recognizing...') at the sentence opening establishes clear cause-and-effect relationship without using basic conjunctions like 'so'."
+    },
+    {
+      "id": "sb_05",
+      "target_band": 8.5,
+      "grammar_feature": "Reduced Relative Clause with Passive",
+      "jumbled_words": ["Policies", "enacted", "by", "municipal", "councils", "often", "require", "thorough", "environmental", "impact", "assessments."],
+      "correct_sentence": "Policies enacted by municipal councils often require thorough environmental impact assessments.",
+      "band_6_5_contrast_sentence": "Policies that are enacted by municipal councils often need full environmental impact assessments.",
+      "structural_explanation": "Reducing the passive relative clause 'that are enacted' to the past participle 'enacted' increases density and conciseness."
+    },
+    {
+      "id": "sb_06",
+      "target_band": 8.0,
+      "grammar_feature": "Complex Subordination with 'Whereas'",
+      "jumbled_words": ["Whereas", "fossil", "fuels", "remain", "finite,", "solar", "and", "wind", "energy", "offer", "inexhaustible", "alternatives."],
+      "correct_sentence": "Whereas fossil fuels remain finite, solar and wind energy offer inexhaustible alternatives.",
+      "band_6_5_contrast_sentence": "Fossil fuels are limited, but solar and wind energy are unlimited.",
+      "structural_explanation": "'Whereas' introduces a dependent clause expressing formal contrast, replacing informal coordinating conjunctions such as 'but'."
+    },
+    {
+      "id": "sb_07",
+      "target_band": 8.0,
+      "grammar_feature": "Subjunctive Mood in Recommendation Clauses",
+      "jumbled_words": ["Economists", "recommend", "that", "the", "central", "bank", "lower", "interest", "rates", "to", "stimulate", "investment."],
+      "correct_sentence": "Economists recommend that the central bank lower interest rates to stimulate investment.",
+      "band_6_5_contrast_sentence": "Economists think the central bank should lower interest rates so people invest more.",
+      "structural_explanation": "The command verb 'recommend that' requires the present subjunctive base verb form ('lower' instead of 'lowers' or 'should lower')."
+    },
+    {
+      "id": "sb_08",
+      "target_band": 8.5,
+      "grammar_feature": "Cleft Sentence for Emphasis",
+      "jumbled_words": ["It", "is", "through", "sustained", "technological", "innovation", "that", "societies", "can", "overcome", "resource", "scarcity."],
+      "correct_sentence": "It is through sustained technological innovation that societies can overcome resource scarcity.",
+      "band_6_5_contrast_sentence": "Societies can overcome resource scarcity if they innovate technically for a long time.",
+      "structural_explanation": "An 'It is ... that' cleft sentence structure provides precise emphasis on the instrument of change ('sustained technological innovation')."
+    }
+  ]
+}
