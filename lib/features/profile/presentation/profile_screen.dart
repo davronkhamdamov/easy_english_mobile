@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/auth/firebase_auth_service.dart';
 import '../../../design_system/design_system.dart';
+import '../../notification/presentation/notification_settings_screen.dart';
 
 /// Full-featured Profile Screen powered by Google Account details.
 class ProfileScreen extends StatefulWidget {
@@ -285,13 +286,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildDivider(isDark),
                   _buildProfileTile(
                     icon: Icons.notifications_none_rounded,
-                    title: 'Notifications',
-                    trailingWidget: Switch.adaptive(
-                      value: _notificationsEnabled,
-                      onChanged: (val) => setState(() => _notificationsEnabled = val),
-                      activeTrackColor: AppColors.primary,
-                    ),
-                    onTap: () => setState(() => _notificationsEnabled = !_notificationsEnabled),
+                    title: 'Push Notifications',
+                    trailingText: 'FCM Active',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const NotificationSettingsScreen()),
+                      );
+                    },
                     isDark: isDark,
                   ),
                   _buildDivider(isDark),
