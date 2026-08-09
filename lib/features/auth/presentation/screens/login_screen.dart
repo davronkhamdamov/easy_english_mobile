@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../design_system/design_system.dart';
 import '../../../dashboard/presentation/dashboard_screen.dart';
 import '../../data/auth_service.dart';
@@ -262,7 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             fullWidth: true,
                             isPill: true,
                             isLoading: _isGoogleLoading,
-                            leftIcon: const DSGoogleLogo(size: 20.0),
+                            leftIcon: const FaIcon(FontAwesomeIcons.google, size: 20.0),
                             onPressed: _handleGoogleClick,
                           ),
 

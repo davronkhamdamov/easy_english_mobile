@@ -2,13 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import '../auth/api_client.dart';
 
 /// Top-level background message handler required by Firebase Messaging
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  debugPrint("Handling background message: ${message.messageId} - ${message.notification?.title}");
+  debugPrint(
+    "Handling background message: ${message.messageId} - ${message.notification?.title}",
+  );
 }
 
 class PushNotificationPayload {
@@ -31,7 +34,10 @@ class PushNotificationPayload {
   factory PushNotificationPayload.fromRemoteMessage(RemoteMessage message) {
     return PushNotificationPayload(
       id: message.messageId ?? DateTime.now().millisecondsSinceEpoch.toString(),
-      title: message.notification?.title ?? message.data['title'] ?? 'Notification',
+      title:
+          message.notification?.title ??
+          message.data['title'] ??
+          'Notification',
       body: message.notification?.body ?? message.data['body'] ?? '',
       data: message.data,
       receivedAt: DateTime.now(),
@@ -43,7 +49,9 @@ class PushNotificationPayload {
       id: json['id'] ?? '',
       title: json['title'] ?? '',
       body: json['body'] ?? '',
-      data: json['payload'] is Map ? Map<String, dynamic>.from(json['payload']) : {},
+      data: json['payload'] is Map
+          ? Map<String, dynamic>.from(json['payload'])
+          : {},
       receivedAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at']) ?? DateTime.now()
           : DateTime.now(),
@@ -53,17 +61,32 @@ class PushNotificationPayload {
 }
 
 class PushNotificationService {
-  static final PushNotificationService _instance = PushNotificationService._internal();
+  static final PushNotificationService _instance =
+      PushNotificationService._internal();
   factory PushNotificationService() => _instance;
   PushNotificationService._internal();
 
   FirebaseMessaging get _messaging => FirebaseMessaging.instance;
   final ApiClient _apiClient = ApiClient();
 
+  /// Local notifications plugin for displaying foreground notifications
+  /// and creating the Android notification channel.
+  final FlutterLocalNotificationsPlugin _localNotifications =
+      FlutterLocalNotificationsPlugin();
+
+  /// Android notification channel — must match the ID in AndroidManifest.xml.
+  static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
+    'high_importance_channel',
+    'High Importance Notifications',
+    description: 'This channel is used for important notifications.',
+    importance: Importance.high,
+  );
+
   String? _fcmToken;
   bool _isInitialized = false;
 
-  final StreamController<PushNotificationPayload> _foregroundNotificationController =
+  final StreamController<PushNotificationPayload>
+  _foregroundNotificationController =
       StreamController<PushNotificationPayload>.broadcast();
 
   final List<PushNotificationPayload> _receivedNotifications = [];
@@ -80,7 +103,8 @@ class PushNotificationService {
   List<PushNotificationPayload> get receivedNotifications =>
       List.unmodifiable(_receivedNotifications);
 
-  Map<String, bool> get topicSubscriptions => Map.unmodifiable(_topicSubscriptions);
+  Map<String, bool> get topicSubscriptions =>
+      Map.unmodifiable(_topicSubscriptions);
   String? get fcmToken => _fcmToken;
   bool get isInitialized => _isInitialized;
 
@@ -100,16 +124,77 @@ class PushNotificationService {
         sound: true,
       );
 
-      debugPrint('Push Notification Authorization Status: ${settings.authorizationStatus}');
+      debugPrint(
+        'Push Notification Authorization Status: ${settings.authorizationStatus}',
+      );
+
+      // ── Create the Android notification channel ──
+      final androidPlugin = _localNotifications
+          .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin
+          >();
+      await androidPlugin?.createNotificationChannel(_channel);
+
+      // Initialize flutter_local_notifications
+      const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const darwinInit = DarwinInitializationSettings();
+      const initSettings = InitializationSettings(
+        android: androidInit,
+        iOS: darwinInit,
+      );
+      await _localNotifications.initialize(settings: initSettings);
+
+      // Request POST_NOTIFICATIONS permission on Android 13+ (API 33+)
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        final granted = await androidPlugin?.requestNotificationsPermission();
+        debugPrint('Android POST_NOTIFICATIONS permission granted: $granted');
+      }
+
+      // Enable foreground notification presentation for iOS
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        await _messaging.setForegroundNotificationPresentationOptions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+      }
 
       // Register background handler
       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-      // Get FCM Token
+      // Get FCM Token (waiting for APNs token first on iOS)
       try {
-        _fcmToken = await _messaging.getToken();
+        if (defaultTargetPlatform == TargetPlatform.iOS) {
+          String? apnsToken = await _messaging.getAPNSToken();
+          if (apnsToken == null) {
+            // Wait briefly for APNs token to be populated by the OS
+            for (int i = 0; i < 3; i++) {
+              await Future.delayed(const Duration(seconds: 1));
+              apnsToken = await _messaging.getAPNSToken();
+              if (apnsToken != null) break;
+            }
+          }
+
+          if (apnsToken != null) {
+            debugPrint('APNs Token: $apnsToken');
+            _fcmToken = await _messaging.getToken();
+            debugPrint('FCM Token: $_fcmToken');
+          } else {
+            debugPrint(
+              'APNs Token is null (iOS Simulator detected or APNs key pending in Firebase)',
+            );
+            _fcmToken =
+                'fcm_ios_sim_token_${DateTime.now().millisecondsSinceEpoch}';
+            debugPrint('Using FCM Simulator Token: $_fcmToken');
+          }
+        } else {
+          _fcmToken = await _messaging.getToken();
+          debugPrint('FCM Token: $_fcmToken');
+        }
       } catch (e) {
-        debugPrint('Failed to get FCM token directly from Firebase, fallback mock token used: $e');
+        debugPrint(
+          'Failed to get FCM token directly from Firebase, fallback mock token used: $e',
+        );
         _fcmToken = 'fcm_mock_token_${DateTime.now().millisecondsSinceEpoch}';
       }
 
@@ -120,6 +205,7 @@ class PushNotificationService {
       // Listen for token refreshes
       _messaging.onTokenRefresh.listen((newToken) async {
         _fcmToken = newToken;
+        debugPrint('FCM Token Refreshed: $newToken');
         if (userId != null) {
           await registerDeviceToken(userId: userId, deviceToken: newToken);
         }
@@ -130,6 +216,27 @@ class PushNotificationService {
         final payload = PushNotificationPayload.fromRemoteMessage(message);
         _receivedNotifications.insert(0, payload);
         _foregroundNotificationController.add(payload);
+
+        // Show as a system notification when the app is in the foreground
+        final notification = message.notification;
+        if (notification != null) {
+          _localNotifications.show(
+            id: notification.hashCode,
+            title: notification.title,
+            body: notification.body,
+            notificationDetails: NotificationDetails(
+              android: AndroidNotificationDetails(
+                _channel.id,
+                _channel.name,
+                channelDescription: _channel.description,
+                importance: Importance.high,
+                priority: Priority.high,
+                icon: '@mipmap/ic_launcher',
+              ),
+              iOS: const DarwinNotificationDetails(),
+            ),
+          );
+        }
       });
 
       // Handle App Launch / Background Click
@@ -142,7 +249,9 @@ class PushNotificationService {
       // Check initial message if launched from terminated state
       RemoteMessage? initialMessage = await _messaging.getInitialMessage();
       if (initialMessage != null) {
-        final payload = PushNotificationPayload.fromRemoteMessage(initialMessage);
+        final payload = PushNotificationPayload.fromRemoteMessage(
+          initialMessage,
+        );
         _receivedNotifications.insert(0, payload);
         _foregroundNotificationController.add(payload);
       }
@@ -163,7 +272,11 @@ class PushNotificationService {
   }
 
   /// Register FCM Device Token with Go Gateway (`POST /api/v1/notifications/devices`)
-  Future<bool> registerDeviceToken({required String userId, required String deviceToken, String platform = 'android'}) async {
+  Future<bool> registerDeviceToken({
+    required String userId,
+    required String deviceToken,
+    String platform = 'android',
+  }) async {
     try {
       final response = await _apiClient.post('/api/v1/notifications/devices', {
         'user_id': userId,
@@ -194,7 +307,8 @@ class PushNotificationService {
       _topicSubscriptions[topic] = true;
     } catch (e) {
       debugPrint('Failed to subscribe to topic $topic: $e');
-      _topicSubscriptions[topic] = true; // Local state preserved for demo/testing
+      _topicSubscriptions[topic] =
+          true; // Local state preserved for demo/testing
     }
   }
 
@@ -209,47 +323,14 @@ class PushNotificationService {
     }
   }
 
-  /// Trigger a live push notification test from Go Backend (`POST /api/v1/notifications/push`)
-  Future<bool> sendTestPushNotification({
-    required String userId,
-    required String title,
-    required String body,
-    Map<String, String>? data,
-  }) async {
-    final token = _fcmToken ?? 'fcm_test_device_token';
-    try {
-      final response = await _apiClient.post('/api/v1/notifications/push', {
-        'user_id': userId,
-        'device_token': token,
-        'title': title,
-        'body': body,
-        if (data != null) 'data': data,
-      });
-
-      if (response.statusCode == 202 || response.statusCode == 200) {
-        // Also simulate immediate local delivery for testing feedback
-        final testPayload = PushNotificationPayload(
-          id: 'test_${DateTime.now().millisecondsSinceEpoch}',
-          title: title,
-          body: body,
-          data: data ?? {},
-          receivedAt: DateTime.now(),
-        );
-        _receivedNotifications.insert(0, testPayload);
-        _foregroundNotificationController.add(testPayload);
-        return true;
-      }
-      return false;
-    } catch (e) {
-      debugPrint('Error sending test push notification: $e');
-      return false;
-    }
-  }
-
   /// Fetch user notifications history from Go Gateway (`GET /api/v1/notifications/user/{userID}`)
-  Future<List<PushNotificationPayload>> fetchNotificationHistory(String userId) async {
+  Future<List<PushNotificationPayload>> fetchNotificationHistory(
+    String userId,
+  ) async {
     try {
-      final response = await _apiClient.get('/api/v1/notifications/user/$userId');
+      final response = await _apiClient.get(
+        '/api/v1/notifications/user/$userId',
+      );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final List notifs = data['notifications'] ?? [];

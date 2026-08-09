@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'api_client.dart';
 import '../debug/api_logger.dart';
 import '../models/auth_session.dart';
+import '../notifications/push_notification_service.dart';
 
 class FirebaseAuthService {
   FirebaseAuth get _auth => FirebaseAuth.instance;
@@ -31,13 +33,27 @@ class FirebaseAuthService {
     final User? user = userCredential.user;
     if (user == null) throw Exception('Firebase authentication failed');
 
-    // 4. Extract ID token
+    // 4. Extract ID token and FCM token
     final String idToken = (await user.getIdToken()) ?? googleAuth.idToken ?? '';
+    String? fcmToken = PushNotificationService().fcmToken;
+    if (fcmToken == null || fcmToken.isEmpty) {
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken();
+      } catch (e) {
+        // Fallback or ignore if failed
+      }
+    }
 
     // 5. Exchange token with Go Backend Gateway
     final url = '$baseUrl/api/v1/auth/google';
     final headers = {'Content-Type': 'application/json'};
-    final bodyMap = {'id_token': idToken};
+    final bodyMap = <String, dynamic>{
+      'id_token': idToken,
+      if (fcmToken != null && fcmToken.isNotEmpty) ...{
+        'fcm_token': fcmToken,
+        'device_token': fcmToken,
+      },
+    };
     final startTime = DateTime.now();
     final log = ApiLogger.instance.logRequest(
       method: 'POST',

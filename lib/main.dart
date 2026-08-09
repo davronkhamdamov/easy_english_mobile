@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'core/auth/api_client.dart';
 import 'core/auth/firebase_auth_service.dart';
 import 'core/debug/api_debugger_overlay.dart';
+import 'core/notifications/push_notification_service.dart';
 import 'design_system/design_system.dart';
 import 'features/dashboard/presentation/dashboard_screen.dart';
 import 'firebase_options.dart';
@@ -13,6 +14,10 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    // Initialize push notifications asynchronously so UI mounts immediately
+    PushNotificationService().initialize().catchError((e) {
+      debugPrint('PushNotificationService init error: $e');
+    });
   } catch (e) {
     debugPrint('Firebase.initializeApp warning: $e');
   }

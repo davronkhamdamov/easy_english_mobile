@@ -4,11 +4,15 @@ class AuthSession {
   final String accessToken;
   final String refreshToken;
   final UserModel user;
+  final String? fcmToken;
+  final String? deviceToken;
 
   AuthSession({
     required this.accessToken,
     required this.refreshToken,
     required this.user,
+    this.fcmToken,
+    this.deviceToken,
   });
 
   factory AuthSession.fromJson(Map<String, dynamic> json) {
@@ -20,6 +24,8 @@ class AuthSession {
       accessToken: (json['access_token'] ?? json['token'] ?? '').toString(),
       refreshToken: (json['refresh_token'] ?? '').toString(),
       user: UserModel.fromJson(userJson),
+      fcmToken: json['fcm_token'] as String?,
+      deviceToken: json['device_token'] as String?,
     );
   }
 }

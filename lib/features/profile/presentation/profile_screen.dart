@@ -16,7 +16,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   String _selectedLanguage = 'English';
   bool _isDarkMode = false;
-  bool _notificationsEnabled = true;
 
   Future<void> _handleSignOut() async {
     final confirm = await showDialog<bool>(
@@ -286,8 +285,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildDivider(isDark),
                   _buildProfileTile(
                     icon: Icons.notifications_none_rounded,
-                    title: 'Push Notifications',
-                    trailingText: 'FCM Active',
+                    title: 'Notifications',
                     onTap: () {
                       Navigator.push(
                         context,
