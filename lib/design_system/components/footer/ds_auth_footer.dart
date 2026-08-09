@@ -18,8 +18,12 @@ class DSAuthFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final primaryTextColor = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
-    final actionTextColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+    final primaryTextColor = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
+    final actionTextColor = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
 
     return GestureDetector(
       onTap: onActionTap,

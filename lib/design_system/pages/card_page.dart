@@ -23,14 +23,16 @@ class _DSCardPageState extends State<DSCardPage> {
   bool _showBody = true;
   bool _showFooter = true;
   String _cardTitle = 'IELTS Speaking Masterclass';
-  String _cardBody = 'Learn strategies for Part 1, 2 & 3. Practice mock tests with AI real-time feedback.';
+  String _cardBody =
+      'Learn strategies for Part 1, 2 & 3. Practice mock tests with AI real-time feedback.';
   int _clickCount = 0;
 
   @override
   Widget build(BuildContext context) {
     return ComponentPageWrapper(
       title: 'DSCard',
-      subtitle: 'Container card component supporting elevated, outlined & glassmorphic backdrop blur variants',
+      subtitle:
+          'Container card component supporting elevated, outlined & glassmorphic backdrop blur variants',
       category: 'Components',
       themeController: widget.themeController,
       onBackToOverview: widget.onBackToOverview,
@@ -66,7 +68,9 @@ class _DSCardPageState extends State<DSCardPage> {
                 : null,
             color: _selectedVariant == DSCardVariant.glass
                 ? null
-                : (isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant),
+                : (isDark
+                      ? AppColors.darkSurfaceVariant
+                      : AppColors.lightSurfaceVariant),
           ),
           child: Column(
             children: [
@@ -76,12 +80,20 @@ class _DSCardPageState extends State<DSCardPage> {
                   Text(
                     'Live Preview (${_selectedVariant.name.toUpperCase()})',
                     style: AppTypography.h3.copyWith(
-                      color: _selectedVariant == DSCardVariant.glass ? Colors.white : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
+                      color: _selectedVariant == DSCardVariant.glass
+                          ? Colors.white
+                          : (isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary),
                     ),
                   ),
                   DSBadge(
-                    label: _isClickable ? 'Tap Count: $_clickCount' : 'Static Card',
-                    variant: _isClickable ? DSBadgeVariant.success : DSBadgeVariant.neutral,
+                    label: _isClickable
+                        ? 'Tap Count: $_clickCount'
+                        : 'Static Card',
+                    variant: _isClickable
+                        ? DSBadgeVariant.success
+                        : DSBadgeVariant.neutral,
                   ),
                 ],
               ),
@@ -91,29 +103,54 @@ class _DSCardPageState extends State<DSCardPage> {
                 onTap: _isClickable
                     ? () {
                         setState(() => _clickCount++);
-                        DSSnackbar.show(context, message: 'Card tapped! (Count: $_clickCount)', variant: DSSnackbarVariant.info);
+                        DSSnackbar.show(
+                          context,
+                          message: 'Card tapped! (Count: $_clickCount)',
+                          variant: DSSnackbarVariant.info,
+                        );
                       }
                     : null,
                 header: _showHeader
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(_cardTitle, style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
-                          const DSBadge(label: 'PART 2', variant: DSBadgeVariant.primary),
+                          Text(
+                            _cardTitle,
+                            style: AppTypography.h2.copyWith(
+                              color: isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary,
+                            ),
+                          ),
+                          const DSBadge(
+                            label: 'PART 2',
+                            variant: DSBadgeVariant.primary,
+                          ),
                         ],
                       )
                     : null,
                 body: _showBody
                     ? Text(
                         _cardBody,
-                        style: AppTypography.bodyMd.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                        style: AppTypography.bodyMd.copyWith(
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
+                        ),
                       )
                     : null,
                 footer: _showFooter
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Duration: 45 min', style: AppTypography.caption.copyWith(color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)),
+                          Text(
+                            'Duration: 45 min',
+                            style: AppTypography.caption.copyWith(
+                              color: isDark
+                                  ? AppColors.darkTextMuted
+                                  : AppColors.lightTextMuted,
+                            ),
+                          ),
                           DSButton(
                             text: 'Start Practice',
                             variant: DSButtonVariant.primary,
@@ -135,11 +172,25 @@ class _DSCardPageState extends State<DSCardPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Card Controls & Variant Selection', style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+              Text(
+                'Card Controls & Variant Selection',
+                style: AppTypography.h3.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
+                ),
+              ),
               AppSpacing.gapVerticalMd,
 
               // Variant Pills
-              Text('Variant', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+              Text(
+                'Variant',
+                style: AppTypography.label.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+                ),
+              ),
               AppSpacing.gapVerticalXs,
               Wrap(
                 spacing: AppSpacing.xs,
@@ -149,7 +200,13 @@ class _DSCardPageState extends State<DSCardPage> {
                     label: Text(v.name.toUpperCase()),
                     selected: isSelected,
                     selectedColor: AppColors.primary,
-                    labelStyle: TextStyle(color: isSelected ? Colors.white : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+                    labelStyle: TextStyle(
+                      color: isSelected
+                          ? Colors.white
+                          : (isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary),
+                    ),
                     onSelected: (_) => setState(() => _selectedVariant = v),
                   );
                 }).toList(),
@@ -172,7 +229,9 @@ class _DSCardPageState extends State<DSCardPage> {
 
               SwitchListTile(
                 title: const Text('Interactive Tap Callback'),
-                subtitle: const Text('Enables hover lift and tap press scale down'),
+                subtitle: const Text(
+                  'Enables hover lift and tap press scale down',
+                ),
                 value: _isClickable,
                 onChanged: (val) => setState(() => _isClickable = val),
               ),
@@ -205,9 +264,23 @@ class _DSCardPageState extends State<DSCardPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Card Variant Comparison Matrix', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'Card Variant Comparison Matrix',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalSm,
-        Text('Side-by-side preview of Elevated, Outlined, and Glassmorphism variants.', style: AppTypography.bodyMd.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+        Text(
+          'Side-by-side preview of Elevated, Outlined, and Glassmorphism variants.',
+          style: AppTypography.bodyMd.copyWith(
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
+          ),
+        ),
         AppSpacing.gapVerticalLg,
 
         // Gradient Canvas background for glass effect
@@ -230,7 +303,8 @@ class _DSCardPageState extends State<DSCardPage> {
                 title: 'Elevated Card',
                 badge: 'Default',
                 variant: DSCardVariant.elevated,
-                description: 'Soft drop shadows creating floating elevation above background surfaces.',
+                description:
+                    'Soft drop shadows creating floating elevation above background surfaces.',
               ),
               AppSpacing.gapVerticalLg,
 
@@ -240,7 +314,8 @@ class _DSCardPageState extends State<DSCardPage> {
                 title: 'Outlined Card',
                 badge: 'Clean Border',
                 variant: DSCardVariant.outlined,
-                description: 'Flat surface defined by a subtle 1px border stroke.',
+                description:
+                    'Flat surface defined by a subtle 1px border stroke.',
               ),
               AppSpacing.gapVerticalLg,
 
@@ -250,7 +325,8 @@ class _DSCardPageState extends State<DSCardPage> {
                 title: 'Glassmorphic Card',
                 badge: 'Backdrop Blur',
                 variant: DSCardVariant.glass,
-                description: 'Translucent background with 16px BackdropFilter blur and light border accent.',
+                description:
+                    'Translucent background with 16px BackdropFilter blur and light border accent.',
               ),
             ],
           ),
@@ -259,7 +335,13 @@ class _DSCardPageState extends State<DSCardPage> {
     );
   }
 
-  Widget _buildMatrixRow(BuildContext context, {required String title, required String badge, required DSCardVariant variant, required String description}) {
+  Widget _buildMatrixRow(
+    BuildContext context, {
+    required String title,
+    required String badge,
+    required DSCardVariant variant,
+    required String description,
+  }) {
     final isDark = widget.themeController.isDarkMode;
 
     return DSCard(
@@ -268,15 +350,34 @@ class _DSCardPageState extends State<DSCardPage> {
       header: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+          Text(
+            title,
+            style: AppTypography.h3.copyWith(
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
+            ),
+          ),
           DSBadge(label: badge, variant: DSBadgeVariant.primary),
         ],
       ),
-      body: Text(description, style: AppTypography.bodyMd.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+      body: Text(
+        description,
+        style: AppTypography.bodyMd.copyWith(
+          color: isDark
+              ? AppColors.darkTextSecondary
+              : AppColors.lightTextSecondary,
+        ),
+      ),
       footer: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          DSButton(text: 'Investigate', variant: DSButtonVariant.ghost, size: DSButtonSize.sm, onPressed: () {}),
+          DSButton(
+            text: 'Investigate',
+            variant: DSButtonVariant.ghost,
+            size: DSButtonSize.sm,
+            onPressed: () {},
+          ),
         ],
       ),
     );
@@ -286,7 +387,8 @@ class _DSCardPageState extends State<DSCardPage> {
   Widget _buildCodeSnippet(BuildContext context) {
     final isDark = widget.themeController.isDarkMode;
 
-    final code = '''
+    final code =
+        '''
 DSCard(
   variant: DSCardVariant.${_selectedVariant.name},
   ${_isClickable ? "onTap: () {\n    // Handle tap\n  }," : ""}
@@ -311,14 +413,25 @@ DSCard(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Generated Flutter Code', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+            Text(
+              'Generated Flutter Code',
+              style: AppTypography.h2.copyWith(
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
+              ),
+            ),
             DSButton(
               text: 'Copy Code',
               variant: DSButtonVariant.outline,
               size: DSButtonSize.sm,
               leftIcon: const Icon(Icons.copy_rounded, size: 14),
               onPressed: () {
-                DSSnackbar.show(context, message: 'Card code copied to clipboard!', variant: DSSnackbarVariant.success);
+                DSSnackbar.show(
+                  context,
+                  message: 'Card code copied to clipboard!',
+                  variant: DSSnackbarVariant.success,
+                );
               },
             ),
           ],
@@ -351,21 +464,76 @@ DSCard(
     final isDark = widget.themeController.isDarkMode;
 
     final props = [
-      {'name': 'variant', 'type': 'DSCardVariant', 'default': 'elevated', 'desc': 'Card style: elevated (shadow), outlined (border), glass (blur).'},
-      {'name': 'child', 'type': 'Widget?', 'default': 'null', 'desc': 'Custom content child widget. Overrides header/body/footer if provided.'},
-      {'name': 'header', 'type': 'Widget?', 'default': 'null', 'desc': 'Optional card header slot.'},
-      {'name': 'body', 'type': 'Widget?', 'default': 'null', 'desc': 'Optional card body text/content slot.'},
-      {'name': 'footer', 'type': 'Widget?', 'default': 'null', 'desc': 'Optional card footer actions slot.'},
-      {'name': 'onTap', 'type': 'VoidCallback?', 'default': 'null', 'desc': 'Tap callback. Enables mouse hover lift and tap scale feedback.'},
-      {'name': 'interactive', 'type': 'bool', 'default': 'true', 'desc': 'Enables micro-animation effects when onTap is provided.'},
-      {'name': 'padding', 'type': 'EdgeInsetsGeometry?', 'default': 'AppSpacing.lg (24px)', 'desc': 'Internal container padding.'},
-      {'name': 'margin', 'type': 'EdgeInsetsGeometry?', 'default': 'null', 'desc': 'Outer container margin.'},
+      {
+        'name': 'variant',
+        'type': 'DSCardVariant',
+        'default': 'elevated',
+        'desc':
+            'Card style: elevated (shadow), outlined (border), glass (blur).',
+      },
+      {
+        'name': 'child',
+        'type': 'Widget?',
+        'default': 'null',
+        'desc':
+            'Custom content child widget. Overrides header/body/footer if provided.',
+      },
+      {
+        'name': 'header',
+        'type': 'Widget?',
+        'default': 'null',
+        'desc': 'Optional card header slot.',
+      },
+      {
+        'name': 'body',
+        'type': 'Widget?',
+        'default': 'null',
+        'desc': 'Optional card body text/content slot.',
+      },
+      {
+        'name': 'footer',
+        'type': 'Widget?',
+        'default': 'null',
+        'desc': 'Optional card footer actions slot.',
+      },
+      {
+        'name': 'onTap',
+        'type': 'VoidCallback?',
+        'default': 'null',
+        'desc':
+            'Tap callback. Enables mouse hover lift and tap scale feedback.',
+      },
+      {
+        'name': 'interactive',
+        'type': 'bool',
+        'default': 'true',
+        'desc': 'Enables micro-animation effects when onTap is provided.',
+      },
+      {
+        'name': 'padding',
+        'type': 'EdgeInsetsGeometry?',
+        'default': 'AppSpacing.lg (24px)',
+        'desc': 'Internal container padding.',
+      },
+      {
+        'name': 'margin',
+        'type': 'EdgeInsetsGeometry?',
+        'default': 'null',
+        'desc': 'Outer container margin.',
+      },
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('API Reference & Properties', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'API Reference & Properties',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalMd,
         DSCard(
           variant: DSCardVariant.elevated,
@@ -374,30 +542,111 @@ DSCard(
             children: [
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
-                color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
+                color: isDark
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.lightSurfaceVariant,
                 child: Row(
                   children: [
-                    Expanded(flex: 2, child: Text('PROPERTY', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 2, child: Text('TYPE', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 2, child: Text('DEFAULT', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 4, child: Text('DESCRIPTION', style: AppTypography.label.copyWith(color: AppColors.primary))),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'PROPERTY',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'TYPE',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'DEFAULT',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        'DESCRIPTION',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              ...props.map((p) => Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder)),
+              ...props.map(
+                (p) => Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['name']!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['type']!,
+                          style: TextStyle(
+                            color: isDark
+                                ? AppColors.secondary
+                                : AppColors.primaryHover,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['default']!,
+                          style: const TextStyle(
+                            fontFamily: 'monospace',
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: Text(
+                          p['desc']!,
+                          style: AppTypography.bodySm.copyWith(
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(flex: 2, child: Text(p['name']!, style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'monospace'))),
-                    Expanded(flex: 2, child: Text(p['type']!, style: TextStyle(color: isDark ? AppColors.secondary : AppColors.primaryHover, fontFamily: 'monospace'))),
-                    Expanded(flex: 2, child: Text(p['default']!, style: const TextStyle(fontFamily: 'monospace', color: Colors.grey))),
-                    Expanded(flex: 4, child: Text(p['desc']!, style: AppTypography.bodySm.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary))),
-                  ],
-                ),
-              )),
+              ),
             ],
           ),
         ),

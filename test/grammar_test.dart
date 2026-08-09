@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:easy_english/core/theme/app_theme.dart';
-import 'package:easy_english/features/grammar/domain/grammar_model.dart';
-import 'package:easy_english/features/grammar/presentation/grammar_roadmap_screen.dart';
-import 'package:easy_english/features/grammar/presentation/grammar_exercise_screen.dart';
-import 'package:easy_english/features/grammar/presentation/grammar_mistakes_screen.dart';
+import 'package:easy_english/features/grammar/data/datasources/grammar_seed_data.dart';
+import 'package:easy_english/features/grammar/data/models/grammar_topic_model.dart';
+import 'package:easy_english/features/grammar/presentation/screens/grammar_roadmap_screen.dart';
+import 'package:easy_english/features/grammar/presentation/screens/grammar_exercise_screen.dart';
+import 'package:easy_english/features/grammar/presentation/screens/grammar_mistakes_screen.dart';
 
 void main() {
   group('Module 4: Grammar Domain Models Tests', () {
@@ -13,13 +14,13 @@ void main() {
       expect(sampleTopics.isNotEmpty, isTrue);
 
       final topic = sampleTopics.first;
-      final jsonMap = topic.toJson();
+      final jsonMap = GrammarTopicModel.fromEntity(topic).toJson();
 
       expect(jsonMap['id'], equals('topic_articles'));
       expect(jsonMap['cefr_level'], equals('B1'));
       expect(jsonMap['mastery_percentage'], equals(100.0));
 
-      final restored = GrammarTopic.fromJson(jsonMap);
+      final restored = GrammarTopicModel.fromJson(jsonMap).toEntity();
       expect(restored.id, equals(topic.id));
       expect(restored.title, equals(topic.title));
       expect(restored.rules.length, equals(topic.rules.length));
@@ -33,29 +34,37 @@ void main() {
       final m = mistakes.first;
       expect(m.isResolved, isFalse);
 
-      final resolved = m.copyWith(isResolved: true, occurrenceCount: m.occurrenceCount + 1);
+      final resolved = m.copyWith(
+        isResolved: true,
+        occurrenceCount: m.occurrenceCount + 1,
+      );
       expect(resolved.isResolved, isTrue);
       expect(resolved.occurrenceCount, equals(5));
     });
   });
 
   group('Module 4: Grammar UI Screens Widget Tests', () {
-    testWidgets('GrammarRoadmapScreen renders header, topic nodes, and cards cleanly', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.darkTheme,
-          home: const GrammarRoadmapScreen(),
-        ),
-      );
-      await tester.pumpAndSettle();
+    testWidgets(
+      'GrammarRoadmapScreen renders header, topic nodes, and cards cleanly',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.darkTheme,
+            home: const GrammarRoadmapScreen(),
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('Grammar Roadmap'), findsOneWidget);
-      expect(find.text('Overall Grammar Mastery'), findsOneWidget);
-      expect(find.text('Visual Topic Progression'), findsOneWidget);
-      expect(find.textContaining('Articles'), findsWidgets);
-    });
+        expect(find.text('Grammar Roadmap'), findsOneWidget);
+        expect(find.text('Overall Grammar Mastery'), findsOneWidget);
+        expect(find.text('Visual Topic Progression'), findsOneWidget);
+        expect(find.textContaining('Articles'), findsWidgets);
+      },
+    );
 
-    testWidgets('GrammarExerciseScreen renders question, prompt, and options', (WidgetTester tester) async {
+    testWidgets('GrammarExerciseScreen renders question, prompt, and options', (
+      WidgetTester tester,
+    ) async {
       final sampleTopic = GrammarSeedData.sampleTopics.first;
       await tester.pumpWidget(
         MaterialApp(
@@ -70,18 +79,21 @@ void main() {
       expect(find.text('The'), findsOneWidget);
     });
 
-    testWidgets('GrammarMistakesScreen renders mistake log cards and filter chips', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: AppTheme.darkTheme,
-          home: const GrammarMistakesScreen(),
-        ),
-      );
-      await tester.pumpAndSettle();
+    testWidgets(
+      'GrammarMistakesScreen renders mistake log cards and filter chips',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: AppTheme.darkTheme,
+            home: const GrammarMistakesScreen(),
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('Grammar Mistake Tracker'), findsOneWidget);
-      expect(find.text('Unresolved'), findsOneWidget);
-      expect(find.textContaining('Occurred'), findsWidgets);
-    });
+        expect(find.text('Grammar Mistake Tracker'), findsOneWidget);
+        expect(find.text('Unresolved'), findsOneWidget);
+        expect(find.textContaining('Occurred'), findsWidgets);
+      },
+    );
   });
 }

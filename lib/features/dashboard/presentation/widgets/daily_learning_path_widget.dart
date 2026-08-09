@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../domain/models/learning_path_model.dart';
+import '../../domain/entities/learning_path.dart';
 
 class DailyLearningPathWidget extends StatefulWidget {
   final LearningPathResponse learningPath;
@@ -12,7 +12,8 @@ class DailyLearningPathWidget extends StatefulWidget {
   });
 
   @override
-  State<DailyLearningPathWidget> createState() => _DailyLearningPathWidgetState();
+  State<DailyLearningPathWidget> createState() =>
+      _DailyLearningPathWidgetState();
 }
 
 class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
@@ -94,7 +95,11 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.route, color: theme.colorScheme.primary, size: 24),
+                    Icon(
+                      Icons.route,
+                      color: theme.colorScheme.primary,
+                      size: 24,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'Daily Learning Path',
@@ -128,7 +133,9 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
               decoration: BoxDecoration(
                 color: theme.colorScheme.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.2)),
+                border: Border.all(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.2),
+                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,7 +170,10 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -171,7 +181,11 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.timer_outlined, size: 14, color: Colors.grey),
+                            const Icon(
+                              Icons.timer_outlined,
+                              size: 14,
+                              color: Colors.grey,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               '${activePlan.totalEstimatedMinutes} mins',
@@ -194,7 +208,9 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
                         value: progressPct,
                         minHeight: 8,
                         backgroundColor: Colors.grey.shade200,
-                        valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          theme.colorScheme.primary,
+                        ),
                       ),
                     ),
                   ],
@@ -239,7 +255,9 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
                           Checkbox(
                             value: isDone,
                             activeColor: modColor,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
                             onChanged: (val) {
                               setState(() {
                                 _completedTaskState[task.id] = val ?? false;
@@ -269,13 +287,20 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
-                                        decoration: isDone ? TextDecoration.lineThrough : null,
-                                        color: isDone ? Colors.grey : Colors.black87,
+                                        decoration: isDone
+                                            ? TextDecoration.lineThrough
+                                            : null,
+                                        color: isDone
+                                            ? Colors.grey
+                                            : Colors.black87,
                                       ),
                                     ),
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: modColor.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(6),
@@ -296,7 +321,9 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
                                 task.description,
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: isDone ? Colors.grey : Colors.grey.shade700,
+                                  color: isDone
+                                      ? Colors.grey
+                                      : Colors.grey.shade700,
                                 ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -308,7 +335,9 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
                                   style: TextStyle(
                                     fontSize: 11,
                                     fontStyle: FontStyle.italic,
-                                    color: isDone ? Colors.grey : Colors.grey.shade600,
+                                    color: isDone
+                                        ? Colors.grey
+                                        : Colors.grey.shade600,
                                   ),
                                 ),
                               ],
@@ -320,7 +349,9 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
                         const SizedBox(width: 8),
                         Icon(
                           Icons.chevron_right,
-                          color: isDone ? Colors.grey.shade400 : Colors.grey.shade600,
+                          color: isDone
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade600,
                         ),
                       ],
                     ),
@@ -349,7 +380,12 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
           color: isSelected ? Colors.white : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           boxShadow: isSelected
-              ? [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 4)]
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 4,
+                  ),
+                ]
               : null,
         ),
         child: Text(
@@ -357,7 +393,9 @@ class _DailyLearningPathWidgetState extends State<DailyLearningPathWidget> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.shade600,
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary
+                : Colors.grey.shade600,
           ),
         ),
       ),

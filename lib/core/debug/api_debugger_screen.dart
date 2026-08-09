@@ -45,7 +45,8 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
         final matchUrl = log.url.toLowerCase().contains(q);
         final matchMethod = log.method.toLowerCase().contains(q);
         final matchStatus = log.statusCode?.toString().contains(q) ?? false;
-        final matchBody = log.formattedResponseBody.toLowerCase().contains(q) ||
+        final matchBody =
+            log.formattedResponseBody.toLowerCase().contains(q) ||
             log.formattedRequestBody.toLowerCase().contains(q);
         return matchUrl || matchMethod || matchStatus || matchBody;
       }
@@ -78,7 +79,11 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
         'action': 'test_api_call',
         'timestamp': DateTime.now().toIso8601String(),
         'debug_mode': true,
-        'features_tested': ['API Inspector', 'cURL Generator', 'JSON Formatting']
+        'features_tested': [
+          'API Inspector',
+          'cURL Generator',
+          'JSON Formatting',
+        ],
       },
     );
 
@@ -97,10 +102,7 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
         'status': 'success',
         'code': 200,
         'message': 'API Call captured successfully by ApiLogger!',
-        'payload_received': {
-          'action': 'test_api_call',
-          'debug_mode': true,
-        },
+        'payload_received': {'action': 'test_api_call', 'debug_mode': true},
         'server_timestamp': DateTime.now().toIso8601String(),
       },
       duration: DateTime.now().difference(startTime),
@@ -146,11 +148,19 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bgColor = isDark ? AppColors.darkBackground : AppColors.lightBackground;
+    final bgColor = isDark
+        ? AppColors.darkBackground
+        : AppColors.lightBackground;
     final cardColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
-    final inputBg = isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final inputBg = isDark
+        ? AppColors.darkSurfaceVariant
+        : AppColors.lightSurfaceVariant;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textSecondary = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -165,7 +175,11 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
                 color: AppColors.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.api_rounded, color: AppColors.primary, size: 20),
+              child: const Icon(
+                Icons.api_rounded,
+                color: AppColors.primary,
+                size: 20,
+              ),
             ),
             const SizedBox(width: 10),
             Column(
@@ -186,7 +200,10 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
         actions: [
           IconButton(
             tooltip: 'Export Logs as JSON',
-            icon: const Icon(Icons.file_download_outlined, color: AppColors.primary),
+            icon: const Icon(
+              Icons.file_download_outlined,
+              color: AppColors.primary,
+            ),
             onPressed: () {
               final jsonStr = ApiLogger.instance.exportJson();
               Clipboard.setData(ClipboardData(text: jsonStr));
@@ -197,12 +214,15 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
           ),
           IconButton(
             tooltip: 'Clear All Logs',
-            icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger),
+            icon: const Icon(
+              Icons.delete_outline_rounded,
+              color: AppColors.danger,
+            ),
             onPressed: () {
               ApiLogger.instance.clear();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('API logs cleared')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('API logs cleared')));
             },
           ),
         ],
@@ -217,7 +237,10 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
               // Search & Filter Header Toolbar
               Container(
                 color: cardColor,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
                 child: Column(
                   children: [
                     // Search Field
@@ -227,8 +250,14 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
                       style: AppTypography.bodySm.copyWith(color: textPrimary),
                       decoration: InputDecoration(
                         hintText: 'Search URL, body, method, status...',
-                        hintStyle: AppTypography.bodySm.copyWith(color: textSecondary),
-                        prefixIcon: Icon(Icons.search, color: textSecondary, size: 20),
+                        hintStyle: AppTypography.bodySm.copyWith(
+                          color: textSecondary,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: textSecondary,
+                          size: 20,
+                        ),
                         suffixIcon: _searchQuery.isNotEmpty
                             ? IconButton(
                                 icon: const Icon(Icons.clear, size: 18),
@@ -240,7 +269,10 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
                             : null,
                         filled: true,
                         fillColor: inputBg,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 12,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
@@ -277,15 +309,28 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
                             onTap: _sendSampleApiCall,
                             borderRadius: BorderRadius.circular(6),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
                               decoration: BoxDecoration(
-                                color: AppColors.accentGreenDark.withValues(alpha: 0.2),
+                                color: AppColors.accentGreenDark.withValues(
+                                  alpha: 0.2,
+                                ),
                                 borderRadius: BorderRadius.circular(6),
-                                border: Border.all(color: AppColors.accentGreenDark.withValues(alpha: 0.5)),
+                                border: Border.all(
+                                  color: AppColors.accentGreenDark.withValues(
+                                    alpha: 0.5,
+                                  ),
+                                ),
                               ),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.play_arrow_rounded, color: AppColors.accentGreen, size: 14),
+                                  const Icon(
+                                    Icons.play_arrow_rounded,
+                                    color: AppColors.accentGreen,
+                                    size: 14,
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(
                                     'Test POST Call',
@@ -303,15 +348,26 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
                             onTap: _sendSampleErrorCall,
                             borderRadius: BorderRadius.circular(6),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
                               decoration: BoxDecoration(
                                 color: AppColors.danger.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(6),
-                                border: Border.all(color: AppColors.danger.withValues(alpha: 0.4)),
+                                border: Border.all(
+                                  color: AppColors.danger.withValues(
+                                    alpha: 0.4,
+                                  ),
+                                ),
                               ),
                               child: Row(
                                 children: [
-                                  const Icon(Icons.error_outline_rounded, color: AppColors.danger, size: 14),
+                                  const Icon(
+                                    Icons.error_outline_rounded,
+                                    color: AppColors.danger,
+                                    size: 14,
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(
                                     'Test 401 Error',
@@ -348,7 +404,9 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
                               allLogs.isEmpty
                                   ? 'No API calls captured yet'
                                   : 'No matching API calls found',
-                              style: AppTypography.bodyMd.copyWith(color: textSecondary),
+                              style: AppTypography.bodyMd.copyWith(
+                                color: textSecondary,
+                              ),
                             ),
                             const SizedBox(height: 8),
                             if (allLogs.isEmpty)
@@ -356,7 +414,9 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
                                 text: 'Send Test API Call',
                                 variant: DSButtonVariant.outline,
                                 size: DSButtonSize.sm,
-                                leftIcon: const Icon(Icons.network_check_rounded),
+                                leftIcon: const Icon(
+                                  Icons.network_check_rounded,
+                                ),
                                 onPressed: _sendSampleApiCall,
                               ),
                           ],
@@ -365,7 +425,8 @@ class _ApiDebuggerScreenState extends State<ApiDebuggerScreen> {
                     : ListView.separated(
                         padding: const EdgeInsets.all(12),
                         itemCount: filteredLogs.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: 8),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 8),
                         itemBuilder: (context, index) {
                           final log = filteredLogs[index];
                           return _ApiLogTile(
@@ -456,14 +517,20 @@ class _ApiLogTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final uri = Uri.tryParse(log.url);
-    final displayPath = uri != null ? (uri.path.isEmpty ? '/' : uri.path) : log.url;
+    final displayPath = uri != null
+        ? (uri.path.isEmpty ? '/' : uri.path)
+        : log.url;
     final displayHost = uri?.host ?? '';
     final statusColor = _getStatusColor();
     final methodColor = _getMethodColor();
     final cardBg = isDark ? AppColors.darkSurface : AppColors.lightSurface;
     final border = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textSecondary = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Material(
       color: cardBg,
@@ -485,11 +552,16 @@ class _ApiLogTile extends StatelessWidget {
                 children: [
                   // Method badge
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: methodColor.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: methodColor.withValues(alpha: 0.4)),
+                      border: Border.all(
+                        color: methodColor.withValues(alpha: 0.4),
+                      ),
                     ),
                     child: Text(
                       log.method.toUpperCase(),
@@ -504,7 +576,10 @@ class _ApiLogTile extends StatelessWidget {
 
                   // Status code badge
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: statusColor.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(5),
@@ -552,7 +627,9 @@ class _ApiLogTile extends StatelessWidget {
                   Expanded(
                     child: Text(
                       displayHost.isNotEmpty ? displayHost : log.url,
-                      style: AppTypography.caption.copyWith(color: textSecondary),
+                      style: AppTypography.caption.copyWith(
+                        color: textSecondary,
+                      ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -619,8 +696,12 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? AppColors.darkBackground : AppColors.lightBackground;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
-    final textSecondary = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
+    final textSecondary = isDark
+        ? AppColors.darkTextSecondary
+        : AppColors.lightTextSecondary;
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
@@ -665,15 +746,18 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
                             variant: widget.log.isSuccess
                                 ? DSBadgeVariant.success
                                 : (widget.log.isError
-                                    ? DSBadgeVariant.danger
-                                    : DSBadgeVariant.neutral),
+                                      ? DSBadgeVariant.danger
+                                      : DSBadgeVariant.neutral),
                           ),
                         ],
                       ),
                       const SizedBox(height: 4),
                       SelectableText(
                         widget.log.url,
-                        style: AppTypography.bodySm.copyWith(color: textPrimary, fontWeight: FontWeight.bold),
+                        style: AppTypography.bodySm.copyWith(
+                          color: textPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -707,7 +791,10 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
                 _buildCodeView(
                   headers: widget.log.requestHeaders,
                   body: widget.log.formattedRequestBody,
-                  onCopyBody: () => _copyToClipboard(widget.log.formattedRequestBody, 'Request Body'),
+                  onCopyBody: () => _copyToClipboard(
+                    widget.log.formattedRequestBody,
+                    'Request Body',
+                  ),
                 ),
 
                 // Response Tab
@@ -715,7 +802,10 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
                   headers: widget.log.responseHeaders,
                   body: widget.log.formattedResponseBody,
                   error: widget.log.error,
-                  onCopyBody: () => _copyToClipboard(widget.log.formattedResponseBody, 'Response Body'),
+                  onCopyBody: () => _copyToClipboard(
+                    widget.log.formattedResponseBody,
+                    'Response Body',
+                  ),
                 ),
 
                 // cURL Tab
@@ -727,13 +817,20 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Executable cURL Command',
-                              style: AppTypography.label.copyWith(color: textPrimary)),
+                          Text(
+                            'Executable cURL Command',
+                            style: AppTypography.label.copyWith(
+                              color: textPrimary,
+                            ),
+                          ),
                           DSButton(
                             text: 'Copy cURL',
                             size: DSButtonSize.sm,
                             leftIcon: const Icon(Icons.copy_rounded),
-                            onPressed: () => _copyToClipboard(widget.log.toCurl(), 'cURL Command'),
+                            onPressed: () => _copyToClipboard(
+                              widget.log.toCurl(),
+                              'cURL Command',
+                            ),
                           ),
                         ],
                       ),
@@ -742,10 +839,15 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                            color: isDark
+                                ? AppColors.darkSurface
+                                : AppColors.lightSurface,
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
-                                color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                              color: isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder,
+                            ),
                           ),
                           child: SingleChildScrollView(
                             child: SelectableText(
@@ -777,7 +879,9 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
     required VoidCallback onCopyBody,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -788,7 +892,9 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
             decoration: BoxDecoration(
               color: AppColors.danger.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppColors.danger.withValues(alpha: 0.4)),
+              border: Border.all(
+                color: AppColors.danger.withValues(alpha: 0.4),
+              ),
             ),
             child: Text(
               'Error: $error',
@@ -802,8 +908,10 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Headers (${headers?.length ?? 0})',
-                style: AppTypography.label.copyWith(color: textPrimary)),
+            Text(
+              'Headers (${headers?.length ?? 0})',
+              style: AppTypography.label.copyWith(color: textPrimary),
+            ),
           ],
         ),
         const SizedBox(height: 8),
@@ -814,7 +922,10 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
             borderRadius: BorderRadius.circular(8),
           ),
           child: headers == null || headers.isEmpty
-              ? const Text('(No headers)', style: TextStyle(color: Colors.grey, fontSize: 12))
+              ? const Text(
+                  '(No headers)',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: headers.entries
@@ -836,7 +947,9 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
                                   text: e.value,
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: isDark ? Colors.white70 : Colors.black87,
+                                    color: isDark
+                                        ? Colors.white70
+                                        : Colors.black87,
                                   ),
                                 ),
                               ],
@@ -854,8 +967,10 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Body Payload',
-                style: AppTypography.label.copyWith(color: textPrimary)),
+            Text(
+              'Body Payload',
+              style: AppTypography.label.copyWith(color: textPrimary),
+            ),
             IconButton(
               icon: const Icon(Icons.copy, size: 18),
               onPressed: onCopyBody,
@@ -869,7 +984,9 @@ class _ApiLogDetailSheetState extends State<_ApiLogDetailSheet>
           decoration: BoxDecoration(
             color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+            border: Border.all(
+              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+            ),
           ),
           child: SelectableText(
             body,

@@ -14,7 +14,9 @@ class AppColors {
 
   // Lime / Green Accent (matches login screen progress & icons)
   static const Color accentGreen = Color(0xFF7CD327); // Vibrant lime green
-  static const Color accentGreenDark = Color(0xFF48782B); // Muted dark green for headphone icon
+  static const Color accentGreenDark = Color(
+    0xFF48782B,
+  ); // Muted dark green for headphone icon
   static const Color accentGreenLight = Color(0xFFE8F8D8);
 
   // Status & Feedback Colors
@@ -34,7 +36,9 @@ class AppColors {
   static const Color socialGuestBg = Color(0xFFF3F4F6);
 
   // Light Mode Colors
-  static const Color lightBackground = Color(0xFFFFFFFF); // Clean white as in login design
+  static const Color lightBackground = Color(
+    0xFFFFFFFF,
+  ); // Clean white as in login design
   static const Color lightSurface = Color(0xFFFFFFFF);
   static const Color lightSurfaceVariant = Color(0xFFF3F4F6);
   static const Color lightTextPrimary = Color(0xFF111827);

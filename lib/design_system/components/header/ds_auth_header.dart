@@ -27,15 +27,14 @@ class DSAuthHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final effectiveIconColor = iconColor ?? (isDark ? AppColors.accentGreen : AppColors.accentGreenDark);
+    final effectiveIconColor =
+        iconColor ??
+        (isDark ? AppColors.accentGreen : AppColors.accentGreenDark);
 
-    Widget headerIcon = icon ??
+    Widget headerIcon =
+        icon ??
         (iconData != null
-            ? Icon(
-                iconData,
-                size: iconSize,
-                color: effectiveIconColor,
-              )
+            ? Icon(iconData, size: iconSize, color: effectiveIconColor)
             : const SizedBox.shrink());
 
     return Column(
@@ -49,7 +48,9 @@ class DSAuthHeader extends StatelessWidget {
           textAlign: textAlign,
           style: AppTypography.h3.copyWith(
             fontWeight: FontWeight.w700,
-            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
             letterSpacing: -0.3,
           ),
         ),
@@ -58,7 +59,9 @@ class DSAuthHeader extends StatelessWidget {
           subtitle,
           textAlign: textAlign,
           style: AppTypography.bodyMd.copyWith(
-            color: isDark ? AppColors.darkTextMuted : AppColors.lightTextSecondary,
+            color: isDark
+                ? AppColors.darkTextMuted
+                : AppColors.lightTextSecondary,
             height: 1.35,
           ),
         ),

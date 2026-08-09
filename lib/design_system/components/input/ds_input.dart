@@ -107,19 +107,25 @@ class _DSInputState extends State<DSInput> {
         return Icon(
           Icons.search_rounded,
           size: 20,
-          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+          color: isDark
+              ? AppColors.darkTextSecondary
+              : AppColors.lightTextSecondary,
         );
       case DSInputType.email:
         return Icon(
           Icons.email_outlined,
           size: 20,
-          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+          color: isDark
+              ? AppColors.darkTextSecondary
+              : AppColors.lightTextSecondary,
         );
       case DSInputType.password:
         return Icon(
           Icons.lock_outline_rounded,
           size: 20,
-          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+          color: isDark
+              ? AppColors.darkTextSecondary
+              : AppColors.lightTextSecondary,
         );
       default:
         return null;
@@ -137,10 +143,14 @@ class _DSInputState extends State<DSInput> {
         child: AnimatedSwitcher(
           duration: AppAnimations.fast,
           child: Icon(
-            _obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+            _obscureText
+                ? Icons.visibility_outlined
+                : Icons.visibility_off_outlined,
             key: ValueKey<bool>(_obscureText),
             size: 20,
-            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
           ),
         ),
       );
@@ -163,7 +173,9 @@ class _DSInputState extends State<DSInput> {
             child: Icon(
               Icons.close_rounded,
               size: 14,
-              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
             ),
           ),
         );
@@ -180,8 +192,12 @@ class _DSInputState extends State<DSInput> {
 
     // Colors
     final Color fillColor = widget.disabled
-        ? (isDark ? AppColors.darkSurfaceVariant.withValues(alpha: 0.5) : AppColors.lightSurfaceVariant.withValues(alpha: 0.5))
-        : (isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant);
+        ? (isDark
+              ? AppColors.darkSurfaceVariant.withValues(alpha: 0.5)
+              : AppColors.lightSurfaceVariant.withValues(alpha: 0.5))
+        : (isDark
+              ? AppColors.darkSurfaceVariant
+              : AppColors.lightSurfaceVariant);
 
     Color borderColor;
     List<BoxShadow> shadows = [];
@@ -210,8 +226,12 @@ class _DSInputState extends State<DSInput> {
             widget.label!,
             style: AppTypography.label.copyWith(
               color: widget.disabled
-                  ? (isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)
-                  : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
+                  ? (isDark
+                        ? AppColors.darkTextMuted
+                        : AppColors.lightTextMuted)
+                  : (isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary),
             ),
           ),
           AppSpacing.gapVerticalXs,
@@ -229,7 +249,10 @@ class _DSInputState extends State<DSInput> {
             boxShadow: shadows,
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 2),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: 2,
+            ),
             child: Row(
               children: [
                 if (leftIconWidget != null) ...[
@@ -241,21 +264,28 @@ class _DSInputState extends State<DSInput> {
                     controller: _effectiveController,
                     focusNode: _focusNode,
                     enabled: !widget.disabled,
-                    obscureText: widget.type == DSInputType.password && _obscureText,
+                    obscureText:
+                        widget.type == DSInputType.password && _obscureText,
                     keyboardType: _getKeyboardType(),
                     textInputAction: widget.textInputAction,
                     onChanged: widget.onChanged,
                     onSubmitted: widget.onSubmitted,
                     style: AppTypography.bodyMd.copyWith(
-                      color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
                     ),
                     decoration: InputDecoration(
                       hintText: widget.placeholder,
                       hintStyle: AppTypography.bodyMd.copyWith(
-                        color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                        color: isDark
+                            ? AppColors.darkTextMuted
+                            : AppColors.lightTextMuted,
                       ),
                       isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(vertical: AppSpacing.sm + 2),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.sm + 2,
+                      ),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -278,24 +308,38 @@ class _DSInputState extends State<DSInput> {
           duration: AppAnimations.fast,
           crossFadeState: hasError
               ? CrossFadeState.showSecond
-              : (widget.helperText != null ? CrossFadeState.showFirst : CrossFadeState.showFirst),
+              : (widget.helperText != null
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showFirst),
           firstChild: widget.helperText != null
               ? Padding(
-                  padding: const EdgeInsets.only(top: AppSpacing.xs, left: AppSpacing.xs),
+                  padding: const EdgeInsets.only(
+                    top: AppSpacing.xs,
+                    left: AppSpacing.xs,
+                  ),
                   child: Text(
                     widget.helperText!,
                     style: AppTypography.caption.copyWith(
-                      color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                      color: isDark
+                          ? AppColors.darkTextMuted
+                          : AppColors.lightTextMuted,
                     ),
                   ),
                 )
               : const SizedBox.shrink(),
           secondChild: hasError
               ? Padding(
-                  padding: const EdgeInsets.only(top: AppSpacing.xs, left: AppSpacing.xs),
+                  padding: const EdgeInsets.only(
+                    top: AppSpacing.xs,
+                    left: AppSpacing.xs,
+                  ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline_rounded, size: 14, color: AppColors.danger),
+                      const Icon(
+                        Icons.error_outline_rounded,
+                        size: 14,
+                        color: AppColors.danger,
+                      ),
                       AppSpacing.gapHorizontalXs,
                       Expanded(
                         child: Text(

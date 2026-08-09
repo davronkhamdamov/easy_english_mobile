@@ -41,30 +41,33 @@ void main() {
       expect(ApiLogger.instance.logs.length, 2);
     });
 
-    test('ApiLogger captures all error status codes (400, 401, 403, 404, 500)', () {
-      final statusCodes = [400, 401, 403, 404, 500];
+    test(
+      'ApiLogger captures all error status codes (400, 401, 403, 404, 500)',
+      () {
+        final statusCodes = [400, 401, 403, 404, 500];
 
-      for (final code in statusCodes) {
-        final log = ApiLogger.instance.logRequest(
-          method: 'POST',
-          url: 'https://easy-english.uz/api/v1/test/$code',
-        );
+        for (final code in statusCodes) {
+          final log = ApiLogger.instance.logRequest(
+            method: 'POST',
+            url: 'https://easy-english.uz/api/v1/test/$code',
+          );
 
-        ApiLogger.instance.logResponse(
-          logItem: log,
-          statusCode: code,
-          body: {'error': 'Error $code'},
-          duration: const Duration(milliseconds: 80),
-        );
+          ApiLogger.instance.logResponse(
+            logItem: log,
+            statusCode: code,
+            body: {'error': 'Error $code'},
+            duration: const Duration(milliseconds: 80),
+          );
 
-        expect(log!.isSuccess, isFalse);
-        expect(log.isError, isTrue);
-        expect(log.statusCode, code);
-      }
+          expect(log!.isSuccess, isFalse);
+          expect(log.isError, isTrue);
+          expect(log.statusCode, code);
+        }
 
-      expect(ApiLogger.instance.logs.length, 5);
-      expect(ApiLogger.instance.logs.where((l) => l.isError).length, 5);
-    });
+        expect(ApiLogger.instance.logs.length, 5);
+        expect(ApiLogger.instance.logs.where((l) => l.isError).length, 5);
+      },
+    );
 
     test('ApiLogger handles network exceptions & socket errors correctly', () {
       final log = ApiLogger.instance.logRequest(
@@ -87,13 +90,19 @@ void main() {
         id: '1',
         method: 'POST',
         url: 'https://easy-english.uz/api/v1/login',
-        requestHeaders: {'Content-Type': 'application/json', 'Authorization': 'Bearer 123'},
+        requestHeaders: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer 123',
+        },
         requestBody: {'username': 'testuser'},
         timestamp: DateTime.now(),
       );
 
       final curl = log.toCurl();
-      expect(curl, contains('curl -X POST "https://easy-english.uz/api/v1/login"'));
+      expect(
+        curl,
+        contains('curl -X POST "https://easy-english.uz/api/v1/login"'),
+      );
       expect(curl, contains('-H "Content-Type: application/json"'));
       expect(curl, contains('-H "Authorization: Bearer 123"'));
       expect(curl, contains('-d \'{"username":"testuser"}\''));
@@ -107,7 +116,10 @@ void main() {
 
       final jsonStr = ApiLogger.instance.exportJson();
       expect(jsonStr, contains('"method": "GET"'));
-      expect(jsonStr, contains('"url": "https://easy-english.uz/api/v1/profile"'));
+      expect(
+        jsonStr,
+        contains('"url": "https://easy-english.uz/api/v1/profile"'),
+      );
     });
   });
 }

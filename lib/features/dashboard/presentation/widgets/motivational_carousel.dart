@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../domain/models/achievement_motivation_model.dart';
+import '../../domain/entities/achievement_motivation.dart';
 
 class MotivationalCarousel extends StatefulWidget {
   final List<MotivationalCard> cards;
 
-  const MotivationalCarousel({
-    super.key,
-    required this.cards,
-  });
+  const MotivationalCarousel({super.key, required this.cards});
 
   @override
   State<MotivationalCarousel> createState() => _MotivationalCarouselState();
@@ -168,7 +165,7 @@ class _MotivationalCarouselState extends State<MotivationalCarousel> {
               ),
             ),
           ),
-        ]
+        ],
       ],
     );
   }

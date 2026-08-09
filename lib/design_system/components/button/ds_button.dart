@@ -5,7 +5,16 @@ import '../../../core/theme/app_shadows.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 
-enum DSButtonVariant { primary, secondary, outline, ghost, danger, socialGoogle, socialApple, socialGuest }
+enum DSButtonVariant {
+  primary,
+  secondary,
+  outline,
+  ghost,
+  danger,
+  socialGoogle,
+  socialApple,
+  socialGuest,
+}
 
 enum DSButtonSize { sm, md, lg }
 
@@ -47,11 +56,13 @@ class DSButton extends StatefulWidget {
   State<DSButton> createState() => _DSButtonState();
 }
 
-class _DSButtonState extends State<DSButton> with SingleTickerProviderStateMixin {
+class _DSButtonState extends State<DSButton>
+    with SingleTickerProviderStateMixin {
   bool _isHovered = false;
   bool _isPressed = false;
 
-  bool get _effectiveDisabled => widget.disabled || widget.onPressed == null || widget.isLoading;
+  bool get _effectiveDisabled =>
+      widget.disabled || widget.onPressed == null || widget.isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -67,19 +78,25 @@ class _DSButtonState extends State<DSButton> with SingleTickerProviderStateMixin
       case DSButtonSize.sm:
         height = 36.0;
         padding = const EdgeInsets.symmetric(horizontal: AppSpacing.md);
-        textStyle = AppTypography.button.copyWith(fontSize: AppTypography.fontSm);
+        textStyle = AppTypography.button.copyWith(
+          fontSize: AppTypography.fontSm,
+        );
         iconSize = 16.0;
         break;
       case DSButtonSize.md:
         height = 44.0;
         padding = const EdgeInsets.symmetric(horizontal: AppSpacing.lg);
-        textStyle = AppTypography.button.copyWith(fontSize: AppTypography.fontSm);
+        textStyle = AppTypography.button.copyWith(
+          fontSize: AppTypography.fontSm,
+        );
         iconSize = 18.0;
         break;
       case DSButtonSize.lg:
         height = 52.0;
         padding = const EdgeInsets.symmetric(horizontal: AppSpacing.xl);
-        textStyle = AppTypography.button.copyWith(fontSize: AppTypography.fontMd);
+        textStyle = AppTypography.button.copyWith(
+          fontSize: AppTypography.fontMd,
+        );
         iconSize = 20.0;
         break;
     }
@@ -91,12 +108,16 @@ class _DSButtonState extends State<DSButton> with SingleTickerProviderStateMixin
     List<BoxShadow> shadows = [];
 
     if (_effectiveDisabled) {
-      backgroundColor = isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant;
+      backgroundColor = isDark
+          ? AppColors.darkSurfaceVariant
+          : AppColors.lightSurfaceVariant;
       textColor = isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted;
     } else {
       switch (widget.variant) {
         case DSButtonVariant.primary:
-          backgroundColor = _isHovered ? AppColors.primaryHover : AppColors.primary;
+          backgroundColor = _isHovered
+              ? AppColors.primaryHover
+              : AppColors.primary;
           textColor = Colors.white;
           if (_isHovered) {
             shadows = AppShadows.glow(AppColors.primary, blurRadius: 16);
@@ -104,27 +125,39 @@ class _DSButtonState extends State<DSButton> with SingleTickerProviderStateMixin
           break;
 
         case DSButtonVariant.secondary:
-          backgroundColor = _isHovered ? AppColors.secondary : AppColors.secondaryLight;
+          backgroundColor = _isHovered
+              ? AppColors.secondary
+              : AppColors.secondaryLight;
           textColor = _isHovered ? Colors.white : AppColors.secondary;
           break;
 
         case DSButtonVariant.outline:
           backgroundColor = _isHovered
-              ? (isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant)
+              ? (isDark
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.lightSurfaceVariant)
               : Colors.transparent;
           borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
-          textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+          textColor = isDark
+              ? AppColors.darkTextPrimary
+              : AppColors.lightTextPrimary;
           break;
 
         case DSButtonVariant.ghost:
           backgroundColor = _isHovered
-              ? (isDark ? AppColors.darkSurfaceVariant.withValues(alpha: 0.5) : AppColors.lightSurfaceVariant)
+              ? (isDark
+                    ? AppColors.darkSurfaceVariant.withValues(alpha: 0.5)
+                    : AppColors.lightSurfaceVariant)
               : Colors.transparent;
-          textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+          textColor = isDark
+              ? AppColors.darkTextPrimary
+              : AppColors.lightTextPrimary;
           break;
 
         case DSButtonVariant.danger:
-          backgroundColor = _isHovered ? AppColors.dangerHover : AppColors.danger;
+          backgroundColor = _isHovered
+              ? AppColors.dangerHover
+              : AppColors.danger;
           textColor = Colors.white;
           if (_isHovered) {
             shadows = AppShadows.glow(AppColors.danger, blurRadius: 14);
@@ -134,8 +167,12 @@ class _DSButtonState extends State<DSButton> with SingleTickerProviderStateMixin
         case DSButtonVariant.socialGoogle:
           backgroundColor = _isHovered
               ? (isDark ? AppColors.darkSurfaceVariant : AppColors.lightBorder)
-              : (isDark ? AppColors.darkSurfaceVariant : AppColors.socialGoogleBg);
-          textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+              : (isDark
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.socialGoogleBg);
+          textColor = isDark
+              ? AppColors.darkTextPrimary
+              : AppColors.lightTextPrimary;
           break;
 
         case DSButtonVariant.socialApple:
@@ -146,8 +183,12 @@ class _DSButtonState extends State<DSButton> with SingleTickerProviderStateMixin
         case DSButtonVariant.socialGuest:
           backgroundColor = _isHovered
               ? (isDark ? AppColors.darkSurfaceVariant : AppColors.lightBorder)
-              : (isDark ? AppColors.darkSurfaceVariant : AppColors.socialGuestBg);
-          textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+              : (isDark
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.socialGuestBg);
+          textColor = isDark
+              ? AppColors.darkTextPrimary
+              : AppColors.lightTextPrimary;
           break;
       }
 
@@ -162,10 +203,13 @@ class _DSButtonState extends State<DSButton> with SingleTickerProviderStateMixin
       }
     }
 
-    final double effectiveRadius = widget.borderRadius ??
+    final double effectiveRadius =
+        widget.borderRadius ??
         (widget.isPill ? height / 2 : AppSpacing.radiusMd);
 
-    final scale = _isPressed ? 0.96 : (_isHovered && !_effectiveDisabled ? 1.02 : 1.0);
+    final scale = _isPressed
+        ? 0.96
+        : (_isHovered && !_effectiveDisabled ? 1.02 : 1.0);
 
     Widget child = Row(
       mainAxisSize: widget.fullWidth ? MainAxisSize.max : MainAxisSize.min,
@@ -206,7 +250,9 @@ class _DSButtonState extends State<DSButton> with SingleTickerProviderStateMixin
     );
 
     return MouseRegion(
-      cursor: _effectiveDisabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
+      cursor: _effectiveDisabled
+          ? SystemMouseCursors.basic
+          : SystemMouseCursors.click,
       onEnter: (_) {
         if (!_effectiveDisabled) setState(() => _isHovered = true);
       },
@@ -236,7 +282,9 @@ class _DSButtonState extends State<DSButton> with SingleTickerProviderStateMixin
             decoration: BoxDecoration(
               color: backgroundColor,
               borderRadius: BorderRadius.circular(effectiveRadius),
-              border: borderColor != Colors.transparent ? Border.all(color: borderColor, width: 1.5) : null,
+              border: borderColor != Colors.transparent
+                  ? Border.all(color: borderColor, width: 1.5)
+                  : null,
               boxShadow: shadows,
             ),
             child: child,

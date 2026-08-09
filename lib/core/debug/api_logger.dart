@@ -8,7 +8,8 @@ class ApiLogger {
   static final ApiLogger instance = ApiLogger._internal();
 
   /// Reactive notifier for UI updates when API calls occur
-  final ValueNotifier<List<ApiLogItem>> logsNotifier = ValueNotifier<List<ApiLogItem>>([]);
+  final ValueNotifier<List<ApiLogItem>> logsNotifier =
+      ValueNotifier<List<ApiLogItem>>([]);
 
   /// Control whether API logging is enabled
   bool isEnabled = true;

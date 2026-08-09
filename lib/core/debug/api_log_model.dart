@@ -30,8 +30,10 @@ class ApiLogItem {
   });
 
   bool get isPending => statusCode == null && error == null;
-  bool get isSuccess => statusCode != null && statusCode! >= 200 && statusCode! < 300;
-  bool get isError => error != null || (statusCode != null && statusCode! >= 400);
+  bool get isSuccess =>
+      statusCode != null && statusCode! >= 200 && statusCode! < 300;
+  bool get isError =>
+      error != null || (statusCode != null && statusCode! >= 400);
 
   /// Generates executable cURL command for this API call
   String toCurl() {

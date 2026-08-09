@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../domain/models/achievement_motivation_model.dart';
+import '../../domain/entities/achievement_motivation.dart';
 
 class StreakCounterCard extends StatelessWidget {
   final StreakInfo streakInfo;
@@ -87,7 +87,10 @@ class StreakCounterCard extends StatelessWidget {
                   onTap: onFreezePressed,
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
+                    ),
                     decoration: BoxDecoration(
                       color: streakInfo.streakFreezeAvailable
                           ? Colors.cyan.shade600.withValues(alpha: 0.85)
@@ -151,13 +154,19 @@ class StreakCounterCard extends StatelessWidget {
       bg = Colors.white.withValues(alpha: 0.1);
       iconChild = Text(
         info.day[0],
-        style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 11),
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.5),
+          fontSize: 11,
+        ),
       );
     } else {
       bg = Colors.black.withValues(alpha: 0.2);
       iconChild = Text(
         info.day[0],
-        style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 11),
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.7),
+          fontSize: 11,
+        ),
       );
     }
 

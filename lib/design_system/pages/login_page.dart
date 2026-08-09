@@ -18,10 +18,18 @@ class DSLoginPage extends StatelessWidget {
         children: [
           LoginScreen(
             onGooglePressed: () {
-              DSSnackbar.show(context, message: 'Continue with Google tapped!', variant: DSSnackbarVariant.success);
+              DSSnackbar.show(
+                context,
+                message: 'Continue with Google tapped!',
+                variant: DSSnackbarVariant.success,
+              );
             },
             onApplePressed: () {
-              DSSnackbar.show(context, message: 'Continue with Apple tapped!', variant: DSSnackbarVariant.success);
+              DSSnackbar.show(
+                context,
+                message: 'Continue with Apple tapped!',
+                variant: DSSnackbarVariant.success,
+              );
             },
           ),
           Positioned(

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../design_system/design_system.dart';
-import '../../../dashboard/presentation/dashboard_screen.dart';
+import '../../../dashboard/presentation/screens/dashboard_screen.dart';
 import '../../data/auth_service.dart';
 
 class _OnboardingSlide {
@@ -71,11 +71,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _startAutoStepTimer() {
     _autoStepTimer?.cancel();
-    _autoStepTimer = Timer.periodic(const Duration(seconds: 3, milliseconds: 500), (_) {
-      if (!mounted) return;
-      final nextStep = (_currentStep + 1) % _slides.length;
-      _goToPage(nextStep);
-    });
+    _autoStepTimer = Timer.periodic(
+      const Duration(seconds: 3, milliseconds: 500),
+      (_) {
+        if (!mounted) return;
+        final nextStep = (_currentStep + 1) % _slides.length;
+        _goToPage(nextStep);
+      },
+    );
   }
 
   void _goToPage(int pageIndex) {
@@ -127,9 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           // Navigate directly to Dashboard Screen
           Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (_) => const DashboardScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => const DashboardScreen()),
           );
         }
       }
@@ -154,14 +155,20 @@ class _LoginScreenState extends State<LoginScreen> {
     await Future.delayed(const Duration(milliseconds: 1200));
     if (mounted) {
       setState(() => _isAppleLoading = false);
-      DSSnackbar.show(context, message: 'Apple Sign-in successful!', variant: DSSnackbarVariant.success);
+      DSSnackbar.show(
+        context,
+        message: 'Apple Sign-in successful!',
+        variant: DSSnackbarVariant.success,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? AppColors.darkBackground : AppColors.lightBackground;
+    final backgroundColor = isDark
+        ? AppColors.darkBackground
+        : AppColors.lightBackground;
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -171,11 +178,11 @@ class _LoginScreenState extends State<LoginScreen> {
             return SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
-                ),
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -187,11 +194,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (details.primaryVelocity != null) {
                             if (details.primaryVelocity! < -150) {
                               // Swipe Left -> Next Slide
-                              final nextStep = (_currentStep + 1) % _slides.length;
+                              final nextStep =
+                                  (_currentStep + 1) % _slides.length;
                               _goToPage(nextStep);
                             } else if (details.primaryVelocity! > 150) {
                               // Swipe Right -> Previous Slide
-                              final prevStep = (_currentStep - 1 + _slides.length) % _slides.length;
+                              final prevStep =
+                                  (_currentStep - 1 + _slides.length) %
+                                  _slides.length;
                               _goToPage(prevStep);
                             }
                           }
@@ -263,7 +273,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             fullWidth: true,
                             isPill: true,
                             isLoading: _isGoogleLoading,
-                            leftIcon: const FaIcon(FontAwesomeIcons.google, size: 20.0),
+                            leftIcon: const FaIcon(
+                              FontAwesomeIcons.google,
+                              size: 20.0,
+                            ),
                             onPressed: _handleGoogleClick,
                           ),
 

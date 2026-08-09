@@ -31,7 +31,10 @@ class _DSButtonPageState extends State<DSButtonPage> {
   void _logTap() {
     setState(() {
       final time = DateTime.now().toString().split(' ')[1].substring(0, 8);
-      _tapLogs.insert(0, '[$time] DSButton tapped! (variant: ${_selectedVariant.name}, size: ${_selectedSize.name})');
+      _tapLogs.insert(
+        0,
+        '[$time] DSButton tapped! (variant: ${_selectedVariant.name}, size: ${_selectedSize.name})',
+      );
       if (_tapLogs.length > 8) _tapLogs.removeLast();
     });
   }
@@ -40,7 +43,8 @@ class _DSButtonPageState extends State<DSButtonPage> {
   Widget build(BuildContext context) {
     return ComponentPageWrapper(
       title: 'DSButton',
-      subtitle: 'Interactive button component with 5 variants, 3 sizes, micro-animations & loading states',
+      subtitle:
+          'Interactive button component with 5 variants, 3 sizes, micro-animations & loading states',
       category: 'Components',
       themeController: widget.themeController,
       onBackToOverview: widget.onBackToOverview,
@@ -67,10 +71,23 @@ class _DSButtonPageState extends State<DSButtonPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Live Preview', style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+                  Text(
+                    'Live Preview',
+                    style: AppTypography.h3.copyWith(
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                  ),
                   DSBadge(
-                    label: _disabled ? 'Disabled' : (_isLoading ? 'Loading State' : 'Interactive'),
-                    variant: _disabled ? DSBadgeVariant.neutral : (_isLoading ? DSBadgeVariant.warning : DSBadgeVariant.success),
+                    label: _disabled
+                        ? 'Disabled'
+                        : (_isLoading ? 'Loading State' : 'Interactive'),
+                    variant: _disabled
+                        ? DSBadgeVariant.neutral
+                        : (_isLoading
+                              ? DSBadgeVariant.warning
+                              : DSBadgeVariant.success),
                   ),
                 ],
               ),
@@ -79,9 +96,15 @@ class _DSButtonPageState extends State<DSButtonPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
+                  color: isDark
+                      ? AppColors.darkSurfaceVariant
+                      : AppColors.lightSurfaceVariant,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
+                  ),
                 ),
                 child: Center(
                   child: AnimatedContainer(
@@ -94,8 +117,12 @@ class _DSButtonPageState extends State<DSButtonPage> {
                       isLoading: _isLoading,
                       disabled: _disabled,
                       fullWidth: _fullWidth,
-                      leftIcon: _showLeftIcon ? const Icon(Icons.flash_on_rounded) : null,
-                      rightIcon: _showRightIcon ? const Icon(Icons.arrow_forward_rounded) : null,
+                      leftIcon: _showLeftIcon
+                          ? const Icon(Icons.flash_on_rounded)
+                          : null,
+                      rightIcon: _showRightIcon
+                          ? const Icon(Icons.arrow_forward_rounded)
+                          : null,
                       onPressed: _logTap,
                     ),
                   ),
@@ -118,19 +145,35 @@ class _DSButtonPageState extends State<DSButtonPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Controls & Configuration', style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+                    Text(
+                      'Controls & Configuration',
+                      style: AppTypography.h3.copyWith(
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
+                      ),
+                    ),
                     AppSpacing.gapVerticalMd,
 
                     // Label Input
                     DSInput(
                       label: 'Button Text Label',
                       controller: TextEditingController(text: _buttonText),
-                      onChanged: (val) => setState(() => _buttonText = val.isEmpty ? 'Button' : val),
+                      onChanged: (val) => setState(
+                        () => _buttonText = val.isEmpty ? 'Button' : val,
+                      ),
                     ),
                     AppSpacing.gapVerticalMd,
 
                     // Variant Selector
-                    Text('Variant', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+                    Text(
+                      'Variant',
+                      style: AppTypography.label.copyWith(
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
+                    ),
                     AppSpacing.gapVerticalXs,
                     Wrap(
                       spacing: AppSpacing.xs,
@@ -141,15 +184,29 @@ class _DSButtonPageState extends State<DSButtonPage> {
                           label: Text(v.name),
                           selected: isSelected,
                           selectedColor: AppColors.primary,
-                          labelStyle: TextStyle(color: isSelected ? Colors.white : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
-                          onSelected: (_) => setState(() => _selectedVariant = v),
+                          labelStyle: TextStyle(
+                            color: isSelected
+                                ? Colors.white
+                                : (isDark
+                                      ? AppColors.darkTextPrimary
+                                      : AppColors.lightTextPrimary),
+                          ),
+                          onSelected: (_) =>
+                              setState(() => _selectedVariant = v),
                         );
                       }).toList(),
                     ),
                     AppSpacing.gapVerticalMd,
 
                     // Size Selector
-                    Text('Size', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+                    Text(
+                      'Size',
+                      style: AppTypography.label.copyWith(
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
+                    ),
                     AppSpacing.gapVerticalXs,
                     Wrap(
                       spacing: AppSpacing.xs,
@@ -159,7 +216,13 @@ class _DSButtonPageState extends State<DSButtonPage> {
                           label: Text(s.name.toUpperCase()),
                           selected: isSelected,
                           selectedColor: AppColors.primary,
-                          labelStyle: TextStyle(color: isSelected ? Colors.white : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+                          labelStyle: TextStyle(
+                            color: isSelected
+                                ? Colors.white
+                                : (isDark
+                                      ? AppColors.darkTextPrimary
+                                      : AppColors.lightTextPrimary),
+                          ),
                           onSelected: (_) => setState(() => _selectedSize = s),
                         );
                       }).toList(),
@@ -167,7 +230,14 @@ class _DSButtonPageState extends State<DSButtonPage> {
                     AppSpacing.gapVerticalMd,
 
                     // Boolean Toggles
-                    Text('States & Icons', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+                    Text(
+                      'States & Icons',
+                      style: AppTypography.label.copyWith(
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
+                    ),
                     SwitchListTile(
                       title: const Text('Loading Spinner'),
                       subtitle: const Text('Shows active loading indicator'),
@@ -213,10 +283,20 @@ class _DSButtonPageState extends State<DSButtonPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Event Console Log', style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+                        Text(
+                          'Event Console Log',
+                          style: AppTypography.h3.copyWith(
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                          ),
+                        ),
                         if (_tapLogs.isNotEmpty)
                           IconButton(
-                            icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                            icon: const Icon(
+                              Icons.delete_outline_rounded,
+                              size: 18,
+                            ),
                             onPressed: () => setState(() => _tapLogs.clear()),
                             tooltip: 'Clear Logs',
                           ),
@@ -227,14 +307,22 @@ class _DSButtonPageState extends State<DSButtonPage> {
                       height: 320,
                       padding: const EdgeInsets.all(AppSpacing.md),
                       decoration: BoxDecoration(
-                        color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                        color: isDark
+                            ? AppColors.darkSurfaceVariant
+                            : AppColors.lightSurfaceVariant,
+                        borderRadius: BorderRadius.circular(
+                          AppSpacing.radiusSm,
+                        ),
                       ),
                       child: _tapLogs.isEmpty
                           ? Center(
                               child: Text(
                                 'Click the button in live preview to log press events...',
-                                style: AppTypography.caption.copyWith(color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted),
+                                style: AppTypography.caption.copyWith(
+                                  color: isDark
+                                      ? AppColors.darkTextMuted
+                                      : AppColors.lightTextMuted,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             )
@@ -242,12 +330,16 @@ class _DSButtonPageState extends State<DSButtonPage> {
                               itemCount: _tapLogs.length,
                               itemBuilder: (context, index) {
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 2.0),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 2.0,
+                                  ),
                                   child: Text(
                                     _tapLogs[index],
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: isDark ? AppColors.success : AppColors.primaryHover,
+                                      color: isDark
+                                          ? AppColors.success
+                                          : AppColors.primaryHover,
                                     ),
                                   ),
                                 );
@@ -271,9 +363,23 @@ class _DSButtonPageState extends State<DSButtonPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Variant & Size Matrix', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'Variant & Size Matrix',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalSm,
-        Text('Inspect all 5 button variants across all 3 sizes side-by-side.', style: AppTypography.bodyMd.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+        Text(
+          'Inspect all 5 button variants across all 3 sizes side-by-side.',
+          style: AppTypography.bodyMd.copyWith(
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
+          ),
+        ),
         AppSpacing.gapVerticalLg,
 
         DSCard(
@@ -287,9 +393,19 @@ class _DSButtonPageState extends State<DSButtonPage> {
                   children: [
                     Row(
                       children: [
-                        DSBadge(label: v.name.toUpperCase(), variant: DSBadgeVariant.primary),
+                        DSBadge(
+                          label: v.name.toUpperCase(),
+                          variant: DSBadgeVariant.primary,
+                        ),
                         AppSpacing.gapHorizontalSm,
-                        Text('${v.name} Variant', style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+                        Text(
+                          '${v.name} Variant',
+                          style: AppTypography.h3.copyWith(
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                          ),
+                        ),
                       ],
                     ),
                     AppSpacing.gapVerticalMd,
@@ -298,9 +414,24 @@ class _DSButtonPageState extends State<DSButtonPage> {
                       runSpacing: AppSpacing.md,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        DSButton(text: '${v.name} Small', variant: v, size: DSButtonSize.sm, onPressed: () {}),
-                        DSButton(text: '${v.name} Medium', variant: v, size: DSButtonSize.md, onPressed: () {}),
-                        DSButton(text: '${v.name} Large', variant: v, size: DSButtonSize.lg, onPressed: () {}),
+                        DSButton(
+                          text: '${v.name} Small',
+                          variant: v,
+                          size: DSButtonSize.sm,
+                          onPressed: () {},
+                        ),
+                        DSButton(
+                          text: '${v.name} Medium',
+                          variant: v,
+                          size: DSButtonSize.md,
+                          onPressed: () {},
+                        ),
+                        DSButton(
+                          text: '${v.name} Large',
+                          variant: v,
+                          size: DSButtonSize.lg,
+                          onPressed: () {},
+                        ),
                       ],
                     ),
                     const Divider(height: 32),
@@ -312,7 +443,14 @@ class _DSButtonPageState extends State<DSButtonPage> {
         ),
 
         AppSpacing.gapVerticalLg,
-        Text('States Matrix (Loading & Disabled)', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'States Matrix (Loading & Disabled)',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalMd,
 
         DSCard(
@@ -324,25 +462,58 @@ class _DSButtonPageState extends State<DSButtonPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Loading State (Primary)', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+                  Text(
+                    'Loading State (Primary)',
+                    style: AppTypography.label.copyWith(
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                    ),
+                  ),
                   AppSpacing.gapVerticalSm,
-                  const DSButton(text: 'Saving Data...', isLoading: true, variant: DSButtonVariant.primary),
+                  const DSButton(
+                    text: 'Saving Data...',
+                    isLoading: true,
+                    variant: DSButtonVariant.primary,
+                  ),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Loading State (Danger)', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+                  Text(
+                    'Loading State (Danger)',
+                    style: AppTypography.label.copyWith(
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                    ),
+                  ),
                   AppSpacing.gapVerticalSm,
-                  const DSButton(text: 'Deleting...', isLoading: true, variant: DSButtonVariant.danger),
+                  const DSButton(
+                    text: 'Deleting...',
+                    isLoading: true,
+                    variant: DSButtonVariant.danger,
+                  ),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Disabled State', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+                  Text(
+                    'Disabled State',
+                    style: AppTypography.label.copyWith(
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
+                    ),
+                  ),
                   AppSpacing.gapVerticalSm,
-                  const DSButton(text: 'Cannot Click', disabled: true, variant: DSButtonVariant.primary),
+                  const DSButton(
+                    text: 'Cannot Click',
+                    disabled: true,
+                    variant: DSButtonVariant.primary,
+                  ),
                 ],
               ),
             ],
@@ -356,7 +527,8 @@ class _DSButtonPageState extends State<DSButtonPage> {
   Widget _buildCodeSnippet(BuildContext context) {
     final isDark = widget.themeController.isDarkMode;
 
-    final code = '''
+    final code =
+        '''
 DSButton(
   text: '$_buttonText',
   variant: DSButtonVariant.${_selectedVariant.name},
@@ -378,14 +550,25 @@ DSButton(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Generated Flutter Code', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+            Text(
+              'Generated Flutter Code',
+              style: AppTypography.h2.copyWith(
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
+              ),
+            ),
             DSButton(
               text: 'Copy Code',
               variant: DSButtonVariant.outline,
               size: DSButtonSize.sm,
               leftIcon: const Icon(Icons.copy_rounded, size: 14),
               onPressed: () {
-                DSSnackbar.show(context, message: 'Code copied to clipboard!', variant: DSSnackbarVariant.success);
+                DSSnackbar.show(
+                  context,
+                  message: 'Code copied to clipboard!',
+                  variant: DSSnackbarVariant.success,
+                );
               },
             ),
           ],
@@ -418,21 +601,75 @@ DSButton(
     final isDark = widget.themeController.isDarkMode;
 
     final props = [
-      {'name': 'text', 'type': 'String', 'default': 'required', 'desc': 'Button text label display.'},
-      {'name': 'onPressed', 'type': 'VoidCallback?', 'default': 'null', 'desc': 'Callback function when clicked. If null, button is disabled.'},
-      {'name': 'variant', 'type': 'DSButtonVariant', 'default': 'primary', 'desc': 'Visual variant: primary, secondary, outline, ghost, danger.'},
-      {'name': 'size', 'type': 'DSButtonSize', 'default': 'md', 'desc': 'Button sizing height & padding: sm (36px), md (44px), lg (52px).'},
-      {'name': 'isLoading', 'type': 'bool', 'default': 'false', 'desc': 'Shows inline progress spinner and disables interactions.'},
-      {'name': 'disabled', 'type': 'bool', 'default': 'false', 'desc': 'Disables click events and applies muted background/text colors.'},
-      {'name': 'leftIcon', 'type': 'Widget?', 'default': 'null', 'desc': 'Optional icon widget rendered left of the text.'},
-      {'name': 'rightIcon', 'type': 'Widget?', 'default': 'null', 'desc': 'Optional icon widget rendered right of the text.'},
-      {'name': 'fullWidth', 'type': 'bool', 'default': 'false', 'desc': 'If true, button stretches to fill available horizontal width.'},
+      {
+        'name': 'text',
+        'type': 'String',
+        'default': 'required',
+        'desc': 'Button text label display.',
+      },
+      {
+        'name': 'onPressed',
+        'type': 'VoidCallback?',
+        'default': 'null',
+        'desc': 'Callback function when clicked. If null, button is disabled.',
+      },
+      {
+        'name': 'variant',
+        'type': 'DSButtonVariant',
+        'default': 'primary',
+        'desc': 'Visual variant: primary, secondary, outline, ghost, danger.',
+      },
+      {
+        'name': 'size',
+        'type': 'DSButtonSize',
+        'default': 'md',
+        'desc':
+            'Button sizing height & padding: sm (36px), md (44px), lg (52px).',
+      },
+      {
+        'name': 'isLoading',
+        'type': 'bool',
+        'default': 'false',
+        'desc': 'Shows inline progress spinner and disables interactions.',
+      },
+      {
+        'name': 'disabled',
+        'type': 'bool',
+        'default': 'false',
+        'desc':
+            'Disables click events and applies muted background/text colors.',
+      },
+      {
+        'name': 'leftIcon',
+        'type': 'Widget?',
+        'default': 'null',
+        'desc': 'Optional icon widget rendered left of the text.',
+      },
+      {
+        'name': 'rightIcon',
+        'type': 'Widget?',
+        'default': 'null',
+        'desc': 'Optional icon widget rendered right of the text.',
+      },
+      {
+        'name': 'fullWidth',
+        'type': 'bool',
+        'default': 'false',
+        'desc': 'If true, button stretches to fill available horizontal width.',
+      },
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('API Reference & Properties', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'API Reference & Properties',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalMd,
         DSCard(
           variant: DSCardVariant.elevated,
@@ -441,30 +678,111 @@ DSButton(
             children: [
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
-                color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
+                color: isDark
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.lightSurfaceVariant,
                 child: Row(
                   children: [
-                    Expanded(flex: 2, child: Text('PROPERTY', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 2, child: Text('TYPE', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 2, child: Text('DEFAULT', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 4, child: Text('DESCRIPTION', style: AppTypography.label.copyWith(color: AppColors.primary))),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'PROPERTY',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'TYPE',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'DEFAULT',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        'DESCRIPTION',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              ...props.map((p) => Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder)),
+              ...props.map(
+                (p) => Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['name']!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['type']!,
+                          style: TextStyle(
+                            color: isDark
+                                ? AppColors.secondary
+                                : AppColors.primaryHover,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['default']!,
+                          style: const TextStyle(
+                            fontFamily: 'monospace',
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: Text(
+                          p['desc']!,
+                          style: AppTypography.bodySm.copyWith(
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(flex: 2, child: Text(p['name']!, style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'monospace'))),
-                    Expanded(flex: 2, child: Text(p['type']!, style: TextStyle(color: isDark ? AppColors.secondary : AppColors.primaryHover, fontFamily: 'monospace'))),
-                    Expanded(flex: 2, child: Text(p['default']!, style: const TextStyle(fontFamily: 'monospace', color: Colors.grey))),
-                    Expanded(flex: 4, child: Text(p['desc']!, style: AppTypography.bodySm.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary))),
-                  ],
-                ),
-              )),
+              ),
             ],
           ),
         ),

@@ -71,7 +71,10 @@ class _HeroIllustrationPainter extends CustomPainter {
     );
 
     // Laptop Body (filled dark rectangle for laptop lid in image)
-    final RRect laptopRRect = RRect.fromRectAndRadius(laptopRect, const Radius.circular(6.0));
+    final RRect laptopRRect = RRect.fromRectAndRadius(
+      laptopRect,
+      const Radius.circular(6.0),
+    );
     canvas.drawRRect(laptopRRect, fillDarkPaint);
 
     // Laptop Logo Dot
@@ -79,11 +82,7 @@ class _HeroIllustrationPainter extends CustomPainter {
 
     // Laptop Base Line / Desk
     final double deskY = laptopTop + laptopH + 4;
-    canvas.drawLine(
-      Offset(cx - 90, deskY),
-      Offset(cx + 90, deskY),
-      linePaint,
-    );
+    canvas.drawLine(Offset(cx - 90, deskY), Offset(cx + 90, deskY), linePaint);
 
     // Desk shadow oval under laptop base
     canvas.drawOval(
@@ -91,7 +90,11 @@ class _HeroIllustrationPainter extends CustomPainter {
       fillDarkPaint,
     );
     canvas.drawOval(
-      Rect.fromCenter(center: Offset(cx + 45, deskY + 10), width: 18, height: 5),
+      Rect.fromCenter(
+        center: Offset(cx + 45, deskY + 10),
+        width: 18,
+        height: 5,
+      ),
       linePaint,
     );
 
@@ -182,7 +185,11 @@ class _HeroIllustrationPainter extends CustomPainter {
     final double glassR = 7.0;
     canvas.drawCircle(Offset(cx - 9, headY - 2), glassR, linePaint);
     canvas.drawCircle(Offset(cx + 9, headY - 2), glassR, linePaint);
-    canvas.drawLine(Offset(cx - 2, headY - 2), Offset(cx + 2, headY - 2), linePaint);
+    canvas.drawLine(
+      Offset(cx - 2, headY - 2),
+      Offset(cx + 2, headY - 2),
+      linePaint,
+    );
 
     // Eyes (Dots inside glasses)
     canvas.drawCircle(Offset(cx - 9, headY - 2), 1.8, fillDarkPaint);
@@ -204,11 +211,19 @@ class _HeroIllustrationPainter extends CustomPainter {
 
     // Ear Cups (Rectangles / Pill shapes on sides of head)
     final RRect leftCup = RRect.fromRectAndRadius(
-      Rect.fromCenter(center: Offset(cx - headR - 5, headY - 2), width: 12, height: 24),
+      Rect.fromCenter(
+        center: Offset(cx - headR - 5, headY - 2),
+        width: 12,
+        height: 24,
+      ),
       const Radius.circular(5),
     );
     final RRect rightCup = RRect.fromRectAndRadius(
-      Rect.fromCenter(center: Offset(cx + headR + 5, headY - 2), width: 12, height: 24),
+      Rect.fromCenter(
+        center: Offset(cx + headR + 5, headY - 2),
+        width: 12,
+        height: 24,
+      ),
       const Radius.circular(5),
     );
     canvas.drawRRect(leftCup, fillPaint);

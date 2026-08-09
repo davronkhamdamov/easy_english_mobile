@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 class DSGoogleLogo extends StatelessWidget {
   final double size;
 
-  const DSGoogleLogo({
-    super.key,
-    this.size = 20.0,
-  });
+  const DSGoogleLogo({super.key, this.size = 20.0});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +23,7 @@ class CustomPainterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(size, size),
-      painter: _GoogleLogoPainter(),
-    );
+    return CustomPaint(size: Size(size, size), painter: _GoogleLogoPainter());
   }
 }
 
@@ -39,7 +33,10 @@ class _GoogleLogoPainter extends CustomPainter {
     final double center = size.width / 2;
     final double radius = size.width / 2;
     final double strokeWidth = size.width * 0.22;
-    final Rect rect = Rect.fromCircle(center: Offset(center, center), radius: radius - (strokeWidth / 2));
+    final Rect rect = Rect.fromCircle(
+      center: Offset(center, center),
+      radius: radius - (strokeWidth / 2),
+    );
 
     final Paint paint = Paint()
       ..style = PaintingStyle.stroke
@@ -66,7 +63,7 @@ class _GoogleLogoPainter extends CustomPainter {
     final Paint fillPaint = Paint()
       ..color = const Color(0xFF4285F4)
       ..style = PaintingStyle.fill;
-    
+
     final double barHeight = strokeWidth * 0.9;
     canvas.drawRect(
       Rect.fromLTWH(

@@ -7,7 +7,8 @@ import '../theme/app_colors.dart';
 /// Floating overlay button for launching the API Debugger Inspector from anywhere in the app.
 class ApiDebuggerOverlay extends StatefulWidget {
   /// Global navigator key to allow pushing routes from outside the Navigator tree
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
   final Widget child;
 
@@ -32,9 +33,7 @@ class _ApiDebuggerOverlayState extends State<ApiDebuggerOverlay> {
     final navState = ApiDebuggerOverlay.navigatorKey.currentState;
     if (navState != null) {
       navState.push(
-        MaterialPageRoute(
-          builder: (context) => const ApiDebuggerScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const ApiDebuggerScreen()),
       );
       return;
     }
@@ -42,9 +41,7 @@ class _ApiDebuggerOverlayState extends State<ApiDebuggerOverlay> {
     // 2. Fallback to searching context up the widget tree
     try {
       Navigator.of(context, rootNavigator: true).push(
-        MaterialPageRoute(
-          builder: (context) => const ApiDebuggerScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const ApiDebuggerScreen()),
       );
     } catch (e) {
       debugPrint('ApiDebuggerOverlay navigator error: $e');
@@ -93,7 +90,10 @@ class _ApiDebuggerOverlayState extends State<ApiDebuggerOverlay> {
                   final pendingCount = logs.where((l) => l.isPending).length;
 
                   return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: errorCount > 0
@@ -105,8 +105,11 @@ class _ApiDebuggerOverlayState extends State<ApiDebuggerOverlay> {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: (errorCount > 0 ? AppColors.danger : AppColors.primary)
-                              .withValues(alpha: 0.4),
+                          color:
+                              (errorCount > 0
+                                      ? AppColors.danger
+                                      : AppColors.primary)
+                                  .withValues(alpha: 0.4),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -132,7 +135,10 @@ class _ApiDebuggerOverlayState extends State<ApiDebuggerOverlay> {
                         if (errorCount > 0) ...[
                           const SizedBox(width: 6),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
                             decoration: const BoxDecoration(
                               color: Colors.yellowAccent,
                               shape: BoxShape.circle,
@@ -153,7 +159,9 @@ class _ApiDebuggerOverlayState extends State<ApiDebuggerOverlay> {
                             height: 10,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
                           ),
                         ],

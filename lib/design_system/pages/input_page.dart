@@ -38,7 +38,8 @@ class _DSInputPageState extends State<DSInputPage> {
   Widget build(BuildContext context) {
     return ComponentPageWrapper(
       title: 'DSInput',
-      subtitle: 'Form field component supporting text, password, email, search with focus glow & validation states',
+      subtitle:
+          'Form field component supporting text, password, email, search with focus glow & validation states',
       category: 'Components',
       themeController: widget.themeController,
       onBackToOverview: widget.onBackToOverview,
@@ -65,10 +66,23 @@ class _DSInputPageState extends State<DSInputPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Live Preview', style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+                  Text(
+                    'Live Preview',
+                    style: AppTypography.h3.copyWith(
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                  ),
                   DSBadge(
-                    label: _disabled ? 'Disabled' : (_showError ? 'Validation Error' : 'Active'),
-                    variant: _disabled ? DSBadgeVariant.neutral : (_showError ? DSBadgeVariant.danger : DSBadgeVariant.success),
+                    label: _disabled
+                        ? 'Disabled'
+                        : (_showError ? 'Validation Error' : 'Active'),
+                    variant: _disabled
+                        ? DSBadgeVariant.neutral
+                        : (_showError
+                              ? DSBadgeVariant.danger
+                              : DSBadgeVariant.success),
                   ),
                 ],
               ),
@@ -77,9 +91,15 @@ class _DSInputPageState extends State<DSInputPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
+                  color: isDark
+                      ? AppColors.darkSurfaceVariant
+                      : AppColors.lightSurfaceVariant,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
+                  ),
                 ),
                 child: DSInput(
                   label: _label,
@@ -96,19 +116,34 @@ class _DSInputPageState extends State<DSInputPage> {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+                  color: isDark
+                      ? AppColors.darkSurface
+                      : AppColors.lightSurface,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline_rounded, size: 16, color: AppColors.primary),
+                    const Icon(
+                      Icons.info_outline_rounded,
+                      size: 16,
+                      color: AppColors.primary,
+                    ),
                     AppSpacing.gapHorizontalSm,
-                    Text('Current Value: ', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+                    Text(
+                      'Current Value: ',
+                      style: AppTypography.label.copyWith(
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
+                    ),
                     Expanded(
                       child: Text(
                         _currentValue.isEmpty ? '(Empty)' : _currentValue,
                         style: AppTypography.bodySm.copyWith(
-                          color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -127,11 +162,25 @@ class _DSInputPageState extends State<DSInputPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Field Configuration & State', style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+              Text(
+                'Field Configuration & State',
+                style: AppTypography.h3.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
+                ),
+              ),
               AppSpacing.gapVerticalMd,
 
               // Type Choice Chips
-              Text('Input Type', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+              Text(
+                'Input Type',
+                style: AppTypography.label.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+                ),
+              ),
               AppSpacing.gapVerticalXs,
               Wrap(
                 spacing: AppSpacing.xs,
@@ -141,7 +190,13 @@ class _DSInputPageState extends State<DSInputPage> {
                     label: Text(t.name.toUpperCase()),
                     selected: isSelected,
                     selectedColor: AppColors.primary,
-                    labelStyle: TextStyle(color: isSelected ? Colors.white : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+                    labelStyle: TextStyle(
+                      color: isSelected
+                          ? Colors.white
+                          : (isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary),
+                    ),
                     onSelected: (_) => setState(() => _selectedType = t),
                   );
                 }).toList(),
@@ -192,7 +247,9 @@ class _DSInputPageState extends State<DSInputPage> {
 
               SwitchListTile(
                 title: const Text('Trigger Validation Error'),
-                subtitle: const Text('Toggles glowing red border and animated error message reveal'),
+                subtitle: const Text(
+                  'Toggles glowing red border and animated error message reveal',
+                ),
                 value: _showError,
                 onChanged: (val) => setState(() => _showError = val),
               ),
@@ -216,9 +273,23 @@ class _DSInputPageState extends State<DSInputPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Input Variant Types Showcase', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'Input Variant Types Showcase',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalSm,
-        Text('Explore all built-in input field configurations and interactive states.', style: AppTypography.bodyMd.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+        Text(
+          'Explore all built-in input field configurations and interactive states.',
+          style: AppTypography.bodyMd.copyWith(
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
+          ),
+        ),
         AppSpacing.gapVerticalLg,
 
         DSCard(
@@ -278,7 +349,8 @@ class _DSInputPageState extends State<DSInputPage> {
   Widget _buildCodeSnippet(BuildContext context) {
     final isDark = widget.themeController.isDarkMode;
 
-    final code = '''
+    final code =
+        '''
 DSInput(
   label: '$_label',
   placeholder: '$_placeholder',
@@ -298,14 +370,25 @@ DSInput(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Generated Flutter Code', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+            Text(
+              'Generated Flutter Code',
+              style: AppTypography.h2.copyWith(
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
+              ),
+            ),
             DSButton(
               text: 'Copy Code',
               variant: DSButtonVariant.outline,
               size: DSButtonSize.sm,
               leftIcon: const Icon(Icons.copy_rounded, size: 14),
               onPressed: () {
-                DSSnackbar.show(context, message: 'Input code copied to clipboard!', variant: DSSnackbarVariant.success);
+                DSSnackbar.show(
+                  context,
+                  message: 'Input code copied to clipboard!',
+                  variant: DSSnackbarVariant.success,
+                );
               },
             ),
           ],
@@ -338,22 +421,82 @@ DSInput(
     final isDark = widget.themeController.isDarkMode;
 
     final props = [
-      {'name': 'label', 'type': 'String?', 'default': 'null', 'desc': 'Top label text for the input field.'},
-      {'name': 'placeholder', 'type': 'String?', 'default': 'null', 'desc': 'Hint placeholder text displayed when empty.'},
-      {'name': 'helperText', 'type': 'String?', 'default': 'null', 'desc': 'Subtext instruction below the input field.'},
-      {'name': 'errorText', 'type': 'String?', 'default': 'null', 'desc': 'Error message text. When provided, field turns red with focus glow.'},
-      {'name': 'type', 'type': 'DSInputType', 'default': 'text', 'desc': 'Input variant: text, password, email, search.'},
-      {'name': 'disabled', 'type': 'bool', 'default': 'false', 'desc': 'Disables text editing and applies muted surface colors.'},
-      {'name': 'leftIcon', 'type': 'Widget?', 'default': 'auto', 'desc': 'Custom icon prefix widget (auto-inferred for email/search/password).'},
-      {'name': 'rightIcon', 'type': 'Widget?', 'default': 'auto', 'desc': 'Custom icon suffix widget (auto-inferred for password toggle & search clear).'},
-      {'name': 'controller', 'type': 'TextEditingController?', 'default': 'null', 'desc': 'Optional external TextEditingController.'},
-      {'name': 'onChanged', 'type': 'ValueChanged<String>?', 'default': 'null', 'desc': 'Callback invoked whenever text changes.'},
+      {
+        'name': 'label',
+        'type': 'String?',
+        'default': 'null',
+        'desc': 'Top label text for the input field.',
+      },
+      {
+        'name': 'placeholder',
+        'type': 'String?',
+        'default': 'null',
+        'desc': 'Hint placeholder text displayed when empty.',
+      },
+      {
+        'name': 'helperText',
+        'type': 'String?',
+        'default': 'null',
+        'desc': 'Subtext instruction below the input field.',
+      },
+      {
+        'name': 'errorText',
+        'type': 'String?',
+        'default': 'null',
+        'desc':
+            'Error message text. When provided, field turns red with focus glow.',
+      },
+      {
+        'name': 'type',
+        'type': 'DSInputType',
+        'default': 'text',
+        'desc': 'Input variant: text, password, email, search.',
+      },
+      {
+        'name': 'disabled',
+        'type': 'bool',
+        'default': 'false',
+        'desc': 'Disables text editing and applies muted surface colors.',
+      },
+      {
+        'name': 'leftIcon',
+        'type': 'Widget?',
+        'default': 'auto',
+        'desc':
+            'Custom icon prefix widget (auto-inferred for email/search/password).',
+      },
+      {
+        'name': 'rightIcon',
+        'type': 'Widget?',
+        'default': 'auto',
+        'desc':
+            'Custom icon suffix widget (auto-inferred for password toggle & search clear).',
+      },
+      {
+        'name': 'controller',
+        'type': 'TextEditingController?',
+        'default': 'null',
+        'desc': 'Optional external TextEditingController.',
+      },
+      {
+        'name': 'onChanged',
+        'type': 'ValueChanged<String>?',
+        'default': 'null',
+        'desc': 'Callback invoked whenever text changes.',
+      },
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('API Reference & Properties', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'API Reference & Properties',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalMd,
         DSCard(
           variant: DSCardVariant.elevated,
@@ -362,30 +505,111 @@ DSInput(
             children: [
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
-                color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
+                color: isDark
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.lightSurfaceVariant,
                 child: Row(
                   children: [
-                    Expanded(flex: 2, child: Text('PROPERTY', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 2, child: Text('TYPE', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 2, child: Text('DEFAULT', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 4, child: Text('DESCRIPTION', style: AppTypography.label.copyWith(color: AppColors.primary))),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'PROPERTY',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'TYPE',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'DEFAULT',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        'DESCRIPTION',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              ...props.map((p) => Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder)),
+              ...props.map(
+                (p) => Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['name']!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['type']!,
+                          style: TextStyle(
+                            color: isDark
+                                ? AppColors.secondary
+                                : AppColors.primaryHover,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['default']!,
+                          style: const TextStyle(
+                            fontFamily: 'monospace',
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: Text(
+                          p['desc']!,
+                          style: AppTypography.bodySm.copyWith(
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(flex: 2, child: Text(p['name']!, style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'monospace'))),
-                    Expanded(flex: 2, child: Text(p['type']!, style: TextStyle(color: isDark ? AppColors.secondary : AppColors.primaryHover, fontFamily: 'monospace'))),
-                    Expanded(flex: 2, child: Text(p['default']!, style: const TextStyle(fontFamily: 'monospace', color: Colors.grey))),
-                    Expanded(flex: 4, child: Text(p['desc']!, style: AppTypography.bodySm.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary))),
-                  ],
-                ),
-              )),
+              ),
             ],
           ),
         ),
@@ -393,4 +617,3 @@ DSInput(
     );
   }
 }
-

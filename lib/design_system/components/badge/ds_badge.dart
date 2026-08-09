@@ -45,8 +45,12 @@ class DSBadge extends StatelessWidget {
         fg = AppColors.danger;
         break;
       case DSBadgeVariant.neutral:
-        bg = isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant;
-        fg = isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary;
+        bg = isDark
+            ? AppColors.darkSurfaceVariant
+            : AppColors.lightSurfaceVariant;
+        fg = isDark
+            ? AppColors.darkTextSecondary
+            : AppColors.lightTextSecondary;
         break;
     }
 
@@ -57,11 +61,16 @@ class DSBadge extends StatelessWidget {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: AppSpacing.xs - 1),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.sm,
+        vertical: AppSpacing.xs - 1,
+      ),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-        border: border != Colors.transparent ? Border.all(color: border, width: 1.2) : null,
+        border: border != Colors.transparent
+            ? Border.all(color: border, width: 1.2)
+            : null,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

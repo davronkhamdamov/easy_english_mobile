@@ -1,59 +1,44 @@
-import 'dart:convert';
-import '../../../core/auth/api_client.dart';
-import '../../../core/models/user_model.dart';
+import '../domain/repositories/profile_repository.dart';
+import '../data/repositories/profile_repository_impl.dart';
+import '../data/models/user_profile_model.dart';
 
+/// Service wrapper maintaining backward compatibility for Profile API interactions
 class ProfileService {
-  final ApiClient _client = ApiClient();
+  final ProfileRepository _repository;
+
+  ProfileService({ProfileRepository? repository})
+    : _repository = repository ?? ProfileRepositoryImpl();
 
   /// Get Current User Profile (GET /api/v1/user/profile)
-  Future<UserModel> fetchProfile() async {
-    final response = await _client.get('/api/v1/user/profile');
-    if (response.statusCode == 200) {
-      return UserModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
-    } else {
-      throw Exception('Failed to fetch profile (${response.statusCode}): ${response.body}');
-    }
+  Future<UserProfileModel> fetchProfile() {
+    return _repository.fetchProfile();
   }
 
   /// Create / Setup Initial Profile (POST /api/v1/user/profile)
-  Future<UserModel> createProfile({
+  Future<UserProfileModel> createProfile({
     required String fullName,
     String? bio,
     String? avatarUrl,
     String role = 'student',
-  }) async {
-    final response = await _client.post('/api/v1/user/profile', {
-      'full_name': fullName,
-      if (bio != null) 'bio': bio,
-      if (avatarUrl != null) 'avatar_url': avatarUrl,
-      'role': role,
-    });
-
-    if (response.statusCode == 201 || response.statusCode == 200) {
-      return UserModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
-    } else {
-      throw Exception('Failed to create profile (${response.statusCode}): ${response.body}');
-    }
+  }) {
+    return _repository.createProfile(
+      fullName: fullName,
+      bio: bio,
+      avatarUrl: avatarUrl,
+      role: role,
+    );
   }
 
   /// Update Profile (PUT /api/v1/user/profile)
-  Future<UserModel> updateProfile({
+  Future<UserProfileModel> updateProfile({
     String? fullName,
     String? bio,
     String? avatarUrl,
-  }) async {
-    final body = <String, dynamic>{
-      if (fullName != null) 'full_name': fullName,
-      if (bio != null) 'bio': bio,
-      if (avatarUrl != null) 'avatar_url': avatarUrl,
-    };
-
-    final response = await _client.put('/api/v1/user/profile', body);
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      return UserModel.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
-    } else {
-      throw Exception('Failed to update profile (${response.statusCode}): ${response.body}');
-    }
+  }) {
+    return _repository.updateProfile(
+      fullName: fullName,
+      bio: bio,
+      avatarUrl: avatarUrl,
+    );
   }
 }

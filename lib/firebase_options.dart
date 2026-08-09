@@ -58,7 +58,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '807835399839',
     projectId: 'easy-english-67ec4',
     storageBucket: 'easy-english-67ec4.firebasestorage.app',
-    iosClientId: '807835399839-l2u7dcpqkdlegfvu3ku4tkm60lqqobrg.apps.googleusercontent.com',
+    iosClientId:
+        '807835399839-l2u7dcpqkdlegfvu3ku4tkm60lqqobrg.apps.googleusercontent.com',
     iosBundleId: 'uz.cordialsoft.easyenglish',
   );
 }

@@ -17,7 +17,8 @@ class DSSnackbarPage extends StatefulWidget {
 
 class _DSSnackbarPageState extends State<DSSnackbarPage> {
   // Playground State
-  String _message = 'Your speaking practice audio recording was saved successfully!';
+  String _message =
+      'Your speaking practice audio recording was saved successfully!';
   String _title = 'Action Completed';
   DSSnackbarVariant _selectedVariant = DSSnackbarVariant.success;
   double _durationSeconds = 4.0;
@@ -26,7 +27,8 @@ class _DSSnackbarPageState extends State<DSSnackbarPage> {
   Widget build(BuildContext context) {
     return ComponentPageWrapper(
       title: 'DSSnackbar',
-      subtitle: 'Floating notification system with success, warning, danger & info variants',
+      subtitle:
+          'Floating notification system with success, warning, danger & info variants',
       category: 'Components',
       themeController: widget.themeController,
       onBackToOverview: widget.onBackToOverview,
@@ -53,8 +55,18 @@ class _DSSnackbarPageState extends State<DSSnackbarPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Toast Notification Trigger', style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
-                  DSBadge(label: _selectedVariant.name.toUpperCase(), variant: _getBadgeVariant(_selectedVariant)),
+                  Text(
+                    'Toast Notification Trigger',
+                    style: AppTypography.h3.copyWith(
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                  ),
+                  DSBadge(
+                    label: _selectedVariant.name.toUpperCase(),
+                    variant: _getBadgeVariant(_selectedVariant),
+                  ),
                 ],
               ),
               AppSpacing.gapVerticalLg,
@@ -62,15 +74,25 @@ class _DSSnackbarPageState extends State<DSSnackbarPage> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
+                  color: isDark
+                      ? AppColors.darkSurfaceVariant
+                      : AppColors.lightSurfaceVariant,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
+                  ),
                 ),
                 child: Column(
                   children: [
                     Text(
                       'Click below to trigger live floating snackbar toast',
-                      style: AppTypography.bodyMd.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                      style: AppTypography.bodyMd.copyWith(
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
                     ),
                     AppSpacing.gapVerticalLg,
                     DSButton(
@@ -102,11 +124,25 @@ class _DSSnackbarPageState extends State<DSSnackbarPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Snackbar Customization', style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+              Text(
+                'Snackbar Customization',
+                style: AppTypography.h3.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
+                ),
+              ),
               AppSpacing.gapVerticalMd,
 
               // Variant Selector
-              Text('Notification Variant', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+              Text(
+                'Notification Variant',
+                style: AppTypography.label.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+                ),
+              ),
               AppSpacing.gapVerticalXs,
               Wrap(
                 spacing: AppSpacing.xs,
@@ -116,7 +152,13 @@ class _DSSnackbarPageState extends State<DSSnackbarPage> {
                     label: Text(v.name.toUpperCase()),
                     selected: isSelected,
                     selectedColor: AppColors.primary,
-                    labelStyle: TextStyle(color: isSelected ? Colors.white : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+                    labelStyle: TextStyle(
+                      color: isSelected
+                          ? Colors.white
+                          : (isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary),
+                    ),
                     onSelected: (_) => setState(() => _selectedVariant = v),
                   );
                 }).toList(),
@@ -137,7 +179,14 @@ class _DSSnackbarPageState extends State<DSSnackbarPage> {
               ),
               AppSpacing.gapVerticalMd,
 
-              Text('Auto-Dismiss Duration: ${_durationSeconds.toInt()} Seconds', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+              Text(
+                'Auto-Dismiss Duration: ${_durationSeconds.toInt()} Seconds',
+                style: AppTypography.label.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+                ),
+              ),
               Slider(
                 value: _durationSeconds,
                 min: 1,
@@ -161,9 +210,23 @@ class _DSSnackbarPageState extends State<DSSnackbarPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Variant Quick Triggers', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'Variant Quick Triggers',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalSm,
-        Text('Click any button to trigger live notification variants.', style: AppTypography.bodyMd.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+        Text(
+          'Click any button to trigger live notification variants.',
+          style: AppTypography.bodyMd.copyWith(
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
+          ),
+        ),
         AppSpacing.gapVerticalLg,
 
         Wrap(
@@ -173,45 +236,102 @@ class _DSSnackbarPageState extends State<DSSnackbarPage> {
             DSButton(
               text: 'Trigger Success',
               variant: DSButtonVariant.secondary,
-              leftIcon: const Icon(Icons.check_circle_rounded, color: AppColors.success),
-              onPressed: () => DSSnackbar.show(context, title: 'Success', message: 'Pronunciation score updated to Band 8.0', variant: DSSnackbarVariant.success),
+              leftIcon: const Icon(
+                Icons.check_circle_rounded,
+                color: AppColors.success,
+              ),
+              onPressed: () => DSSnackbar.show(
+                context,
+                title: 'Success',
+                message: 'Pronunciation score updated to Band 8.0',
+                variant: DSSnackbarVariant.success,
+              ),
             ),
             DSButton(
               text: 'Trigger Warning',
               variant: DSButtonVariant.outline,
-              leftIcon: const Icon(Icons.warning_rounded, color: AppColors.warning),
-              onPressed: () => DSSnackbar.show(context, title: 'Warning', message: 'Microphone audio level is slightly quiet', variant: DSSnackbarVariant.warning),
+              leftIcon: const Icon(
+                Icons.warning_rounded,
+                color: AppColors.warning,
+              ),
+              onPressed: () => DSSnackbar.show(
+                context,
+                title: 'Warning',
+                message: 'Microphone audio level is slightly quiet',
+                variant: DSSnackbarVariant.warning,
+              ),
             ),
             DSButton(
               text: 'Trigger Danger',
               variant: DSButtonVariant.danger,
               leftIcon: const Icon(Icons.error_rounded),
-              onPressed: () => DSSnackbar.show(context, title: 'Connection Error', message: 'Failed to upload response audio clip', variant: DSSnackbarVariant.danger),
+              onPressed: () => DSSnackbar.show(
+                context,
+                title: 'Connection Error',
+                message: 'Failed to upload response audio clip',
+                variant: DSSnackbarVariant.danger,
+              ),
             ),
             DSButton(
               text: 'Trigger Info',
               variant: DSButtonVariant.primary,
               leftIcon: const Icon(Icons.info_rounded),
-              onPressed: () => DSSnackbar.show(context, title: 'New Cue Card Available', message: 'Topic: Describe a memorable journey', variant: DSSnackbarVariant.info),
+              onPressed: () => DSSnackbar.show(
+                context,
+                title: 'New Cue Card Available',
+                message: 'Topic: Describe a memorable journey',
+                variant: DSSnackbarVariant.info,
+              ),
             ),
           ],
         ),
         AppSpacing.gapVerticalLg,
 
-        Text('Static Card Inspector (Layout & Tokens)', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'Static Card Inspector (Layout & Tokens)',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalMd,
 
         DSCard(
           variant: DSCardVariant.elevated,
           child: Column(
             children: [
-              _buildStaticToastCard(isDark, title: 'Success Toast', msg: 'Audio recording process complete.', icon: Icons.check_circle_rounded, color: AppColors.success),
+              _buildStaticToastCard(
+                isDark,
+                title: 'Success Toast',
+                msg: 'Audio recording process complete.',
+                icon: Icons.check_circle_rounded,
+                color: AppColors.success,
+              ),
               AppSpacing.gapVerticalMd,
-              _buildStaticToastCard(isDark, title: 'Warning Toast', msg: 'Time remaining: 30 seconds for Part 2.', icon: Icons.warning_rounded, color: AppColors.warning),
+              _buildStaticToastCard(
+                isDark,
+                title: 'Warning Toast',
+                msg: 'Time remaining: 30 seconds for Part 2.',
+                icon: Icons.warning_rounded,
+                color: AppColors.warning,
+              ),
               AppSpacing.gapVerticalMd,
-              _buildStaticToastCard(isDark, title: 'Danger Toast', msg: 'Network timeout during speech recognition.', icon: Icons.error_rounded, color: AppColors.danger),
+              _buildStaticToastCard(
+                isDark,
+                title: 'Danger Toast',
+                msg: 'Network timeout during speech recognition.',
+                icon: Icons.error_rounded,
+                color: AppColors.danger,
+              ),
               AppSpacing.gapVerticalMd,
-              _buildStaticToastCard(isDark, title: 'Info Toast', msg: 'Tap microphone to start speaking.', icon: Icons.info_rounded, color: AppColors.primary),
+              _buildStaticToastCard(
+                isDark,
+                title: 'Info Toast',
+                msg: 'Tap microphone to start speaking.',
+                icon: Icons.info_rounded,
+                color: AppColors.primary,
+              ),
             ],
           ),
         ),
@@ -219,13 +339,21 @@ class _DSSnackbarPageState extends State<DSSnackbarPage> {
     );
   }
 
-  Widget _buildStaticToastCard(bool isDark, {required String title, required String msg, required IconData icon, required Color color}) {
+  Widget _buildStaticToastCard(
+    bool isDark, {
+    required String title,
+    required String msg,
+    required IconData icon,
+    required Color color,
+  }) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+        ),
         boxShadow: AppShadows.md(isDark),
       ),
       child: Row(
@@ -236,8 +364,22 @@ class _DSSnackbarPageState extends State<DSSnackbarPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
-                Text(msg, style: AppTypography.bodySm.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+                Text(
+                  title,
+                  style: AppTypography.label.copyWith(
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
+                  ),
+                ),
+                Text(
+                  msg,
+                  style: AppTypography.bodySm.copyWith(
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
               ],
             ),
           ),
@@ -263,7 +405,8 @@ class _DSSnackbarPageState extends State<DSSnackbarPage> {
   Widget _buildCodeSnippet(BuildContext context) {
     final isDark = widget.themeController.isDarkMode;
 
-    final code = '''
+    final code =
+        '''
 DSSnackbar.show(
   context,
   ${_title.isNotEmpty ? "title: '$_title'," : ""}
@@ -279,14 +422,25 @@ DSSnackbar.show(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Generated Flutter Code', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+            Text(
+              'Generated Flutter Code',
+              style: AppTypography.h2.copyWith(
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
+              ),
+            ),
             DSButton(
               text: 'Copy Code',
               variant: DSButtonVariant.outline,
               size: DSButtonSize.sm,
               leftIcon: const Icon(Icons.copy_rounded, size: 14),
               onPressed: () {
-                DSSnackbar.show(context, message: 'Snackbar code copied to clipboard!', variant: DSSnackbarVariant.success);
+                DSSnackbar.show(
+                  context,
+                  message: 'Snackbar code copied to clipboard!',
+                  variant: DSSnackbarVariant.success,
+                );
               },
             ),
           ],
@@ -319,17 +473,49 @@ DSSnackbar.show(
     final isDark = widget.themeController.isDarkMode;
 
     final props = [
-      {'name': 'context', 'type': 'BuildContext', 'default': 'required', 'desc': 'BuildContext used to locate nearest ScaffoldMessenger.'},
-      {'name': 'message', 'type': 'String', 'default': 'required', 'desc': 'Body message text displayed inside toast.'},
-      {'name': 'title', 'type': 'String?', 'default': 'null', 'desc': 'Optional bold title displayed above message text.'},
-      {'name': 'variant', 'type': 'DSSnackbarVariant', 'default': 'info', 'desc': 'Notification variant: success, warning, danger, info.'},
-      {'name': 'duration', 'type': 'Duration', 'default': '4 seconds', 'desc': 'Display time before toast automatically dismisses.'},
+      {
+        'name': 'context',
+        'type': 'BuildContext',
+        'default': 'required',
+        'desc': 'BuildContext used to locate nearest ScaffoldMessenger.',
+      },
+      {
+        'name': 'message',
+        'type': 'String',
+        'default': 'required',
+        'desc': 'Body message text displayed inside toast.',
+      },
+      {
+        'name': 'title',
+        'type': 'String?',
+        'default': 'null',
+        'desc': 'Optional bold title displayed above message text.',
+      },
+      {
+        'name': 'variant',
+        'type': 'DSSnackbarVariant',
+        'default': 'info',
+        'desc': 'Notification variant: success, warning, danger, info.',
+      },
+      {
+        'name': 'duration',
+        'type': 'Duration',
+        'default': '4 seconds',
+        'desc': 'Display time before toast automatically dismisses.',
+      },
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('API Reference & Properties', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'API Reference & Properties',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalMd,
         DSCard(
           variant: DSCardVariant.elevated,
@@ -338,30 +524,111 @@ DSSnackbar.show(
             children: [
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
-                color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
+                color: isDark
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.lightSurfaceVariant,
                 child: Row(
                   children: [
-                    Expanded(flex: 2, child: Text('PROPERTY', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 2, child: Text('TYPE', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 2, child: Text('DEFAULT', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 4, child: Text('DESCRIPTION', style: AppTypography.label.copyWith(color: AppColors.primary))),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'PROPERTY',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'TYPE',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'DEFAULT',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        'DESCRIPTION',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              ...props.map((p) => Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder)),
+              ...props.map(
+                (p) => Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['name']!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['type']!,
+                          style: TextStyle(
+                            color: isDark
+                                ? AppColors.secondary
+                                : AppColors.primaryHover,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['default']!,
+                          style: const TextStyle(
+                            fontFamily: 'monospace',
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: Text(
+                          p['desc']!,
+                          style: AppTypography.bodySm.copyWith(
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(flex: 2, child: Text(p['name']!, style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'monospace'))),
-                    Expanded(flex: 2, child: Text(p['type']!, style: TextStyle(color: isDark ? AppColors.secondary : AppColors.primaryHover, fontFamily: 'monospace'))),
-                    Expanded(flex: 2, child: Text(p['default']!, style: const TextStyle(fontFamily: 'monospace', color: Colors.grey))),
-                    Expanded(flex: 4, child: Text(p['desc']!, style: AppTypography.bodySm.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary))),
-                  ],
-                ),
-              )),
+              ),
             ],
           ),
         ),

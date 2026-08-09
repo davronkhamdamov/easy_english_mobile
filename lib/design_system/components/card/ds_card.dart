@@ -58,10 +58,10 @@ class _DSCardState extends State<DSCard> {
 
     switch (widget.variant) {
       case DSCardVariant.elevated:
-        backgroundColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
-        shadows = activeHover
-            ? AppShadows.lg(isDark)
-            : AppShadows.sm(isDark);
+        backgroundColor = isDark
+            ? AppColors.darkSurface
+            : AppColors.lightSurface;
+        shadows = activeHover ? AppShadows.lg(isDark) : AppShadows.sm(isDark);
         if (activeHover) {
           shadows = [
             ...shadows,
@@ -71,7 +71,9 @@ class _DSCardState extends State<DSCard> {
         break;
 
       case DSCardVariant.outlined:
-        backgroundColor = isDark ? AppColors.darkSurface : AppColors.lightSurface;
+        backgroundColor = isDark
+            ? AppColors.darkSurface
+            : AppColors.lightSurface;
         border = Border.all(
           color: activeHover
               ? AppColors.primary
@@ -90,18 +92,16 @@ class _DSCardState extends State<DSCard> {
         border = Border.all(
           color: activeHover
               ? AppColors.primary.withValues(alpha: 0.6)
-              : (isDark ? AppColors.darkGlassBorder : AppColors.lightGlassBorder),
+              : (isDark
+                    ? AppColors.darkGlassBorder
+                    : AppColors.lightGlassBorder),
           width: 1.2,
         );
-        shadows = activeHover
-            ? AppShadows.md(isDark)
-            : AppShadows.sm(isDark);
+        shadows = activeHover ? AppShadows.md(isDark) : AppShadows.sm(isDark);
         break;
     }
 
-    final double scale = activePress
-        ? 0.98
-        : (activeHover ? 1.015 : 1.0);
+    final double scale = activePress ? 0.98 : (activeHover ? 1.015 : 1.0);
 
     Widget content;
     if (widget.child != null) {
@@ -112,7 +112,8 @@ class _DSCardState extends State<DSCard> {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (widget.header != null) widget.header!,
-          if (widget.header != null && (widget.body != null || widget.footer != null))
+          if (widget.header != null &&
+              (widget.body != null || widget.footer != null))
             const SizedBox(height: AppSpacing.md),
           if (widget.body != null) widget.body!,
           if (widget.body != null && widget.footer != null)
@@ -149,10 +150,7 @@ class _DSCardState extends State<DSCard> {
     }
 
     if (!_isClickable) {
-      return Container(
-        margin: widget.margin,
-        child: cardBody,
-      );
+      return Container(margin: widget.margin, child: cardBody);
     }
 
     return Container(

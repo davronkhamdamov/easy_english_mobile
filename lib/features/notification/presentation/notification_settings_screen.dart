@@ -13,10 +13,12 @@ class NotificationSettingsScreen extends StatefulWidget {
   });
 
   @override
-  State<NotificationSettingsScreen> createState() => _NotificationSettingsScreenState();
+  State<NotificationSettingsScreen> createState() =>
+      _NotificationSettingsScreenState();
 }
 
-class _NotificationSettingsScreenState extends State<NotificationSettingsScreen> {
+class _NotificationSettingsScreenState
+    extends State<NotificationSettingsScreen> {
   final PushNotificationService _pushService = PushNotificationService();
 
   @override
@@ -33,7 +35,9 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bg = isDark ? AppColors.darkBackground : AppColors.lightBackground;
-    final textPrimary = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+    final textPrimary = isDark
+        ? AppColors.darkTextPrimary
+        : AppColors.lightTextPrimary;
 
     return Scaffold(
       backgroundColor: bg,
@@ -42,7 +46,11 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
         elevation: 0,
         title: Text(
           'Notifications',
-          style: TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 20),
+          style: TextStyle(
+            color: textPrimary,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
         ),
         iconTheme: IconThemeData(color: textPrimary),
       ),
@@ -54,7 +62,11 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
             // Notification Channels / Preferences
             Text(
               'Notification Topics',
-              style: TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 16),
+              style: TextStyle(
+                color: textPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
             const SizedBox(height: 12),
             DSCard(
@@ -63,7 +75,8 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                 children: [
                   _buildTopicTile(
                     title: 'Daily Study Reminders',
-                    subtitle: 'Spaced repetition drills & daily vocabulary practice',
+                    subtitle:
+                        'Spaced repetition drills & daily vocabulary practice',
                     icon: Icons.alarm_on_rounded,
                     topicKey: 'study_reminders',
                     color: AppColors.primary,
@@ -79,7 +92,8 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                   const Divider(height: 1),
                   _buildTopicTile(
                     title: 'Mock Exam & Diagnostic Alerts',
-                    subtitle: 'Countdown reminders for scheduled practice tests',
+                    subtitle:
+                        'Countdown reminders for scheduled practice tests',
                     icon: Icons.timer_rounded,
                     topicKey: 'exam_alerts',
                     color: AppColors.warning,
@@ -87,7 +101,8 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
                   const Divider(height: 1),
                   _buildTopicTile(
                     title: 'Daily Streak Safeguard',
-                    subtitle: 'Notifications when your streak is about to reset',
+                    subtitle:
+                        'Notifications when your streak is about to reset',
                     icon: Icons.local_fire_department_rounded,
                     topicKey: 'daily_streak',
                     color: AppColors.danger,
@@ -121,7 +136,9 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
           if (mounted) {
             DSSnackbar.show(
               context,
-              message: value ? 'Subscribed to $title' : 'Unsubscribed from $title',
+              message: value
+                  ? 'Subscribed to $title'
+                  : 'Unsubscribed from $title',
               variant: DSSnackbarVariant.info,
             );
           }
@@ -134,7 +151,9 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
         title: Text(
           title,
           style: TextStyle(
-            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
             fontWeight: FontWeight.w600,
             fontSize: 14,
           ),
@@ -142,7 +161,9 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
         subtitle: Text(
           subtitle,
           style: TextStyle(
-            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
             fontSize: 12,
           ),
         ),

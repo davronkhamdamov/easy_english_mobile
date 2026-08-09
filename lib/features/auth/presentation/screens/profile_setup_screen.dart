@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/user_model.dart';
+import '../../domain/entities/user_entity.dart';
 import '../../../../design_system/design_system.dart';
-import '../../../dashboard/presentation/dashboard_screen.dart';
+import '../../../dashboard/presentation/screens/dashboard_screen.dart';
 import '../../../profile/services/profile_service.dart';
 
 class ProfileSetupScreen extends StatefulWidget {
-  final UserModel? user;
+  final UserEntity? user;
 
-  const ProfileSetupScreen({
-    super.key,
-    this.user,
-  });
+  const ProfileSetupScreen({super.key, this.user});
 
   @override
   State<ProfileSetupScreen> createState() => _ProfileSetupScreenState();
@@ -30,9 +27,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(
-      text: widget.user?.fullName ?? '',
-    );
+    _nameController = TextEditingController(text: widget.user?.fullName ?? '');
     _bioController = TextEditingController(
       text: widget.user?.bio ?? 'Preparing for IELTS Academic 2026',
     );
@@ -93,7 +88,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? AppColors.darkBackground : AppColors.lightBackground;
+    final backgroundColor = isDark
+        ? AppColors.darkBackground
+        : AppColors.lightBackground;
 
     return Scaffold(
       backgroundColor: backgroundColor,

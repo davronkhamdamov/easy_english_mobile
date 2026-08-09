@@ -18,21 +18,39 @@ class DSDialogPage extends StatefulWidget {
 class _DSDialogPageState extends State<DSDialogPage> {
   // Playground State
   String _title = 'Submit Speaking Test?';
-  String _message = 'You have completed Part 1 & Part 2. Once submitted, your audio will be processed by AI scoring.';
+  String _message =
+      'You have completed Part 1 & Part 2. Once submitted, your audio will be processed by AI scoring.';
   String _confirmText = 'Submit Now';
   String _cancelText = 'Keep Practicing';
-  int _iconIndex = 1; // 0: None, 1: Help, 2: Warning/Danger, 3: Success, 4: Info
+  int _iconIndex =
+      1; // 0: None, 1: Help, 2: Warning/Danger, 3: Success, 4: Info
 
   Widget? _getDialogIcon() {
     switch (_iconIndex) {
       case 1:
-        return const Icon(Icons.help_outline_rounded, size: 40, color: AppColors.primary);
+        return const Icon(
+          Icons.help_outline_rounded,
+          size: 40,
+          color: AppColors.primary,
+        );
       case 2:
-        return const Icon(Icons.warning_amber_rounded, size: 40, color: AppColors.danger);
+        return const Icon(
+          Icons.warning_amber_rounded,
+          size: 40,
+          color: AppColors.danger,
+        );
       case 3:
-        return const Icon(Icons.check_circle_outline_rounded, size: 40, color: AppColors.success);
+        return const Icon(
+          Icons.check_circle_outline_rounded,
+          size: 40,
+          color: AppColors.success,
+        );
       case 4:
-        return const Icon(Icons.info_outline_rounded, size: 40, color: AppColors.secondary);
+        return const Icon(
+          Icons.info_outline_rounded,
+          size: 40,
+          color: AppColors.secondary,
+        );
       default:
         return null;
     }
@@ -42,7 +60,8 @@ class _DSDialogPageState extends State<DSDialogPage> {
   Widget build(BuildContext context) {
     return ComponentPageWrapper(
       title: 'DSDialog',
-      subtitle: 'Glassmorphic modal dialog with backdrop blur, spring scale animation & custom action buttons',
+      subtitle:
+          'Glassmorphic modal dialog with backdrop blur, spring scale animation & custom action buttons',
       category: 'Components',
       themeController: widget.themeController,
       onBackToOverview: widget.onBackToOverview,
@@ -66,21 +85,38 @@ class _DSDialogPageState extends State<DSDialogPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Live Modal Dialog Launcher', style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+              Text(
+                'Live Modal Dialog Launcher',
+                style: AppTypography.h3.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
+                ),
+              ),
               AppSpacing.gapVerticalLg,
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(AppSpacing.xl),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
+                  color: isDark
+                      ? AppColors.darkSurfaceVariant
+                      : AppColors.lightSurfaceVariant,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                  border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
+                  ),
                 ),
                 child: Column(
                   children: [
                     Text(
                       'Test spring scale entry transition & backdrop blur',
-                      style: AppTypography.bodyMd.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                      style: AppTypography.bodyMd.copyWith(
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
                     ),
                     AppSpacing.gapVerticalLg,
                     DSButton(
@@ -93,14 +129,24 @@ class _DSDialogPageState extends State<DSDialogPage> {
                           context: context,
                           title: _title,
                           message: _message,
-                          confirmText: _confirmText.isEmpty ? null : _confirmText,
+                          confirmText: _confirmText.isEmpty
+                              ? null
+                              : _confirmText,
                           cancelText: _cancelText.isEmpty ? null : _cancelText,
                           icon: _getDialogIcon(),
                           onConfirm: () {
-                            DSSnackbar.show(context, message: 'Confirmed action!', variant: DSSnackbarVariant.success);
+                            DSSnackbar.show(
+                              context,
+                              message: 'Confirmed action!',
+                              variant: DSSnackbarVariant.success,
+                            );
                           },
                           onCancel: () {
-                            DSSnackbar.show(context, message: 'Cancelled modal dialog', variant: DSSnackbarVariant.info);
+                            DSSnackbar.show(
+                              context,
+                              message: 'Cancelled modal dialog',
+                              variant: DSSnackbarVariant.info,
+                            );
                           },
                         );
                       },
@@ -119,20 +165,54 @@ class _DSDialogPageState extends State<DSDialogPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Modal Configuration', style: AppTypography.h3.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+              Text(
+                'Modal Configuration',
+                style: AppTypography.h3.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
+                ),
+              ),
               AppSpacing.gapVerticalMd,
 
               // Icon selector
-              Text('Header Icon', style: AppTypography.label.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+              Text(
+                'Header Icon',
+                style: AppTypography.label.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
+                ),
+              ),
               AppSpacing.gapVerticalXs,
               Wrap(
                 spacing: AppSpacing.xs,
                 children: [
-                  ChoiceChip(label: const Text('None'), selected: _iconIndex == 0, onSelected: (_) => setState(() => _iconIndex = 0)),
-                  ChoiceChip(label: const Text('Question'), selected: _iconIndex == 1, onSelected: (_) => setState(() => _iconIndex = 1)),
-                  ChoiceChip(label: const Text('Warning'), selected: _iconIndex == 2, onSelected: (_) => setState(() => _iconIndex = 2)),
-                  ChoiceChip(label: const Text('Success'), selected: _iconIndex == 3, onSelected: (_) => setState(() => _iconIndex = 3)),
-                  ChoiceChip(label: const Text('Info'), selected: _iconIndex == 4, onSelected: (_) => setState(() => _iconIndex = 4)),
+                  ChoiceChip(
+                    label: const Text('None'),
+                    selected: _iconIndex == 0,
+                    onSelected: (_) => setState(() => _iconIndex = 0),
+                  ),
+                  ChoiceChip(
+                    label: const Text('Question'),
+                    selected: _iconIndex == 1,
+                    onSelected: (_) => setState(() => _iconIndex = 1),
+                  ),
+                  ChoiceChip(
+                    label: const Text('Warning'),
+                    selected: _iconIndex == 2,
+                    onSelected: (_) => setState(() => _iconIndex = 2),
+                  ),
+                  ChoiceChip(
+                    label: const Text('Success'),
+                    selected: _iconIndex == 3,
+                    onSelected: (_) => setState(() => _iconIndex = 3),
+                  ),
+                  ChoiceChip(
+                    label: const Text('Info'),
+                    selected: _iconIndex == 4,
+                    onSelected: (_) => setState(() => _iconIndex = 4),
+                  ),
                 ],
               ),
               AppSpacing.gapVerticalMd,
@@ -184,9 +264,23 @@ class _DSDialogPageState extends State<DSDialogPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Pre-configured Modal Use Cases', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'Pre-configured Modal Use Cases',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalSm,
-        Text('Test standard pre-styled dialog configurations.', style: AppTypography.bodyMd.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary)),
+        Text(
+          'Test standard pre-styled dialog configurations.',
+          style: AppTypography.bodyMd.copyWith(
+            color: isDark
+                ? AppColors.darkTextSecondary
+                : AppColors.lightTextSecondary,
+          ),
+        ),
         AppSpacing.gapVerticalLg,
 
         Wrap(
@@ -202,11 +296,20 @@ class _DSDialogPageState extends State<DSDialogPage> {
                 DSDialog.show(
                   context: context,
                   title: 'Delete Recording?',
-                  message: 'This action cannot be undone. All saved audio clips and transcriptions for this session will be permanently erased.',
+                  message:
+                      'This action cannot be undone. All saved audio clips and transcriptions for this session will be permanently erased.',
                   confirmText: 'Delete Permanently',
                   cancelText: 'Keep Recording',
-                  icon: const Icon(Icons.warning_amber_rounded, size: 44, color: AppColors.danger),
-                  onConfirm: () => DSSnackbar.show(context, message: 'Recording deleted', variant: DSSnackbarVariant.danger),
+                  icon: const Icon(
+                    Icons.warning_amber_rounded,
+                    size: 44,
+                    color: AppColors.danger,
+                  ),
+                  onConfirm: () => DSSnackbar.show(
+                    context,
+                    message: 'Recording deleted',
+                    variant: DSSnackbarVariant.danger,
+                  ),
                 );
               },
             ),
@@ -220,11 +323,20 @@ class _DSDialogPageState extends State<DSDialogPage> {
                 DSDialog.show(
                   context: context,
                   title: 'Congratulations! Band 7.5',
-                  message: 'You have completed the full Speaking Mock Exam with an estimated Overall Speaking Score of Band 7.5.',
+                  message:
+                      'You have completed the full Speaking Mock Exam with an estimated Overall Speaking Score of Band 7.5.',
                   confirmText: 'View Report',
                   cancelText: 'Close',
-                  icon: const Icon(Icons.emoji_events_rounded, size: 44, color: AppColors.warning),
-                  onConfirm: () => DSSnackbar.show(context, message: 'Opening detailed score report...', variant: DSSnackbarVariant.success),
+                  icon: const Icon(
+                    Icons.emoji_events_rounded,
+                    size: 44,
+                    color: AppColors.warning,
+                  ),
+                  onConfirm: () => DSSnackbar.show(
+                    context,
+                    message: 'Opening detailed score report...',
+                    variant: DSSnackbarVariant.success,
+                  ),
                 );
               },
             ),
@@ -232,7 +344,14 @@ class _DSDialogPageState extends State<DSDialogPage> {
         ),
         AppSpacing.gapVerticalLg,
 
-        Text('In-Page Glassmorphism Visual Inspector', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'In-Page Glassmorphism Visual Inspector',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalMd,
 
         // Gradient Canvas for Backdrop Blur Visualization
@@ -268,7 +387,8 @@ class _DSDialogPageState extends State<DSDialogPage> {
   Widget _buildCodeSnippet(BuildContext context) {
     final isDark = widget.themeController.isDarkMode;
 
-    final code = '''
+    final code =
+        '''
 DSDialog.show(
   context: context,
   title: '$_title',
@@ -290,14 +410,25 @@ DSDialog.show(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Generated Flutter Code', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+            Text(
+              'Generated Flutter Code',
+              style: AppTypography.h2.copyWith(
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
+              ),
+            ),
             DSButton(
               text: 'Copy Code',
               variant: DSButtonVariant.outline,
               size: DSButtonSize.sm,
               leftIcon: const Icon(Icons.copy_rounded, size: 14),
               onPressed: () {
-                DSSnackbar.show(context, message: 'Dialog code copied to clipboard!', variant: DSSnackbarVariant.success);
+                DSSnackbar.show(
+                  context,
+                  message: 'Dialog code copied to clipboard!',
+                  variant: DSSnackbarVariant.success,
+                );
               },
             ),
           ],
@@ -330,20 +461,71 @@ DSDialog.show(
     final isDark = widget.themeController.isDarkMode;
 
     final props = [
-      {'name': 'context', 'type': 'BuildContext', 'default': 'required', 'desc': 'BuildContext used to present modal via showGeneralDialog.'},
-      {'name': 'title', 'type': 'String', 'default': 'required', 'desc': 'Bold header title displayed inside modal.'},
-      {'name': 'message', 'type': 'String', 'default': 'required', 'desc': 'Body message paragraph.'},
-      {'name': 'confirmText', 'type': 'String?', 'default': '"Confirm"', 'desc': 'Primary confirm button text. If null, confirm button is omitted.'},
-      {'name': 'cancelText', 'type': 'String?', 'default': '"Cancel"', 'desc': 'Outline cancel button text. If null, cancel button is omitted.'},
-      {'name': 'icon', 'type': 'Widget?', 'default': 'null', 'desc': 'Optional header icon displayed centered above title.'},
-      {'name': 'onConfirm', 'type': 'VoidCallback?', 'default': 'null', 'desc': 'Callback function executed on confirm click before closing dialog.'},
-      {'name': 'onCancel', 'type': 'VoidCallback?', 'default': 'null', 'desc': 'Callback function executed on cancel click before closing dialog.'},
+      {
+        'name': 'context',
+        'type': 'BuildContext',
+        'default': 'required',
+        'desc': 'BuildContext used to present modal via showGeneralDialog.',
+      },
+      {
+        'name': 'title',
+        'type': 'String',
+        'default': 'required',
+        'desc': 'Bold header title displayed inside modal.',
+      },
+      {
+        'name': 'message',
+        'type': 'String',
+        'default': 'required',
+        'desc': 'Body message paragraph.',
+      },
+      {
+        'name': 'confirmText',
+        'type': 'String?',
+        'default': '"Confirm"',
+        'desc':
+            'Primary confirm button text. If null, confirm button is omitted.',
+      },
+      {
+        'name': 'cancelText',
+        'type': 'String?',
+        'default': '"Cancel"',
+        'desc':
+            'Outline cancel button text. If null, cancel button is omitted.',
+      },
+      {
+        'name': 'icon',
+        'type': 'Widget?',
+        'default': 'null',
+        'desc': 'Optional header icon displayed centered above title.',
+      },
+      {
+        'name': 'onConfirm',
+        'type': 'VoidCallback?',
+        'default': 'null',
+        'desc':
+            'Callback function executed on confirm click before closing dialog.',
+      },
+      {
+        'name': 'onCancel',
+        'type': 'VoidCallback?',
+        'default': 'null',
+        'desc':
+            'Callback function executed on cancel click before closing dialog.',
+      },
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('API Reference & Properties', style: AppTypography.h2.copyWith(color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary)),
+        Text(
+          'API Reference & Properties',
+          style: AppTypography.h2.copyWith(
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
+          ),
+        ),
         AppSpacing.gapVerticalMd,
         DSCard(
           variant: DSCardVariant.elevated,
@@ -352,30 +534,111 @@ DSDialog.show(
             children: [
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
-                color: isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
+                color: isDark
+                    ? AppColors.darkSurfaceVariant
+                    : AppColors.lightSurfaceVariant,
                 child: Row(
                   children: [
-                    Expanded(flex: 2, child: Text('PROPERTY', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 2, child: Text('TYPE', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 2, child: Text('DEFAULT', style: AppTypography.label.copyWith(color: AppColors.primary))),
-                    Expanded(flex: 4, child: Text('DESCRIPTION', style: AppTypography.label.copyWith(color: AppColors.primary))),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'PROPERTY',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'TYPE',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        'DEFAULT',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: Text(
+                        'DESCRIPTION',
+                        style: AppTypography.label.copyWith(
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              ...props.map((p) => Container(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(color: isDark ? AppColors.darkBorder : AppColors.lightBorder)),
+              ...props.map(
+                (p) => Container(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: isDark
+                            ? AppColors.darkBorder
+                            : AppColors.lightBorder,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['name']!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['type']!,
+                          style: TextStyle(
+                            color: isDark
+                                ? AppColors.secondary
+                                : AppColors.primaryHover,
+                            fontFamily: 'monospace',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          p['default']!,
+                          style: const TextStyle(
+                            fontFamily: 'monospace',
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: Text(
+                          p['desc']!,
+                          style: AppTypography.bodySm.copyWith(
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(flex: 2, child: Text(p['name']!, style: const TextStyle(fontWeight: FontWeight.bold, fontFamily: 'monospace'))),
-                    Expanded(flex: 2, child: Text(p['type']!, style: TextStyle(color: isDark ? AppColors.secondary : AppColors.primaryHover, fontFamily: 'monospace'))),
-                    Expanded(flex: 2, child: Text(p['default']!, style: const TextStyle(fontFamily: 'monospace', color: Colors.grey))),
-                    Expanded(flex: 4, child: Text(p['desc']!, style: AppTypography.bodySm.copyWith(color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary))),
-                  ],
-                ),
-              )),
+              ),
             ],
           ),
         ),

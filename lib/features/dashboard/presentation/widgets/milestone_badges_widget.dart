@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../domain/models/achievement_motivation_model.dart';
+import '../../domain/entities/achievement_motivation.dart';
 
 class MilestoneBadgesWidget extends StatelessWidget {
   final List<MilestoneBadge> unlockedBadges;
@@ -53,7 +53,11 @@ class MilestoneBadgesWidget extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.workspace_premium, color: Colors.amber, size: 24),
+                    const Icon(
+                      Icons.workspace_premium,
+                      color: Colors.amber,
+                      size: 24,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'Milestone Badges',
@@ -143,7 +147,9 @@ class MilestoneBadgesWidget extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
-                            color: b.isUnlocked ? Colors.black87 : Colors.grey.shade600,
+                            color: b.isUnlocked
+                                ? Colors.black87
+                                : Colors.grey.shade600,
                           ),
                           textAlign: TextAlign.center,
                           maxLines: 1,
@@ -151,11 +157,17 @@ class MilestoneBadgesWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          b.isUnlocked ? 'Unlocked' : '${b.progressPercentage.toInt()}%',
+                          b.isUnlocked
+                              ? 'Unlocked'
+                              : '${b.progressPercentage.toInt()}%',
                           style: TextStyle(
                             fontSize: 10,
-                            color: b.isUnlocked ? Colors.amber.shade900 : Colors.grey,
-                            fontWeight: b.isUnlocked ? FontWeight.bold : FontWeight.normal,
+                            color: b.isUnlocked
+                                ? Colors.amber.shade900
+                                : Colors.grey,
+                            fontWeight: b.isUnlocked
+                                ? FontWeight.bold
+                                : FontWeight.normal,
                           ),
                         ),
                       ],

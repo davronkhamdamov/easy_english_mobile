@@ -53,10 +53,7 @@ class DSDialog extends StatelessWidget {
       transitionBuilder: (context, anim1, anim2, child) {
         return Transform.scale(
           scale: Curves.easeOutBack.transform(anim1.value),
-          child: FadeTransition(
-            opacity: anim1,
-            child: child,
-          ),
+          child: FadeTransition(opacity: anim1, child: child),
         );
       },
     );
@@ -77,10 +74,14 @@ class DSDialog extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(AppSpacing.xl),
               decoration: BoxDecoration(
-                color: isDark ? AppColors.darkGlassBackground : AppColors.lightGlassBackground,
+                color: isDark
+                    ? AppColors.darkGlassBackground
+                    : AppColors.lightGlassBackground,
                 borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
                 border: Border.all(
-                  color: isDark ? AppColors.darkGlassBorder : AppColors.lightGlassBorder,
+                  color: isDark
+                      ? AppColors.darkGlassBorder
+                      : AppColors.lightGlassBorder,
                   width: 1.5,
                 ),
                 boxShadow: AppShadows.lg(isDark),
@@ -90,14 +91,13 @@ class DSDialog extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (icon != null) ...[
-                      icon!,
-                      AppSpacing.gapVerticalMd,
-                    ],
+                    if (icon != null) ...[icon!, AppSpacing.gapVerticalMd],
                     Text(
                       title,
                       style: AppTypography.h2.copyWith(
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -105,7 +105,9 @@ class DSDialog extends StatelessWidget {
                     Text(
                       message,
                       style: AppTypography.bodyMd.copyWith(
-                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
                       ),
                       textAlign: TextAlign.center,
                     ),

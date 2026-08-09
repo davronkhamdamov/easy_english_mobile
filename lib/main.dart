@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'core/auth/api_client.dart';
-import 'core/auth/firebase_auth_service.dart';
 import 'core/debug/api_debugger_overlay.dart';
+import 'core/network/api_client.dart';
 import 'core/notifications/push_notification_service.dart';
 import 'design_system/design_system.dart';
-import 'features/dashboard/presentation/dashboard_screen.dart';
+import 'features/auth/data/repositories/auth_repository_impl.dart';
+import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -47,9 +47,7 @@ class _EasyIeltsAppState extends State<EasyIeltsApp> {
           darkTheme: AppTheme.darkTheme,
           themeMode: mode,
           builder: (context, child) {
-            return ApiDebuggerOverlay(
-              child: child ?? const SizedBox(),
-            );
+            return ApiDebuggerOverlay(child: child ?? const SizedBox());
           },
           home: const AuthWrapper(),
         );
@@ -57,7 +55,6 @@ class _EasyIeltsAppState extends State<EasyIeltsApp> {
     );
   }
 }
-
 
 /// Automatically checks whether user session is active on app launch.
 class AuthWrapper extends StatefulWidget {
@@ -79,12 +76,13 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
   Future<void> _checkAuthStatus() async {
     try {
-      final firebaseUser = FirebaseAuthService().currentUser;
+      final currentUser = AuthRepositoryImpl().getCurrentUser();
       final token = await ApiClient().getAccessToken();
 
       if (mounted) {
         setState(() {
-          _isLoggedIn = firebaseUser != null || (token != null && token.isNotEmpty);
+          _isLoggedIn =
+              currentUser != null || (token != null && token.isNotEmpty);
           _isLoading = false;
         });
       }

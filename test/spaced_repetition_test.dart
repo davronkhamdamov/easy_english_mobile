@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:easy_english/features/word_bank/domain/spaced_repetition.dart';
+import 'package:easy_english/features/word_bank/domain/entities/flashcard_item.dart';
+import 'package:easy_english/features/word_bank/domain/services/spaced_repetition.dart';
 
 void main() {
   group('SM2Algorithm Tests', () {

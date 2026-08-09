@@ -29,7 +29,8 @@ class ComponentPageWrapper extends StatefulWidget {
   State<ComponentPageWrapper> createState() => _ComponentPageWrapperState();
 }
 
-class _ComponentPageWrapperState extends State<ComponentPageWrapper> with SingleTickerProviderStateMixin {
+class _ComponentPageWrapperState extends State<ComponentPageWrapper>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -49,9 +50,13 @@ class _ComponentPageWrapperState extends State<ComponentPageWrapper> with Single
     final isDark = widget.themeController.isDarkMode;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+      backgroundColor: isDark
+          ? AppColors.darkBackground
+          : AppColors.lightBackground,
       appBar: AppBar(
-        backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+        backgroundColor: isDark
+            ? AppColors.darkSurface
+            : AppColors.lightSurface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         leading: widget.onBackToOverview != null
@@ -75,11 +80,16 @@ class _ComponentPageWrapperState extends State<ComponentPageWrapper> with Single
                     letterSpacing: 1.2,
                   ),
                 ),
-                const Text('  /  ', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                const Text(
+                  '  /  ',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
                 Text(
                   widget.title,
                   style: AppTypography.label.copyWith(
-                    color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
                   ),
                 ),
               ],
@@ -87,7 +97,9 @@ class _ComponentPageWrapperState extends State<ComponentPageWrapper> with Single
             Text(
               widget.subtitle,
               style: AppTypography.caption.copyWith(
-                color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                color: isDark
+                    ? AppColors.darkTextMuted
+                    : AppColors.lightTextMuted,
               ),
             ),
           ],
@@ -110,14 +122,19 @@ class _ComponentPageWrapperState extends State<ComponentPageWrapper> with Single
         bottom: TabBar(
           controller: _tabController,
           labelColor: AppColors.primary,
-          unselectedLabelColor: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+          unselectedLabelColor: isDark
+              ? AppColors.darkTextSecondary
+              : AppColors.lightTextSecondary,
           indicatorColor: AppColors.primary,
           indicatorWeight: 3,
           tabs: const [
             Tab(icon: Icon(Icons.tune_rounded, size: 18), text: 'Playground'),
             Tab(icon: Icon(Icons.grid_view_rounded, size: 18), text: 'Matrix'),
             Tab(icon: Icon(Icons.code_rounded, size: 18), text: 'Code'),
-            Tab(icon: Icon(Icons.description_rounded, size: 18), text: 'API Specs'),
+            Tab(
+              icon: Icon(Icons.description_rounded, size: 18),
+              text: 'API Specs',
+            ),
           ],
         ),
       ),

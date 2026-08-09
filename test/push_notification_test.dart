@@ -58,7 +58,10 @@ void main() {
 
       service.addLocalNotification(notif);
       expect(service.receivedNotifications.length, equals(1));
-      expect(service.receivedNotifications.first.title, equals('Test Notification'));
+      expect(
+        service.receivedNotifications.first.title,
+        equals('Test Notification'),
+      );
 
       service.clearHistory();
       expect(service.receivedNotifications, isEmpty);
@@ -66,25 +69,28 @@ void main() {
   });
 
   group('NotificationSettingsScreen Widget Tests', () {
-    testWidgets('NotificationSettingsScreen renders title, FCM card, topics, and trigger button', (WidgetTester tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: NotificationSettingsScreen(userId: 'test_usr_widget'),
-        ),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
+    testWidgets(
+      'NotificationSettingsScreen renders title, FCM card, topics, and trigger button',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: NotificationSettingsScreen(userId: 'test_usr_widget'),
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.text('Push Notifications'), findsOneWidget);
-      expect(find.text('Push Notification Gateway'), findsOneWidget);
-      expect(find.text('FCM Active'), findsOneWidget);
-      expect(find.text('Notification Channels & Topics'), findsOneWidget);
-      expect(find.text('Daily Study Reminders'), findsOneWidget);
-      expect(find.text('IELTS AI Tips & Strategy'), findsOneWidget);
-      expect(find.text('Mock Exam & Diagnostic Alerts'), findsOneWidget);
-      expect(find.text('Daily Streak Safeguard'), findsOneWidget);
-      expect(find.text('Send Test Push Notification'), findsOneWidget);
-      expect(find.text('Trigger Go Gateway Push'), findsOneWidget);
-    });
+        expect(find.text('Push Notifications'), findsOneWidget);
+        expect(find.text('Push Notification Gateway'), findsOneWidget);
+        expect(find.text('FCM Active'), findsOneWidget);
+        expect(find.text('Notification Channels & Topics'), findsOneWidget);
+        expect(find.text('Daily Study Reminders'), findsOneWidget);
+        expect(find.text('IELTS AI Tips & Strategy'), findsOneWidget);
+        expect(find.text('Mock Exam & Diagnostic Alerts'), findsOneWidget);
+        expect(find.text('Daily Streak Safeguard'), findsOneWidget);
+        expect(find.text('Send Test Push Notification'), findsOneWidget);
+        expect(find.text('Trigger Go Gateway Push'), findsOneWidget);
+      },
+    );
   });
 }

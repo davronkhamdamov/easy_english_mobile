@@ -33,10 +33,12 @@ class DSSegmentedProgressIndicator extends StatefulWidget {
   });
 
   @override
-  State<DSSegmentedProgressIndicator> createState() => _DSSegmentedProgressIndicatorState();
+  State<DSSegmentedProgressIndicator> createState() =>
+      _DSSegmentedProgressIndicatorState();
 }
 
-class _DSSegmentedProgressIndicatorState extends State<DSSegmentedProgressIndicator> {
+class _DSSegmentedProgressIndicatorState
+    extends State<DSSegmentedProgressIndicator> {
   Timer? _timer;
   late int _currentActiveCount;
 
@@ -52,10 +54,12 @@ class _DSSegmentedProgressIndicatorState extends State<DSSegmentedProgressIndica
   @override
   void didUpdateWidget(covariant DSSegmentedProgressIndicator oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.activeSegments != null && widget.activeSegments != oldWidget.activeSegments) {
+    if (widget.activeSegments != null &&
+        widget.activeSegments != oldWidget.activeSegments) {
       _currentActiveCount = widget.activeSegments!;
     }
-    if (widget.autoStep != oldWidget.autoStep || widget.autoStepInterval != oldWidget.autoStepInterval) {
+    if (widget.autoStep != oldWidget.autoStep ||
+        widget.autoStepInterval != oldWidget.autoStepInterval) {
       _timer?.cancel();
       if (widget.autoStep && widget.activeSegments == null) {
         _startAutoStepTimer();
@@ -84,7 +88,8 @@ class _DSSegmentedProgressIndicatorState extends State<DSSegmentedProgressIndica
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveActiveColor = widget.activeColor ?? AppColors.accentGreen;
     final effectiveInactiveColor =
-        widget.inactiveColor ?? (isDark ? AppColors.darkBorder : const Color(0xFFE5E7EB));
+        widget.inactiveColor ??
+        (isDark ? AppColors.darkBorder : const Color(0xFFE5E7EB));
 
     final effectiveCount = widget.activeSegments ?? _currentActiveCount;
 
@@ -106,15 +111,21 @@ class _DSSegmentedProgressIndicatorState extends State<DSSegmentedProgressIndica
                 child: AnimatedContainer(
                   duration: AppAnimations.normal,
                   curve: Curves.easeInOut,
-                  margin: EdgeInsets.only(right: index == widget.totalSegments - 1 ? 0 : widget.gap),
+                  margin: EdgeInsets.only(
+                    right: index == widget.totalSegments - 1 ? 0 : widget.gap,
+                  ),
                   height: widget.height,
                   decoration: BoxDecoration(
-                    color: isActive ? effectiveActiveColor : effectiveInactiveColor,
+                    color: isActive
+                        ? effectiveActiveColor
+                        : effectiveInactiveColor,
                     borderRadius: BorderRadius.circular(widget.height / 2),
                     boxShadow: isActive
                         ? [
                             BoxShadow(
-                              color: effectiveActiveColor.withValues(alpha: 0.4),
+                              color: effectiveActiveColor.withValues(
+                                alpha: 0.4,
+                              ),
                               blurRadius: 6.0,
                               offset: const Offset(0, 2),
                             ),
