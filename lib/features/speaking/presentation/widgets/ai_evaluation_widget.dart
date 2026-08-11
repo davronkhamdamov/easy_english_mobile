@@ -104,7 +104,7 @@ class AIEvaluationWidget extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: isDark
-            ? AppColors.darkBackground.withOpacity(0.5)
+            ? AppColors.darkBackground.withValues(alpha: 0.5)
             : AppColors.lightBackground,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(

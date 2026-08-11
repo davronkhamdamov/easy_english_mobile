@@ -15,11 +15,11 @@ class ListeningPracticeScreen extends StatefulWidget {
   final String paperTitle;
 
   const ListeningPracticeScreen({
-    Key? key,
+    super.key,
     required this.section,
     this.examType = ExamType.academic,
     this.paperTitle = 'Listening Section Practice',
-  }) : super(key: key);
+  });
 
   @override
   State<ListeningPracticeScreen> createState() =>
@@ -150,7 +150,7 @@ class _ListeningPracticeScreenState extends State<ListeningPracticeScreen> {
             margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.15),
+              color: AppColors.primary.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.primary),
             ),
@@ -191,7 +191,7 @@ class _ListeningPracticeScreenState extends State<ListeningPracticeScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -243,7 +243,7 @@ class _ListeningPracticeScreenState extends State<ListeningPracticeScreen> {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.secondary.withOpacity(0.15),
+                            color: AppColors.secondary.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -563,25 +563,26 @@ class _ListeningPracticeScreenState extends State<ListeningPracticeScreen> {
   Widget _buildListeningInput(MockQuestion q, bool isDark) {
     switch (q.questionType) {
       case QuestionType.multipleChoice:
-        return Column(
-          children: q.options.map((opt) {
-            final isSelected = _userAnswers[q.id] == opt;
-            return Container(
-              margin: const EdgeInsets.only(bottom: 6),
-              child: RadioListTile<String>(
-                value: opt,
-                groupValue: _userAnswers[q.id],
-                title: Text(opt, style: const TextStyle(fontSize: 13)),
-                activeColor: AppColors.primary,
-                dense: true,
-                onChanged: (val) {
-                  setState(() {
-                    if (val != null) _userAnswers[q.id] = val;
-                  });
-                },
-              ),
-            );
-          }).toList(),
+        return RadioGroup<String>(
+          groupValue: _userAnswers[q.id],
+          onChanged: (val) {
+            setState(() {
+              if (val != null) _userAnswers[q.id] = val;
+            });
+          },
+          child: Column(
+            children: q.options.map((opt) {
+              return Container(
+                margin: const EdgeInsets.only(bottom: 6),
+                child: RadioListTile<String>(
+                  value: opt,
+                  title: Text(opt, style: const TextStyle(fontSize: 13)),
+                  activeColor: AppColors.primary,
+                  dense: true,
+                ),
+              );
+            }).toList(),
+          ),
         );
 
       case QuestionType.trueFalseNotGiven:

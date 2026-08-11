@@ -9,13 +9,13 @@ class SubScoreCard extends StatelessWidget {
   final Color color;
 
   const SubScoreCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.band,
     required this.rawRatio,
     required this.icon,
     required this.color,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class SubScoreCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
+                  color: color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(

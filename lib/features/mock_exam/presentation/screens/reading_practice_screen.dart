@@ -15,11 +15,11 @@ class ReadingPracticeScreen extends StatefulWidget {
   final String paperTitle;
 
   const ReadingPracticeScreen({
-    Key? key,
+    super.key,
     required this.section,
     this.examType = ExamType.academic,
     this.paperTitle = 'Academic Reading Test',
-  }) : super(key: key);
+  });
 
   @override
   State<ReadingPracticeScreen> createState() => _ReadingPracticeScreenState();
@@ -126,8 +126,8 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: isLowTime
-                  ? AppColors.danger.withOpacity(0.2)
-                  : AppColors.primary.withOpacity(0.15),
+                  ? AppColors.danger.withValues(alpha: 0.2)
+                  : AppColors.primary.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: isLowTime ? AppColors.danger : AppColors.primary,
@@ -302,7 +302,7 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
                                         ),
                                         decoration: BoxDecoration(
                                           color: AppColors.secondary
-                                              .withOpacity(0.15),
+                                              .withValues(alpha: 0.15),
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),
@@ -445,57 +445,59 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
   Widget _buildQuestionInputWidget(MockQuestion question, bool isDark) {
     switch (question.questionType) {
       case QuestionType.multipleChoice:
-        return Column(
-          children: question.options.map((opt) {
-            final isSelected = _userAnswers[question.id] == opt;
-            return Material(
-              color: isSelected
-                  ? AppColors.primary.withOpacity(0.12)
-                  : (isDark
-                        ? AppColors.darkSurfaceVariant
-                        : AppColors.lightSurfaceVariant),
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: isSelected ? AppColors.primary : Colors.transparent,
-                    width: 1.5,
-                  ),
-                ),
-                child: ListTile(
-                  title: Text(
-                    opt,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: isDark
-                          ? AppColors.darkTextPrimary
-                          : AppColors.lightTextPrimary,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
+        return RadioGroup<String>(
+          groupValue: _userAnswers[question.id],
+          onChanged: (val) {
+            setState(() {
+              if (val != null) _userAnswers[question.id] = val;
+            });
+          },
+          child: Column(
+            children: question.options.map((opt) {
+              final isSelected = _userAnswers[question.id] == opt;
+              return Material(
+                color: isSelected
+                    ? AppColors.primary.withValues(alpha: 0.12)
+                    : (isDark
+                          ? AppColors.darkSurfaceVariant
+                          : AppColors.lightSurfaceVariant),
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: isSelected ? AppColors.primary : Colors.transparent,
+                      width: 1.5,
                     ),
                   ),
-                  leading: Radio<String>(
-                    value: opt,
-                    groupValue: _userAnswers[question.id],
-                    activeColor: AppColors.primary,
-                    onChanged: (val) {
+                  child: ListTile(
+                    title: Text(
+                      opt,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                    leading: Radio<String>(
+                      value: opt,
+                      activeColor: AppColors.primary,
+                    ),
+                    onTap: () {
                       setState(() {
-                        if (val != null) _userAnswers[question.id] = val;
+                        _userAnswers[question.id] = opt;
                       });
                     },
                   ),
-                  onTap: () {
-                    setState(() {
-                      _userAnswers[question.id] = opt;
-                    });
-                  },
                 ),
-              ),
-            );
-          }).toList(),
+              );
+            }).toList(),
+          ),
         );
 
       case QuestionType.trueFalseNotGiven:
@@ -524,7 +526,7 @@ class _ReadingPracticeScreenState extends State<ReadingPracticeScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? optColor.withOpacity(0.15)
+                        ? optColor.withValues(alpha: 0.15)
                         : (isDark
                               ? AppColors.darkSurfaceVariant
                               : AppColors.lightSurfaceVariant),

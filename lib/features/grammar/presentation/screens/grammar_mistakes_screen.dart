@@ -8,8 +8,7 @@ import 'grammar_exercise_screen.dart';
 class GrammarMistakesScreen extends StatefulWidget {
   final List<GrammarMistakeRecord>? initialMistakes;
 
-  const GrammarMistakesScreen({Key? key, this.initialMistakes})
-    : super(key: key);
+  const GrammarMistakesScreen({super.key, this.initialMistakes});
 
   @override
   State<GrammarMistakesScreen> createState() => _GrammarMistakesScreenState();
@@ -197,7 +196,7 @@ class _GrammarMistakesScreenState extends State<GrammarMistakesScreen> {
                     Icon(
                       Icons.check_circle_outline_rounded,
                       size: 64,
-                      color: AppColors.success.withOpacity(0.5),
+                      color: AppColors.success.withValues(alpha: 0.5),
                     ),
                     const SizedBox(height: 12),
                     Text(
@@ -251,7 +250,7 @@ class _GrammarMistakesScreenState extends State<GrammarMistakesScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -315,12 +314,12 @@ class _GrammarMistakesScreenState extends State<GrammarMistakesScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isResolved
-              ? AppColors.success.withOpacity(0.4)
+              ? AppColors.success.withValues(alpha: 0.4)
               : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.15 : 0.03),
+            color: Colors.black.withValues(alpha: isDark ? 0.15 : 0.03),
             blurRadius: 6,
             offset: const Offset(0, 2),
           ),
@@ -340,7 +339,7 @@ class _GrammarMistakesScreenState extends State<GrammarMistakesScreen> {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.12),
+                  color: AppColors.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -359,8 +358,8 @@ class _GrammarMistakesScreenState extends State<GrammarMistakesScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: mistake.occurrenceCount >= 3
-                      ? AppColors.danger.withOpacity(0.15)
-                      : AppColors.warning.withOpacity(0.15),
+                      ? AppColors.danger.withValues(alpha: 0.15)
+                      : AppColors.warning.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
@@ -411,7 +410,7 @@ class _GrammarMistakesScreenState extends State<GrammarMistakesScreen> {
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF450A0A) : AppColors.dangerLight,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.danger.withOpacity(0.3)),
+              border: Border.all(color: AppColors.danger.withValues(alpha: 0.3)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -459,7 +458,7 @@ class _GrammarMistakesScreenState extends State<GrammarMistakesScreen> {
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF064E3B) : AppColors.successLight,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.success.withOpacity(0.3)),
+              border: Border.all(color: AppColors.success.withValues(alpha: 0.3)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:easy_english/features/mock_exam/data/datasources/mock_exam_local_datasource.dart';
-import 'package:easy_english/features/mock_exam/data/models/mock_exam_paper_model.dart';
-import 'package:easy_english/features/mock_exam/data/models/mock_exam_result_model.dart';
 import 'package:easy_english/features/mock_exam/data/models/mock_question_model.dart';
 import 'package:easy_english/features/mock_exam/data/repositories/mock_exam_repository_impl.dart';
 import 'package:easy_english/features/mock_exam/domain/entities/exam_enums.dart';

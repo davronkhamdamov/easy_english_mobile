@@ -9,7 +9,7 @@ import 'grammar_mistakes_screen.dart';
 class GrammarRoadmapScreen extends StatefulWidget {
   final List<GrammarTopic>? initialTopics;
 
-  const GrammarRoadmapScreen({Key? key, this.initialTopics}) : super(key: key);
+  const GrammarRoadmapScreen({super.key, this.initialTopics});
 
   @override
   State<GrammarRoadmapScreen> createState() => _GrammarRoadmapScreenState();
@@ -17,7 +17,7 @@ class GrammarRoadmapScreen extends StatefulWidget {
 
 class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
   late List<GrammarTopic> _topics;
-  int _mistakeCount = 4; // Mock initial count
+  final int _mistakeCount = 4; // Mock initial count
 
   @override
   void initState() {
@@ -170,7 +170,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppColors.primary.withValues(alpha: 0.3),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -213,7 +213,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
                 icon: const Icon(Icons.warning_amber_rounded, size: 18),
                 label: Text('Mistakes ($_mistakeCount)'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white.withOpacity(0.2),
+                  backgroundColor: Colors.white.withValues(alpha: 0.2),
                   foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
@@ -236,7 +236,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
             child: LinearProgressIndicator(
               value: mastery / 100.0,
               minHeight: 10,
-              backgroundColor: Colors.white.withOpacity(0.2),
+              backgroundColor: Colors.white.withValues(alpha: 0.2),
               valueColor: const AlwaysStoppedAnimation<Color>(
                 AppColors.success,
               ),
@@ -259,7 +259,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
                   Text(
                     'Band 7.5 GRA Goal Alignment',
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       fontSize: 12,
                     ),
                   ),
@@ -268,7 +268,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
               Text(
                 'Adaptive Learning Active',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
@@ -290,7 +290,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
         color: isDark ? const Color(0xFF2C1C13) : AppColors.warningLight,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.warning.withOpacity(0.5),
+          color: AppColors.warning.withValues(alpha: 0.5),
           width: 1.5,
         ),
       ),
@@ -300,7 +300,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.warning.withOpacity(0.2),
+              color: AppColors.warning.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -416,7 +416,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
                     color: isCurrent
                         ? badgeColor
                         : (isCompleted
-                              ? badgeColor.withOpacity(0.2)
+                              ? badgeColor.withValues(alpha: 0.2)
                               : (isDark
                                     ? AppColors.darkSurfaceVariant
                                     : AppColors.lightSurfaceVariant)),
@@ -428,7 +428,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
                     boxShadow: isCurrent
                         ? [
                             BoxShadow(
-                              color: badgeColor.withOpacity(0.4),
+                              color: badgeColor.withValues(alpha: 0.4),
                               blurRadius: 10,
                               spreadRadius: 2,
                             ),
@@ -455,7 +455,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     decoration: BoxDecoration(
                       color: isCompleted
-                          ? AppColors.success.withOpacity(0.6)
+                          ? AppColors.success.withValues(alpha: 0.6)
                           : (isDark
                                 ? AppColors.darkBorder
                                 : AppColors.lightBorder),
@@ -485,7 +485,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: isCurrent
-                            ? AppColors.primary.withOpacity(0.6)
+                            ? AppColors.primary.withValues(alpha: 0.6)
                             : (isDark
                                   ? AppColors.darkBorder
                                   : AppColors.lightBorder),
@@ -493,7 +493,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+                          color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
@@ -513,10 +513,10 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: cefrBgColor.withOpacity(0.15),
+                                color: cefrBgColor.withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(6),
                                 border: Border.all(
-                                  color: cefrBgColor.withOpacity(0.4),
+                                  color: cefrBgColor.withValues(alpha: 0.4),
                                 ),
                               ),
                               child: Text(
@@ -537,7 +537,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
                                 vertical: 3,
                               ),
                               decoration: BoxDecoration(
-                                color: badgeColor.withOpacity(0.12),
+                                color: badgeColor.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
@@ -749,7 +749,7 @@ class _GrammarRoadmapScreenState extends State<GrammarRoadmapScreen> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.15),
+                      color: AppColors.primary.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(

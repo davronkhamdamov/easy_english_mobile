@@ -3,7 +3,6 @@ import '../../../../core/theme/app_colors.dart';
 import '../../data/datasources/mock_exam_local_datasource.dart';
 import '../../domain/entities/exam_enums.dart';
 import '../../domain/entities/mock_exam_paper.dart';
-import '../../domain/entities/mock_exam_section.dart';
 import '../widgets/exam_paper_item.dart';
 import '../widgets/exam_section_card.dart';
 import 'listening_practice_screen.dart';
@@ -11,7 +10,7 @@ import 'reading_practice_screen.dart';
 
 /// IELTS Full Mock Exam & Section Practice Selection Dashboard.
 class MockExamSelectionScreen extends StatefulWidget {
-  const MockExamSelectionScreen({Key? key}) : super(key: key);
+  const MockExamSelectionScreen({super.key});
 
   @override
   State<MockExamSelectionScreen> createState() =>
@@ -85,7 +84,7 @@ class _MockExamSelectionScreenState extends State<MockExamSelectionScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 16,
                     offset: const Offset(0, 6),
                   ),
@@ -103,7 +102,7 @@ class _MockExamSelectionScreenState extends State<MockExamSelectionScreen> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: const Text(
@@ -292,12 +291,12 @@ class _MockExamSelectionScreenState extends State<MockExamSelectionScreen> {
                 color: cardBg,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.primary.withOpacity(0.5),
+                  color: AppColors.primary.withValues(alpha: 0.5),
                   width: 1.5,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),

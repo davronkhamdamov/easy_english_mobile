@@ -30,8 +30,9 @@ class AuthRepositoryImpl implements AuthRepository {
     if (user == null) throw Exception('Firebase authentication failed');
 
     final idToken = await user.getIdToken();
-    if (idToken == null || idToken.isEmpty)
+    if (idToken == null || idToken.isEmpty) {
       throw Exception('Failed to retrieve Firebase ID token');
+    }
 
     return await _authRemoteDataSource.exchangeGoogleToken(idToken);
   }

@@ -344,9 +344,9 @@ class _SpeakingScreenState extends State<SpeakingScreen>
             margin: const EdgeInsets.only(right: 16),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.15),
+              color: AppColors.primary.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -440,7 +440,7 @@ class _SpeakingScreenState extends State<SpeakingScreen>
                   boxShadow: isSelected
                       ? [
                           BoxShadow(
-                            color: AppColors.primary.withOpacity(0.3),
+                            color: AppColors.primary.withValues(alpha: 0.3),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -479,14 +479,14 @@ class _SpeakingScreenState extends State<SpeakingScreen>
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
           color: _state == PracticeState.recording
-              ? AppColors.danger.withOpacity(0.5)
+              ? AppColors.danger.withValues(alpha: 0.5)
               : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
         ),
       ),
@@ -625,8 +625,8 @@ class _SpeakingScreenState extends State<SpeakingScreen>
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.danger.withOpacity(
-                    0.4 * _micPulseController.value,
+                  color: AppColors.danger.withValues(
+                    alpha: 0.4 * _micPulseController.value,
                   ),
                   blurRadius: 20 * _micPulseController.value,
                   spreadRadius: 8 * _micPulseController.value,

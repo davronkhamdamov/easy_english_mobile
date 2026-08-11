@@ -35,7 +35,7 @@ class CueCardPromptWidget extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.secondary.withOpacity(0.15),
+                    color: AppColors.secondary.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -79,7 +79,7 @@ class CueCardPromptWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: isDark
-                      ? AppColors.darkBackground.withOpacity(0.5)
+                      ? AppColors.darkBackground.withValues(alpha: 0.5)
                       : AppColors.lightBackground,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(

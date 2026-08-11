@@ -7,7 +7,7 @@ import '../widgets/sub_score_card.dart';
 class MockResultScreen extends StatefulWidget {
   final MockExamResult result;
 
-  const MockResultScreen({Key? key, required this.result}) : super(key: key);
+  const MockResultScreen({super.key, required this.result});
 
   @override
   State<MockResultScreen> createState() => _MockResultScreenState();
@@ -47,19 +47,14 @@ class _MockResultScreenState extends State<MockResultScreen> {
     final totalQs = res.allQuestions.length;
 
     int correctCount = 0;
-    int incorrectCount = 0;
-    int unansweredCount = 0;
 
     for (final q in res.allQuestions) {
       final userAns = (res.userAnswers[q.id] ?? '').trim().toLowerCase();
       final correctAns = q.correctAnswer.trim().toLowerCase();
 
-      if (userAns.isEmpty) {
-        unansweredCount++;
-      } else if (userAns == correctAns || correctAns.contains(userAns)) {
+      if (userAns.isNotEmpty &&
+          (userAns == correctAns || correctAns.contains(userAns))) {
         correctCount++;
-      } else {
-        incorrectCount++;
       }
     }
 
@@ -124,7 +119,7 @@ class _MockResultScreenState extends State<MockResultScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.35),
+                    color: AppColors.primary.withValues(alpha: 0.35),
                     blurRadius: 18,
                     offset: const Offset(0, 8),
                   ),
@@ -138,7 +133,7 @@ class _MockResultScreenState extends State<MockResultScreen> {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -372,10 +367,10 @@ class _MockResultScreenState extends State<MockResultScreen> {
                       leading: CircleAvatar(
                         radius: 14,
                         backgroundColor: isUnanswered
-                            ? AppColors.warning.withOpacity(0.2)
+                            ? AppColors.warning.withValues(alpha: 0.2)
                             : (isCorrect
-                                  ? AppColors.success.withOpacity(0.2)
-                                  : AppColors.danger.withOpacity(0.2)),
+                                  ? AppColors.success.withValues(alpha: 0.2)
+                                  : AppColors.danger.withValues(alpha: 0.2)),
                         child: Icon(
                           isUnanswered
                               ? Icons.help_outline

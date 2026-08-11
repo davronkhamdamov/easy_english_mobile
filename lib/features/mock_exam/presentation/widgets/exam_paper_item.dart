@@ -6,8 +6,7 @@ class ExamPaperItem extends StatelessWidget {
   final MockExamPaper paper;
   final VoidCallback onTap;
 
-  const ExamPaperItem({Key? key, required this.paper, required this.onTap})
-    : super(key: key);
+  const ExamPaperItem({super.key, required this.paper, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +37,7 @@ class ExamPaperItem extends StatelessWidget {
             vertical: 8,
           ),
           leading: CircleAvatar(
-            backgroundColor: AppColors.primary.withOpacity(0.12),
+            backgroundColor: AppColors.primary.withValues(alpha: 0.12),
             child: const Icon(
               Icons.description_outlined,
               color: AppColors.primary,
@@ -61,7 +60,7 @@ class ExamPaperItem extends StatelessWidget {
           trailing: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.secondary.withOpacity(0.15),
+              color: AppColors.secondary.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(

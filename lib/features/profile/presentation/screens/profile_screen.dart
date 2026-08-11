@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../auth/data/auth_service.dart';
-import '../../../auth/presentation/screens/login_screen.dart';
 import '../../../../design_system/design_system.dart';
 import '../../../notification/presentation/notification_settings_screen.dart';
 

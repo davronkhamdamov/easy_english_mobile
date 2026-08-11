@@ -9,8 +9,7 @@ import '../../domain/entities/grammar_topic.dart';
 class GrammarExerciseScreen extends StatefulWidget {
   final GrammarTopic topic;
 
-  const GrammarExerciseScreen({Key? key, required this.topic})
-    : super(key: key);
+  const GrammarExerciseScreen({super.key, required this.topic});
 
   @override
   State<GrammarExerciseScreen> createState() => _GrammarExerciseScreenState();
@@ -211,7 +210,7 @@ class _GrammarExerciseScreenState extends State<GrammarExerciseScreen> {
                       child: LinearProgressIndicator(
                         value: finalMastery / 100.0,
                         minHeight: 8,
-                        backgroundColor: Colors.grey.withOpacity(0.2),
+                        backgroundColor: Colors.grey.withValues(alpha: 0.2),
                         valueColor: AlwaysStoppedAnimation<Color>(
                           isPassed ? AppColors.success : AppColors.primary,
                         ),
@@ -329,7 +328,7 @@ class _GrammarExerciseScreenState extends State<GrammarExerciseScreen> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.12),
+                    color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -379,7 +378,7 @@ class _GrammarExerciseScreenState extends State<GrammarExerciseScreen> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -442,14 +441,14 @@ class _GrammarExerciseScreenState extends State<GrammarExerciseScreen> {
                         if (opt.toLowerCase() ==
                             exercise.correctAnswer.toLowerCase()) {
                           optionBorder = AppColors.success;
-                          optionBg = AppColors.success.withOpacity(0.15);
+                          optionBg = AppColors.success.withValues(alpha: 0.15);
                         } else if (isSelected && !_isCorrect) {
                           optionBorder = AppColors.danger;
-                          optionBg = AppColors.danger.withOpacity(0.15);
+                          optionBg = AppColors.danger.withValues(alpha: 0.15);
                         }
                       } else if (isSelected) {
                         optionBorder = AppColors.primary;
-                        optionBg = AppColors.primary.withOpacity(0.12);
+                        optionBg = AppColors.primary.withValues(alpha: 0.12);
                       }
 
                       return Container(
@@ -637,7 +636,7 @@ class _GrammarExerciseScreenState extends State<GrammarExerciseScreen> {
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E2638) : AppColors.primaryLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.4)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.4)),
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -702,7 +701,7 @@ class _GrammarExerciseScreenState extends State<GrammarExerciseScreen> {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.6), width: 1.5),
+        border: Border.all(color: color.withValues(alpha: 0.6), width: 1.5),
       ),
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -746,8 +745,8 @@ class _GrammarExerciseScreenState extends State<GrammarExerciseScreen> {
               fontSize: 13,
               height: 1.4,
               color: isDark
-                  ? Colors.white.withOpacity(0.9)
-                  : Colors.black.withOpacity(0.8),
+                  ? Colors.white.withValues(alpha: 0.9)
+                  : Colors.black.withValues(alpha: 0.8),
             ),
           ),
         ],
