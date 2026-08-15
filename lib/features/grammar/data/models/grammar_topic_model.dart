@@ -1,87 +1,38 @@
 import '../../domain/entities/grammar_topic.dart';
-import 'grammar_exercise_model.dart';
-import 'grammar_rule_model.dart';
 
-class GrammarTopicModel {
-  final String id;
-  final String title;
-  final String description;
-  final String cefrLevel;
-  final GrammarTopicStatus status;
-  final double masteryPercentage;
-  final int orderIndex;
-  final List<String> prerequisiteIds;
-  final String iconName;
-  final List<GrammarRuleModel> rules;
-  final List<GrammarExerciseModel> exercises;
-
+class GrammarTopicModel extends GrammarTopic {
   const GrammarTopicModel({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.cefrLevel,
-    required this.status,
-    required this.masteryPercentage,
-    required this.orderIndex,
-    required this.prerequisiteIds,
-    required this.iconName,
-    required this.rules,
-    required this.exercises,
+    required super.id,
+    required super.title,
+    required super.description,
+    required super.cefrLevel,
+    super.isCompleted = false,
+    super.progressPercent = 0.0,
+    super.status = GrammarTopicStatus.locked,
+    super.masteryPercentage = 0.0,
+    super.orderIndex = 1,
+    super.prerequisiteIds = const [],
+    super.iconName = 'book',
+    super.rules = const [],
+    super.exercises = const [],
   });
 
   factory GrammarTopicModel.fromJson(Map<String, dynamic> json) {
+    final parsed = GrammarTopic.fromJson(json);
     return GrammarTopicModel(
-      id: json['id'] as String? ?? '',
-      title: json['title'] as String? ?? '',
-      description: json['description'] as String? ?? '',
-      cefrLevel: json['cefr_level'] as String? ?? 'B1',
-      status: GrammarTopicStatusExtension.fromString(
-        json['status'] as String? ?? 'locked',
-      ),
-      masteryPercentage: (json['mastery_percentage'] as num? ?? 0.0).toDouble(),
-      orderIndex: json['order_index'] as int? ?? 0,
-      prerequisiteIds: List<String>.from(
-        json['prerequisite_ids'] as List? ?? [],
-      ),
-      iconName: json['icon_name'] as String? ?? 'book',
-      rules: (json['rules'] as List? ?? [])
-          .map((r) => GrammarRuleModel.fromJson(r as Map<String, dynamic>))
-          .toList(),
-      exercises: (json['exercises'] as List? ?? [])
-          .map((e) => GrammarExerciseModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'title': title,
-      'description': description,
-      'cefr_level': cefrLevel,
-      'status': status.value,
-      'mastery_percentage': masteryPercentage,
-      'order_index': orderIndex,
-      'prerequisite_ids': prerequisiteIds,
-      'icon_name': iconName,
-      'rules': rules.map((r) => r.toJson()).toList(),
-      'exercises': exercises.map((e) => e.toJson()).toList(),
-    };
-  }
-
-  GrammarTopic toEntity() {
-    return GrammarTopic(
-      id: id,
-      title: title,
-      description: description,
-      cefrLevel: cefrLevel,
-      status: status,
-      masteryPercentage: masteryPercentage,
-      orderIndex: orderIndex,
-      prerequisiteIds: prerequisiteIds,
-      iconName: iconName,
-      rules: rules.map((r) => r.toEntity()).toList(),
-      exercises: exercises.map((e) => e.toEntity()).toList(),
+      id: parsed.id,
+      title: parsed.title,
+      description: parsed.description,
+      cefrLevel: parsed.cefrLevel,
+      isCompleted: parsed.isCompleted,
+      progressPercent: parsed.progressPercent,
+      status: parsed.status,
+      masteryPercentage: parsed.masteryPercentage,
+      orderIndex: parsed.orderIndex,
+      prerequisiteIds: parsed.prerequisiteIds,
+      iconName: parsed.iconName,
+      rules: parsed.rules,
+      exercises: parsed.exercises,
     );
   }
 
@@ -91,15 +42,17 @@ class GrammarTopicModel {
       title: entity.title,
       description: entity.description,
       cefrLevel: entity.cefrLevel,
+      isCompleted: entity.isCompleted,
+      progressPercent: entity.progressPercent,
       status: entity.status,
       masteryPercentage: entity.masteryPercentage,
       orderIndex: entity.orderIndex,
       prerequisiteIds: entity.prerequisiteIds,
       iconName: entity.iconName,
-      rules: entity.rules.map((r) => GrammarRuleModel.fromEntity(r)).toList(),
-      exercises: entity.exercises
-          .map((e) => GrammarExerciseModel.fromEntity(e))
-          .toList(),
+      rules: entity.rules,
+      exercises: entity.exercises,
     );
   }
+
+  GrammarTopic toEntity() => this;
 }

@@ -6,9 +6,11 @@ class GetGrammarMistakes {
   final GrammarRepository _repository;
 
   GetGrammarMistakes({GrammarRepository? repository})
-    : _repository = repository ?? GrammarRepositoryImpl();
+      : _repository = repository ?? GrammarRepositoryImpl();
 
   Future<List<GrammarMistakeRecord>> call() {
     return _repository.getGrammarMistakes();
   }
 }
+
+typedef FetchGrammarMistakesUseCase = GetGrammarMistakes;

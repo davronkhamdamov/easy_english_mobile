@@ -4,16 +4,17 @@ import 'package:easy_english/features/ai_coach/data/models/five_tier_recommendat
 import 'package:easy_english/features/ai_coach/data/repositories/ai_coach_repository_impl.dart';
 import 'package:easy_english/features/ai_coach/domain/entities/ai_coach_recommendation.dart';
 import 'package:easy_english/features/ai_coach/domain/entities/five_tier_recommendation.dart';
+import 'package:easy_english/features/ai_coach/domain/entities/recommendation_tier.dart';
 import 'package:easy_english/features/ai_coach/domain/repositories/ai_coach_repository.dart';
 import 'package:easy_english/features/ai_coach/domain/services/recommendation_engine_service.dart';
-import 'package:easy_english/features/ai_coach/domain/usecases/get_ai_coach_recommendations.dart';
-import 'package:easy_english/features/ai_coach/domain/usecases/get_five_tier_recommendations.dart';
+import 'package:easy_english/features/ai_coach/domain/usecases/fetch_ai_recommendations_usecase.dart';
+import 'package:easy_english/features/ai_coach/domain/usecases/fetch_five_tier_plan_usecase.dart';
 import 'package:easy_english/features/ai_coach/presentation/providers/ai_coach_provider.dart';
 import 'package:easy_english/features/ai_coach/presentation/screens/ai_coach_screen.dart';
-import 'package:easy_english/features/ai_coach/presentation/widgets/ai_coach_guidance_card.dart';
+import 'package:easy_english/features/ai_coach/presentation/widgets/ai_coach_error_widget.dart';
 import 'package:easy_english/features/ai_coach/presentation/widgets/ai_coach_header_card.dart';
-import 'package:easy_english/features/ai_coach/presentation/widgets/remediation_plan_section.dart';
-import 'package:easy_english/features/ai_coach/presentation/widgets/weakness_matrix_section.dart';
+import 'package:easy_english/features/ai_coach/presentation/widgets/five_tier_plan_widget.dart';
+import 'package:easy_english/features/ai_coach/presentation/widgets/recommended_topics_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -31,11 +32,12 @@ class MockAiCoachRemoteDatasource implements AiCoachRemoteDatasource {
     if (shouldThrow) throw Exception('API Network Error');
     if (shouldReturnNull) return null;
     return AiCoachRecommendationDto(
-      predictedOverallBand: 7.5,
+      userId: 'usr_9981',
+      currentEstimatedBand: 7.5,
       targetBand: 8.0,
-      weaknessSummary: ['Grammar Task 2'],
-      remediationTasks: ['Do 1 exercise'],
-      aiCoachNotes: 'Great job',
+      primaryWeakness: 'Grammar Task 2',
+      aiCoachMessage: 'Great job',
+      recommendedTopics: ['Do 1 exercise'],
     );
   }
 
@@ -56,19 +58,23 @@ class MockAiCoachRemoteDatasource implements AiCoachRemoteDatasource {
 class MockAiCoachRepository implements AiCoachRepository {
   final AiCoachRecommendation recommendation;
   final FiveTierRecommendation fiveTierRecommendation;
+  final bool shouldThrow;
 
   MockAiCoachRepository({
     required this.recommendation,
     required this.fiveTierRecommendation,
+    this.shouldThrow = false,
   });
 
   @override
   Future<AiCoachRecommendation> getRecommendations() async {
+    if (shouldThrow) throw Exception('Server unreachable');
     return recommendation;
   }
 
   @override
   Future<FiveTierRecommendation> get5TierRecommendations() async {
+    if (shouldThrow) throw Exception('Server unreachable');
     return fiveTierRecommendation;
   }
 }
@@ -77,11 +83,39 @@ void main() {
   group('AI Coach Domain Entity & Service Tests', () {
     test('AiCoachRecommendation construction and copyWith', () {
       const rec = AiCoachRecommendation(
-        predictedOverallBand: 7.0,
+        userId: 'usr_1',
+        currentEstimatedBand: 7.0,
         targetBand: 7.5,
-        weaknessSummary: ['Task 2 Grammatical Range'],
-        remediationTasks: ['Complete 1 exercise'],
-        aiCoachNotes: 'Keep practicing',
+        primaryWeakness: 'Task 2 Grammatical Range',
+        aiCoachMessage: 'Keep practicing',
+        recommendedTopics: ['Complete 1 exercise'],
+        fiveTierPlan: FiveTierRecommendation(
+          tier1Foundations: RecommendationTier(
+            title: 'T1',
+            status: 'completed',
+            items: [],
+          ),
+          tier2SkillBuilding: RecommendationTier(
+            title: 'T2',
+            status: 'in_progress',
+            items: [],
+          ),
+          tier3PracticeDrills: RecommendationTier(
+            title: 'T3',
+            status: 'locked',
+            items: [],
+          ),
+          tier4MockSimulation: RecommendationTier(
+            title: 'T4',
+            status: 'locked',
+            items: [],
+          ),
+          tier5AdvancedMastery: RecommendationTier(
+            title: 'T5',
+            status: 'locked',
+            items: [],
+          ),
+        ),
       );
 
       expect(rec.predictedOverallBand, equals(7.0));
@@ -94,22 +128,13 @@ void main() {
     });
 
     test('FiveTierRecommendation construction and copyWith', () {
-      const fiveTier = FiveTierRecommendation(
+      final fiveTier = FiveTierRecommendation.empty().copyWith(
         tier1CriticalWeaknesses: ['Tier 1 Task'],
-        tier2ScheduledReviews: ['Tier 2 Task'],
-        tier3PersonalizedRoadmap: ['Tier 3 Task'],
-        tier4AiSuggestions: ['Tier 4 Task'],
         tier5OptionalPractice: ['Tier 5 Task'],
       );
 
       expect(fiveTier.tier1CriticalWeaknesses.length, equals(1));
       expect(fiveTier.tier5OptionalPractice.first, equals('Tier 5 Task'));
-
-      final copy = fiveTier.copyWith(
-        tier1CriticalWeaknesses: ['Updated Tier 1'],
-      );
-      expect(copy.tier1CriticalWeaknesses.first, equals('Updated Tier 1'));
-      expect(copy.tier2ScheduledReviews.first, equals('Tier 2 Task'));
     });
 
     test('RecommendationEngineService fallbacks and business logic', () {
@@ -118,13 +143,8 @@ void main() {
       final fallbackRec = service.getFallbackRecommendations();
       expect(fallbackRec.predictedOverallBand, equals(7.0));
       expect(fallbackRec.targetBand, equals(7.5));
-      expect(fallbackRec.weaknessSummary, isNotEmpty);
 
-      final fallback5Tier = service.getFallback5TierRecommendations();
-      expect(fallback5Tier.tier1CriticalWeaknesses, isNotEmpty);
-      expect(fallback5Tier.tier4AiSuggestions, isNotEmpty);
-
-      final totalActions = service.calculateTotalActionItems(fallback5Tier);
+      final totalActions = service.calculateTotalActionItems(fallbackRec.fiveTierPlan);
       expect(totalActions, equals(5));
 
       final bandGap = service.calculateBandGap(fallbackRec);
@@ -135,148 +155,185 @@ void main() {
   group('AI Coach Data Layer DTO & Repository Tests', () {
     test('AiCoachRecommendationDto fromJson, toJson, and toDomain', () {
       final json = {
-        'predicted_overall_band': 7.0,
+        'user_id': 'usr_9981',
+        'current_estimated_band': 7.0,
         'target_band': 8.0,
-        'weakness_summary': ['Listening S3'],
-        'remediation_tasks': ['Sentence Builder'],
-        'ai_coach_notes': 'Well done',
+        'primary_weakness': 'Grammatical Accuracy & Coherence',
+        'ai_coach_message': 'Focus on complex sentence structures.',
+        'recommended_topics': ['Complex Sentences', 'Academic Collocations'],
       };
 
       final dto = AiCoachRecommendationDto.fromJson(json);
-      expect(dto.predictedOverallBand, equals(7.0));
+      expect(dto.currentEstimatedBand, equals(7.0));
       expect(dto.targetBand, equals(8.0));
-
-      final jsonOut = dto.toJson();
-      expect(jsonOut['predicted_overall_band'], equals(7.0));
+      expect(dto.primaryWeakness, equals('Grammatical Accuracy & Coherence'));
 
       final domain = dto.toDomain();
-      expect(domain.predictedOverallBand, equals(7.0));
+      expect(domain.currentEstimatedBand, equals(7.0));
       expect(domain.targetBand, equals(8.0));
-      expect(domain.weaknessSummary.first, equals('Listening S3'));
+      expect(domain.primaryWeakness, equals('Grammatical Accuracy & Coherence'));
     });
 
-    test('FiveTierRecommendationDto fromJson, toJson, and toDomain', () {
+    test('FiveTierRecommendationDto fromJson with 5-tier nested plan', () {
       final json = {
-        'tier1_critical_weaknesses': ['W1'],
-        'tier2_scheduled_reviews': ['R1'],
-        'tier3_personalized_roadmap': ['P1'],
-        'tier4_ai_suggestions': ['S1'],
-        'tier5_optional_practice': ['O1'],
+        'tier_1_foundations': {
+          'title': 'Tier 1: Foundations & Core Rules',
+          'status': 'completed',
+          'items': ['Relative Clauses Review']
+        },
+        'tier_2_skill_building': {
+          'title': 'Tier 2: Targeted Skill Drills',
+          'status': 'in_progress',
+          'items': ['Cohesive Devices Drill']
+        },
+        'tier_3_practice_drills': {
+          'title': 'Tier 3: Guided Practice Modules',
+          'status': 'locked',
+          'items': ['Task 2 Paragraph Building']
+        },
+        'tier_4_mock_simulation': {
+          'title': 'Tier 4: Exam Simulation',
+          'status': 'locked',
+          'items': ['Timed Mock']
+        },
+        'tier_5_advanced_mastery': {
+          'title': 'Tier 5: Band 8+ Mastery',
+          'status': 'locked',
+          'items': ['Lexical Variety Challenge']
+        }
       };
 
       final dto = FiveTierRecommendationDto.fromJson(json);
-      expect(dto.tier1CriticalWeaknesses?.first, equals('W1'));
-
-      final jsonOut = dto.toJson();
-      expect(jsonOut['tier1_critical_weaknesses'], equals(['W1']));
-
       final domain = dto.toDomain();
-      expect(domain.tier1CriticalWeaknesses.first, equals('W1'));
-      expect(domain.tier5OptionalPractice.first, equals('O1'));
+
+      expect(domain.tier1Foundations.title, equals('Tier 1: Foundations & Core Rules'));
+      expect(domain.tier1Foundations.status, equals('completed'));
+      expect(domain.tier1Foundations.items.first, equals('Relative Clauses Review'));
     });
 
-    test('AiCoachRepositoryImpl fetches data from datasource', () async {
+    test('AiCoachRepositoryImpl fetches data directly from datasource', () async {
       final datasource = MockAiCoachRemoteDatasource();
       final repository = AiCoachRepositoryImpl(remoteDatasource: datasource);
 
       final rec = await repository.getRecommendations();
       expect(rec.predictedOverallBand, equals(7.5));
       expect(rec.targetBand, equals(8.0));
-
-      final fiveTier = await repository.get5TierRecommendations();
-      expect(fiveTier.tier1CriticalWeaknesses.first, equals('Weakness 1'));
     });
 
-    test('AiCoachRepositoryImpl uses domain fallback on error', () async {
+    test('AiCoachRepositoryImpl throws exception on error without mock fallback', () async {
       final datasource = MockAiCoachRemoteDatasource(shouldThrow: true);
       final repository = AiCoachRepositoryImpl(remoteDatasource: datasource);
 
-      final rec = await repository.getRecommendations();
-      expect(rec.predictedOverallBand, equals(7.0));
-      expect(rec.targetBand, equals(7.5));
-
-      final fiveTier = await repository.get5TierRecommendations();
-      expect(
-        fiveTier.tier1CriticalWeaknesses.first,
-        equals('Task 2 Grammatical Range & Coherence'),
-      );
+      expect(() => repository.getRecommendations(), throwsA(isA<Exception>()));
     });
   });
 
   group('AI Coach Use Cases & Provider Tests', () {
     const testRec = AiCoachRecommendation(
-      predictedOverallBand: 7.0,
+      userId: 'usr_9981',
+      currentEstimatedBand: 7.0,
       targetBand: 7.5,
-      weaknessSummary: ['Weakness A'],
-      remediationTasks: ['Task A'],
-      aiCoachNotes: 'Notes A',
+      primaryWeakness: 'Weakness A',
+      aiCoachMessage: 'Notes A',
+      recommendedTopics: ['Topic A'],
+      fiveTierPlan: FiveTierRecommendation(
+        tier1Foundations: RecommendationTier(
+          title: 'T1',
+          status: 'completed',
+          items: ['T1 item'],
+        ),
+        tier2SkillBuilding: RecommendationTier(
+          title: 'T2',
+          status: 'in_progress',
+          items: ['T2 item'],
+        ),
+        tier3PracticeDrills: RecommendationTier(
+          title: 'T3',
+          status: 'locked',
+          items: ['T3 item'],
+        ),
+        tier4MockSimulation: RecommendationTier(
+          title: 'T4',
+          status: 'locked',
+          items: ['T4 item'],
+        ),
+        tier5AdvancedMastery: RecommendationTier(
+          title: 'T5',
+          status: 'locked',
+          items: ['T5 item'],
+        ),
+      ),
     );
 
-    const test5Tier = FiveTierRecommendation(
-      tier1CriticalWeaknesses: ['T1'],
-      tier2ScheduledReviews: ['T2'],
-      tier3PersonalizedRoadmap: ['T3'],
-      tier4AiSuggestions: ['T4'],
-      tier5OptionalPractice: ['T5'],
-    );
-
-    test('GetAiCoachRecommendations use case calls repository', () async {
+    test('FetchAiRecommendationsUseCase calls repository', () async {
       final repo = MockAiCoachRepository(
         recommendation: testRec,
-        fiveTierRecommendation: test5Tier,
+        fiveTierRecommendation: testRec.fiveTierPlan,
       );
-      final useCase = GetAiCoachRecommendations(repository: repo);
+      final useCase = FetchAiRecommendationsUseCase(repo);
 
       final result = await useCase();
-      expect(result.predictedOverallBand, equals(7.0));
+      expect(result.currentEstimatedBand, equals(7.0));
     });
 
-    test('GetFiveTierRecommendations use case calls repository', () async {
+    test('FetchFiveTierPlanUseCase calls repository', () async {
       final repo = MockAiCoachRepository(
         recommendation: testRec,
-        fiveTierRecommendation: test5Tier,
+        fiveTierRecommendation: testRec.fiveTierPlan,
       );
-      final useCase = GetFiveTierRecommendations(repository: repo);
+      final useCase = FetchFiveTierPlanUseCase(repo);
 
       final result = await useCase();
-      expect(result.tier1CriticalWeaknesses.first, equals('T1'));
+      expect(result.tier1Foundations.items.first, equals('T1 item'));
     });
 
     test('AiCoachProvider loads recommendations and updates state', () async {
       final repo = MockAiCoachRepository(
         recommendation: testRec,
-        fiveTierRecommendation: test5Tier,
+        fiveTierRecommendation: testRec.fiveTierPlan,
       );
       final provider = AiCoachProvider(
-        getAiCoachRecommendations: GetAiCoachRecommendations(repository: repo),
-        getFiveTierRecommendations: GetFiveTierRecommendations(
-          repository: repo,
-        ),
+        fetchAiRecommendationsUseCase: FetchAiRecommendationsUseCase(repo),
+        fetchFiveTierPlanUseCase: FetchFiveTierPlanUseCase(repo),
       );
 
       expect(provider.isLoading, isFalse);
       expect(provider.recommendation, isNull);
 
-      await provider.loadRecommendations();
+      await provider.fetchRecommendations();
       expect(provider.isLoading, isFalse);
-      expect(provider.recommendation?.predictedOverallBand, equals(7.0));
+      expect(provider.recommendation?.currentEstimatedBand, equals(7.0));
+      expect(provider.fiveTierPlan?.tier1Foundations.items.first, equals('T1 item'));
+    });
 
-      await provider.loadFiveTierRecommendations();
-      expect(
-        provider.fiveTierRecommendation?.tier1CriticalWeaknesses.first,
-        equals('T1'),
+    test('AiCoachProvider sets error state on network failure', () async {
+      final repo = MockAiCoachRepository(
+        recommendation: testRec,
+        fiveTierRecommendation: testRec.fiveTierPlan,
+        shouldThrow: true,
       );
+      final provider = AiCoachProvider(
+        fetchAiRecommendationsUseCase: FetchAiRecommendationsUseCase(repo),
+      );
+
+      await provider.fetchRecommendations();
+      expect(provider.isLoading, isFalse);
+      expect(provider.errorMessage, contains('Server unreachable'));
     });
   });
 
   group('AI Coach Widget & Screen Rendering Tests', () {
-    testWidgets('AiCoachHeaderCard renders band scores', (
+    testWidgets('AiCoachHeaderCard renders band scores & weakness badge', (
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: AiCoachHeaderCard(predictedOverallBand: 7.0, targetBand: 7.5),
+            body: AiCoachHeaderCard(
+              predictedOverallBand: 7.0,
+              targetBand: 7.5,
+              primaryWeakness: 'Grammar Accuracy',
+            ),
           ),
         ),
       );
@@ -284,93 +341,116 @@ void main() {
       expect(find.text('Predicted IELTS Band'), findsOneWidget);
       expect(find.text('Band 7.0'), findsOneWidget);
       expect(find.text('Target: Band 7.5'), findsOneWidget);
-      expect(find.byIcon(Icons.psychology), findsOneWidget);
+      expect(find.text('Focus Area: Grammar Accuracy'), findsOneWidget);
     });
 
-    testWidgets('AiCoachGuidanceCard renders coach notes', (
+    testWidgets('RecommendedTopicsList renders practice topic chips', (
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: AiCoachGuidanceCard(
-              notes: 'Focus on Task 2 writing structure next.',
+            body: RecommendedTopicsList(
+              topics: ['Complex Sentences', 'Task 2 Essay'],
             ),
           ),
         ),
       );
 
-      expect(find.text('Coach Guidance'), findsOneWidget);
-      expect(
-        find.text('Focus on Task 2 writing structure next.'),
-        findsOneWidget,
-      );
-      expect(find.byIcon(Icons.auto_awesome), findsOneWidget);
+      expect(find.text('Recommended Practice Topics'), findsOneWidget);
+      expect(find.text('Complex Sentences'), findsOneWidget);
+      expect(find.text('Task 2 Essay'), findsOneWidget);
     });
 
-    testWidgets('RemediationPlanSection renders task items', (
+    testWidgets('FiveTierPlanWidget renders tier stack', (
       WidgetTester tester,
     ) async {
+      final plan = FiveTierRecommendation.empty().copyWith(
+        tier1CriticalWeaknesses: ['Subject-Verb Agreement'],
+      );
+
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: Scaffold(
-            body: RemediationPlanSection(
-              tasks: ['Complete 1 Sentence Builder', 'Review 5 Flashcards'],
-            ),
+            body: FiveTierPlanWidget(plan: plan, selectedIndex: 0),
           ),
         ),
       );
 
-      expect(find.text('Personalized Remediation Plan:'), findsOneWidget);
-      expect(find.text('Complete 1 Sentence Builder'), findsOneWidget);
-      expect(find.text('Review 5 Flashcards'), findsOneWidget);
+      expect(find.text('5-Tier Learning Roadmap'), findsOneWidget);
+      expect(find.text('Subject-Verb Agreement'), findsOneWidget);
     });
 
-    testWidgets('WeaknessMatrixSection renders weakness items', (
+    testWidgets('AiCoachErrorWidget renders error state with retry button', (
       WidgetTester tester,
     ) async {
+      bool retried = false;
+
       await tester.pumpWidget(
-        const MaterialApp(
+        MaterialApp(
           home: Scaffold(
-            body: WeaknessMatrixSection(
-              weaknesses: ['Task 2 Grammatical Range & Coherence'],
+            body: AiCoachErrorWidget(
+              errorMessage: 'Network Connection Failed',
+              onRetry: () => retried = true,
             ),
           ),
         ),
       );
 
-      expect(find.text('Identified Weak Points:'), findsOneWidget);
-      expect(find.text('Task 2 Grammatical Range & Coherence'), findsOneWidget);
-      expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
+      expect(find.text('Unable to Load AI Recommendations'), findsOneWidget);
+      expect(find.text('Network Connection Failed'), findsOneWidget);
+      expect(find.text('Retry'), findsOneWidget);
+
+      await tester.tap(find.text('Retry'));
+      expect(retried, isTrue);
     });
 
-    testWidgets('AICoachScreen renders full screen with loaded provider', (
+    testWidgets('AICoachScreen renders error state when provider fails', (
       WidgetTester tester,
     ) async {
       const rec = AiCoachRecommendation(
-        predictedOverallBand: 7.0,
+        userId: 'usr_1',
+        currentEstimatedBand: 7.0,
         targetBand: 7.5,
-        weaknessSummary: ['Task 2 Grammatical Range'],
-        remediationTasks: ['Complete 1 exercise'],
-        aiCoachNotes: 'Awesome progress!',
-      );
-      const fiveTier = FiveTierRecommendation(
-        tier1CriticalWeaknesses: ['T1'],
-        tier2ScheduledReviews: ['T2'],
-        tier3PersonalizedRoadmap: ['T3'],
-        tier4AiSuggestions: ['T4'],
-        tier5OptionalPractice: ['T5'],
+        primaryWeakness: 'Weakness A',
+        aiCoachMessage: 'Notes A',
+        recommendedTopics: ['Topic A'],
+        fiveTierPlan: FiveTierRecommendation(
+          tier1Foundations: RecommendationTier(
+            title: 'T1',
+            status: 'completed',
+            items: [],
+          ),
+          tier2SkillBuilding: RecommendationTier(
+            title: 'T2',
+            status: 'in_progress',
+            items: [],
+          ),
+          tier3PracticeDrills: RecommendationTier(
+            title: 'T3',
+            status: 'locked',
+            items: [],
+          ),
+          tier4MockSimulation: RecommendationTier(
+            title: 'T4',
+            status: 'locked',
+            items: [],
+          ),
+          tier5AdvancedMastery: RecommendationTier(
+            title: 'T5',
+            status: 'locked',
+            items: [],
+          ),
+        ),
       );
 
       final repo = MockAiCoachRepository(
         recommendation: rec,
-        fiveTierRecommendation: fiveTier,
+        fiveTierRecommendation: rec.fiveTierPlan,
+        shouldThrow: true,
       );
       final provider = AiCoachProvider(
-        getAiCoachRecommendations: GetAiCoachRecommendations(repository: repo),
-        getFiveTierRecommendations: GetFiveTierRecommendations(
-          repository: repo,
-        ),
+        fetchAiRecommendationsUseCase: FetchAiRecommendationsUseCase(repo),
       );
 
       await tester.pumpWidget(
@@ -380,15 +460,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('AI Personal Coach'), findsOneWidget);
-      expect(find.text('Predicted IELTS Band'), findsOneWidget);
-      expect(find.text('Band 7.0'), findsOneWidget);
-      expect(find.text('Target: Band 7.5'), findsOneWidget);
-      expect(find.text('Coach Guidance'), findsOneWidget);
-      expect(find.text('Awesome progress!'), findsOneWidget);
-      expect(find.text('Personalized Remediation Plan:'), findsOneWidget);
-      expect(find.text('Complete 1 exercise'), findsOneWidget);
-      expect(find.text('Identified Weak Points:'), findsOneWidget);
-      expect(find.text('Task 2 Grammatical Range'), findsOneWidget);
+      expect(find.text('Unable to Load AI Recommendations'), findsOneWidget);
+      expect(find.text('Retry'), findsOneWidget);
     });
   });
 }

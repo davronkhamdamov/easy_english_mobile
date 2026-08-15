@@ -7,7 +7,7 @@ class WritingRemoteDatasource {
   final ApiClient _client;
 
   WritingRemoteDatasource({ApiClient? client})
-    : _client = client ?? ApiClient();
+      : _client = client ?? ApiClient();
 
   /// Submits IELTS essay for AI evaluation (POST /api/v1/writing/evaluate/)
   Future<WritingEvaluationModel> evaluateEssay({
@@ -33,15 +33,17 @@ class WritingRemoteDatasource {
 
   /// Fetches IELTS writing prompts (GET /api/v1/content/writing-prompts/)
   Future<List<WritingPromptModel>> fetchWritingPrompts() async {
-    try {
-      final response = await _client.get('/api/v1/content/writing-prompts/');
-      if (response.statusCode == 200) {
-        final List data = jsonDecode(response.body);
-        return data
-            .map((e) => WritingPromptModel.fromJson(e as Map<String, dynamic>))
-            .toList();
-      }
-    } catch (_) {}
-    return [];
+    final response = await _client.get('/api/v1/content/writing-prompts/');
+
+    if (response.statusCode == 200) {
+      final List data = jsonDecode(response.body);
+      return data
+          .map((e) => WritingPromptModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } else {
+      throw Exception(
+        'Failed to fetch writing prompts (${response.statusCode}): ${response.body}',
+      );
+    }
   }
 }

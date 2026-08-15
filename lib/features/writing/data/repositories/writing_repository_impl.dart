@@ -7,7 +7,7 @@ class WritingRepositoryImpl implements WritingRepository {
   final WritingRemoteDatasource _remoteDatasource;
 
   WritingRepositoryImpl({WritingRemoteDatasource? remoteDatasource})
-    : _remoteDatasource = remoteDatasource ?? WritingRemoteDatasource();
+      : _remoteDatasource = remoteDatasource ?? WritingRemoteDatasource();
 
   @override
   Future<WritingEvaluation> evaluateWriting({
@@ -26,12 +26,6 @@ class WritingRepositoryImpl implements WritingRepository {
   @override
   Future<List<WritingPrompt>> fetchWritingPrompts() async {
     final models = await _remoteDatasource.fetchWritingPrompts();
-    if (models.isEmpty) {
-      return [
-        WritingPrompt.defaultTask1Prompt,
-        WritingPrompt.defaultTask2Prompt,
-      ];
-    }
     return models.map((m) => m.toEntity()).toList();
   }
 }

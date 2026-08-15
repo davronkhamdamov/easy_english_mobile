@@ -1,5 +1,7 @@
 enum ExerciseType { multipleChoice, fillInTheBlank }
 
+typedef GrammarExerciseType = ExerciseType;
+
 extension ExerciseTypeExtension on ExerciseType {
   String get value {
     switch (this) {
@@ -22,33 +24,6 @@ extension ExerciseTypeExtension on ExerciseType {
   }
 }
 
-enum ExerciseDifficulty { easy, medium, hard }
-
-extension ExerciseDifficultyExtension on ExerciseDifficulty {
-  String get value {
-    switch (this) {
-      case ExerciseDifficulty.easy:
-        return 'easy';
-      case ExerciseDifficulty.medium:
-        return 'medium';
-      case ExerciseDifficulty.hard:
-        return 'hard';
-    }
-  }
-
-  static ExerciseDifficulty fromString(String val) {
-    switch (val.toLowerCase()) {
-      case 'hard':
-        return ExerciseDifficulty.hard;
-      case 'medium':
-        return ExerciseDifficulty.medium;
-      case 'easy':
-      default:
-        return ExerciseDifficulty.easy;
-    }
-  }
-}
-
 class GrammarExercise {
   final String id;
   final String topicId;
@@ -59,20 +34,50 @@ class GrammarExercise {
   final List<String> options;
   final String correctAnswer;
   final String explanation;
-  final ExerciseDifficulty difficulty;
+  final int difficultyScore;
 
   const GrammarExercise({
     required this.id,
-    required this.topicId,
-    required this.ruleId,
-    required this.type,
+    this.topicId = '',
+    this.ruleId = '',
+    this.type = ExerciseType.multipleChoice,
     required this.prompt,
     this.sentenceWithBlank,
-    required this.options,
+    this.options = const [],
     required this.correctAnswer,
     required this.explanation,
-    this.difficulty = ExerciseDifficulty.medium,
+    this.difficultyScore = 1,
   });
+
+  factory GrammarExercise.fromJson(Map<String, dynamic> json) {
+    return GrammarExercise(
+      id: json['id'] as String? ?? 'ex_1',
+      topicId: json['topic_id'] as String? ?? json['topicId'] as String? ?? '',
+      ruleId: json['rule_id'] as String? ?? json['ruleId'] as String? ?? '',
+      type: ExerciseTypeExtension.fromString(json['type'] as String? ?? 'multiple_choice'),
+      prompt: json['prompt'] as String? ?? '',
+      sentenceWithBlank: json['sentence_with_blank'] as String? ?? json['sentenceWithBlank'] as String?,
+      options: (json['options'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      correctAnswer: json['correct_answer'] as String? ?? json['correctAnswer'] as String? ?? '',
+      explanation: json['explanation'] as String? ?? '',
+      difficultyScore: (json['difficulty_score'] ?? json['difficultyScore'] ?? 1) as int,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'topic_id': topicId,
+      'rule_id': ruleId,
+      'type': type.value,
+      'prompt': prompt,
+      'sentence_with_blank': sentenceWithBlank,
+      'options': options,
+      'correct_answer': correctAnswer,
+      'explanation': explanation,
+      'difficulty_score': difficultyScore,
+    };
+  }
 
   GrammarExercise copyWith({
     String? id,
@@ -84,7 +89,7 @@ class GrammarExercise {
     List<String>? options,
     String? correctAnswer,
     String? explanation,
-    ExerciseDifficulty? difficulty,
+    int? difficultyScore,
   }) {
     return GrammarExercise(
       id: id ?? this.id,
@@ -96,7 +101,7 @@ class GrammarExercise {
       options: options ?? List.from(this.options),
       correctAnswer: correctAnswer ?? this.correctAnswer,
       explanation: explanation ?? this.explanation,
-      difficulty: difficulty ?? this.difficulty,
+      difficultyScore: difficultyScore ?? this.difficultyScore,
     );
   }
 }

@@ -10,22 +10,24 @@ class PlacementRepositoryImpl implements PlacementRepository {
   final PlacementRemoteDatasource _remoteDatasource;
 
   PlacementRepositoryImpl({PlacementRemoteDatasource? remoteDatasource})
-    : _remoteDatasource = remoteDatasource ?? PlacementRemoteDatasource();
+      : _remoteDatasource = remoteDatasource ?? PlacementRemoteDatasource();
 
   @override
   Future<List<PlacementQuestion>> fetchPlacementQuestions() async {
     final models = await _remoteDatasource.fetchPlacementQuestions();
-    if (models.isEmpty) {
-      return PlacementQuestion.sampleQuestions;
-    }
     return models.map((m) => m.toEntity()).toList();
   }
 
   @override
-  Future<PlacementResult> submitPlacementTest(
-    Map<String, dynamic> answers,
-  ) async {
-    final model = await _remoteDatasource.submitPlacementTest(answers);
+  Future<PlacementResult> submitPlacementTest({
+    required Map<String, int> answers,
+    required int totalTimeSeconds,
+  }) async {
+    final payload = {
+      'answers': answers,
+      'total_time_seconds': totalTimeSeconds,
+    };
+    final model = await _remoteDatasource.submitPlacementTest(payload);
     return model.toEntity();
   }
 

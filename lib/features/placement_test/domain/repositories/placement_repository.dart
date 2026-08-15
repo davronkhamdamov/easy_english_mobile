@@ -7,7 +7,10 @@ import '../entities/study_plan_recommendation.dart';
 abstract class PlacementRepository {
   Future<List<PlacementQuestion>> fetchPlacementQuestions();
 
-  Future<PlacementResult> submitPlacementTest(Map<String, dynamic> answers);
+  Future<PlacementResult> submitPlacementTest({
+    required Map<String, int> answers,
+    required int totalTimeSeconds,
+  });
 
   EstimatedBandScore calculateEstimatedBandScore(DiagnosticSession session);
 

@@ -6,9 +6,11 @@ class GetGrammarRoadmap {
   final GrammarRepository _repository;
 
   GetGrammarRoadmap({GrammarRepository? repository})
-    : _repository = repository ?? GrammarRepositoryImpl();
+      : _repository = repository ?? GrammarRepositoryImpl();
 
   Future<List<GrammarTopic>> call() {
     return _repository.getGrammarRoadmap();
   }
 }
+
+typedef FetchGrammarRoadmapUseCase = GetGrammarRoadmap;

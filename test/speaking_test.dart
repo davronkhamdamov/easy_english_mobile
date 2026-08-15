@@ -1,154 +1,303 @@
-import 'package:easy_english/features/speaking/data/models/audio_submission_model.dart';
 import 'package:easy_english/features/speaking/data/models/speaking_evaluation_model.dart';
 import 'package:easy_english/features/speaking/data/models/speaking_prompt_model.dart';
+import 'package:easy_english/features/speaking/domain/entities/speaking_evaluation.dart';
 import 'package:easy_english/features/speaking/domain/entities/speaking_prompt.dart';
+import 'package:easy_english/features/speaking/domain/repositories/speaking_repository.dart';
 import 'package:easy_english/features/speaking/domain/usecases/evaluate_speaking.dart';
 import 'package:easy_english/features/speaking/domain/usecases/fetch_speaking_prompts.dart';
 import 'package:easy_english/features/speaking/domain/usecases/transcribe_speaking_audio.dart';
+import 'package:easy_english/features/speaking/presentation/providers/speaking_provider.dart';
 import 'package:easy_english/features/speaking/presentation/screens/speaking_screen.dart';
-import 'package:easy_english/features/speaking/presentation/widgets/ai_evaluation_widget.dart';
-import 'package:easy_english/features/speaking/presentation/widgets/cue_card_prompt_widget.dart';
+import 'package:easy_english/features/speaking/presentation/widgets/ai_evaluation_card.dart';
+import 'package:easy_english/features/speaking/presentation/widgets/speaking_error_widget.dart';
+import 'package:easy_english/features/speaking/presentation/widgets/speaking_prompt_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:record/record.dart';
+
+class FakeAudioRecorder extends AudioRecorder {
+  @override
+  Future<bool> hasPermission({bool request = true}) async => true;
+  @override
+  Future<void> start(RecordConfig config, {required String path}) async {}
+  @override
+  Future<String?> stop() async => '/tmp/test.m4a';
+  @override
+  Future<bool> isRecording() async => false;
+  @override
+  Future<void> dispose() async {}
+}
+
+class FakeSpeakingRepository implements SpeakingRepository {
+  final bool shouldFail;
+  FakeSpeakingRepository({this.shouldFail = false});
+
+  @override
+  Future<List<SpeakingPrompt>> fetchSpeakingPrompts({int? part}) async {
+    if (shouldFail) {
+      throw Exception('Server unreachable (500)');
+    }
+    final prompts = [
+      const SpeakingPrompt(
+        id: 'speak_prompt_201',
+        part: 2,
+        topic: 'Hometown',
+        title: 'Describe a place you love visiting',
+        cueCardPoints: [
+          'Where this place is located',
+          'How often you visit it',
+        ],
+        prepTimeSeconds: 60,
+        speakTimeSeconds: 120,
+      ),
+      const SpeakingPrompt(
+        id: 'speak_prompt_101',
+        part: 1,
+        topic: 'Daily Routine',
+        title: 'Tell me about your morning routine.',
+        prepTimeSeconds: 0,
+        speakTimeSeconds: 60,
+      ),
+    ];
+    if (part != null) {
+      return prompts.where((p) => p.part == part).toList();
+    }
+    return prompts;
+  }
+
+  @override
+  Future<String> transcribeSpeakingAudio(String audioFilePath) async {
+    return 'I would like to talk about a small park near my house...';
+  }
+
+  @override
+  Future<SpeakingAIEvaluation> evaluateSpeaking({
+    String? audioFilePath,
+    String? transcript,
+    int part = 1,
+    String? prompt,
+  }) async {
+    return SpeakingEvaluationModel.fromJson({
+      'id': 'speak_eval_991',
+      'overall_band_score': 7.0,
+      'criteria': {
+        'fluency_coherence': {'score': 7.5, 'feedback': 'Speaks smoothly'},
+        'pronunciation': {'score': 6.5, 'feedback': 'Clear pronunciation'},
+        'lexical_resource': {'score': 7.0, 'feedback': 'Good range'},
+        'grammatical_range': {'score': 7.0, 'feedback': 'Mixed structures'},
+      },
+      'transcription': transcript ?? 'Sample answer',
+      'pronunciation_tips': [
+        {
+          'word': 'frequently',
+          'phonetic': '/ˈfriː.kwənt.li/',
+          'tip': 'Emphasize first syllable',
+        }
+      ],
+      'fluency_pauses_count': 3,
+      'band_9_sample_answer': 'One of my absolute favorite retreats...',
+    }).toEntity();
+  }
+}
 
 void main() {
-  group('Speaking Feature Domain & Data Unit Tests', () {
-    test('SpeakingPrompt entity samplePrompts and copyWith', () {
-      final prompts = SpeakingPrompt.samplePrompts;
-      expect(prompts.length, equals(3));
-      expect(prompts[0].part, equals(1));
-      expect(prompts[1].part, equals(2));
-      expect(prompts[2].part, equals(3));
+  TestWidgetsFlutterBinding.ensureInitialized();
 
-      final p = prompts[0];
-      final copy = p.copyWith(topic: 'Updated Topic');
-      expect(copy.topic, equals('Updated Topic'));
-      expect(copy.id, equals(p.id));
-    });
+  setUpAll(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('com.llfbandit.record/messages'),
+      (MethodCall methodCall) async {
+        if (methodCall.method == 'create' || methodCall.method == 'dispose') {
+          return null;
+        }
+        if (methodCall.method == 'hasPermission') {
+          return true;
+        }
+        return null;
+      },
+    );
+  });
 
-    test('SpeakingPromptModel JSON roundtrip and toEntity', () {
+  group('Speaking Feature Model JSON Contract Tests', () {
+    test('SpeakingPromptModel parses backend endpoint schema', () {
       final json = {
-        'id': 'sp_test_1',
+        'id': 'speak_prompt_201',
         'part': 2,
-        'topic': 'Test Cue Card',
-        'prompt_text': 'Describe a book you read.',
-        'bullet_points': ['What book it was', 'Who wrote it'],
+        'topic': 'Hometown',
+        'title': 'Describe a place you love visiting',
+        'cue_card_points': [
+          'Where this place is located',
+          'How often you visit it',
+          'What you do when you are there',
+          'And explain why you love visiting this place',
+        ],
         'prep_time_seconds': 60,
-        'speaking_time_seconds': 120,
+        'speak_time_seconds': 120,
       };
 
       final model = SpeakingPromptModel.fromJson(json);
-      expect(model.id, equals('sp_test_1'));
+      expect(model.id, equals('speak_prompt_201'));
       expect(model.part, equals(2));
-      expect(model.topic, equals('Test Cue Card'));
+      expect(model.topic, equals('Hometown'));
+      expect(model.title, equals('Describe a place you love visiting'));
+      expect(model.cueCardPoints.length, equals(4));
 
       final entity = model.toEntity();
-      expect(entity.id, equals('sp_test_1'));
-      expect(entity.part, equals(2));
-      expect(entity.bulletPoints.length, equals(2));
+      expect(entity.title, equals('Describe a place you love visiting'));
+      expect(entity.cueCardPoints.first, equals('Where this place is located'));
+      expect(entity.speakTimeSeconds, equals(120));
     });
 
-    test('SpeakingEvaluationModel JSON deserialization and toEntity', () {
+    test('SpeakingEvaluationModel parses AI evaluation endpoint schema', () {
       final json = {
-        'transcript': 'I live in a beautiful city.',
-        'overall_band': 7.5,
-        'fluency_coherence_band': 7.5,
-        'pronunciation_band': 8.0,
-        'lexical_resource_band': 7.0,
-        'grammar_range_band': 7.5,
-        'grammar_errors': ['Missing article'],
-        'vocabulary_tips': ['Use more cohesive devices'],
-        'strengths': ['Clear pronunciation'],
-        'areas_for_improvement': ['Expand complex sentences'],
+        'id': 'speak_eval_991',
+        'overall_band_score': 7.0,
+        'criteria': {
+          'fluency_coherence': {
+            'score': 7.5,
+            'feedback': 'Speaks at length without effort.',
+          },
+          'pronunciation': {
+            'score': 6.5,
+            'feedback': 'Generally clear pronunciation.',
+          },
+          'lexical_resource': {
+            'score': 7.0,
+            'feedback': 'Flexible vocabulary.',
+          },
+          'grammatical_range': {
+            'score': 7.0,
+            'feedback': 'Mix of simple & complex sentences.',
+          },
+        },
+        'transcription': 'I would like to talk about...',
+        'pronunciation_tips': [
+          {
+            'word': 'frequently',
+            'phonetic': '/ˈfriː.kwənt.li/',
+            'tip': 'Emphasize the first syllable',
+          }
+        ],
+        'fluency_pauses_count': 3,
+        'band_9_sample_answer': 'One of my absolute favorite retreats...',
       };
 
       final model = SpeakingEvaluationModel.fromJson(json);
-      expect(model.overallBandScore, equals(7.5));
-      expect(model.pronunciationScore, equals(8.0));
+      expect(model.overallScore, equals(7.0));
+      expect(model.fluencyScore, equals(7.5));
+      expect(model.pronunciationScore, equals(6.5));
 
       final entity = model.toEntity();
-      expect(entity.overallBand, equals(7.5));
-      expect(entity.pronunciationBand, equals(8.0));
-      expect(entity.transcript, equals('I live in a beautiful city.'));
-      expect(entity.strengths.first, equals('Clear pronunciation'));
-    });
-
-    test('AudioSubmissionModel JSON roundtrip and toEntity', () {
-      final json = {
-        'id': 'sub_001',
-        'promptId': 'sp_p1_01',
-        'audioPath': '/tmp/test.m4a',
-        'durationSeconds': 45,
-        'recordedAt': '2026-08-09T12:00:00.000Z',
-      };
-
-      final model = AudioSubmissionModel.fromJson(json);
-      expect(model.id, equals('sub_001'));
-      expect(model.durationSeconds, equals(45));
-
-      final entity = model.toEntity();
-      expect(entity.id, equals('sub_001'));
-      expect(entity.audioPath, equals('/tmp/test.m4a'));
+      expect(entity.overallScore, equals(7.0));
+      expect(entity.pronunciationTips.length, equals(1));
+      expect(entity.pronunciationTips.first.word, equals('frequently'));
+      expect(entity.pauseCount, equals(3));
+      expect(entity.sampleAnswer, contains('absolute favorite retreats'));
     });
   });
 
-  group('Speaking Feature Use Cases Unit Tests', () {
-    test(
-      'EvaluateSpeaking, TranscribeSpeakingAudio, and FetchSpeakingPrompts instantiate cleanly',
-      () async {
-        final evalUseCase = EvaluateSpeaking();
-        final transcribeUseCase = TranscribeSpeakingAudio();
-        final fetchPromptsUseCase = FetchSpeakingPrompts();
+  group('Speaking Provider & State Unit Tests', () {
+    test('Provider loads prompts and handles part switching', () async {
+      final repo = FakeSpeakingRepository();
+      final provider = SpeakingProvider(
+        fetchSpeakingPrompts: FetchSpeakingPrompts(repo),
+        transcribeSpeakingAudio: TranscribeSpeakingAudio(repo),
+        evaluateSpeaking: EvaluateSpeaking(repo),
+        audioRecorder: FakeAudioRecorder(),
+      );
 
-        expect(evalUseCase, isNotNull);
-        expect(transcribeUseCase, isNotNull);
-        expect(fetchPromptsUseCase, isNotNull);
-      },
-    );
+      await provider.loadPrompts();
+      expect(provider.prompts.isNotEmpty, isTrue);
+
+      await provider.switchPart(2);
+      expect(provider.state.selectedPart, equals(2));
+      expect(provider.state.currentPrompt?.topic, equals('Hometown'));
+    });
+
+    test('Provider sets error state on network failure with zero mock fallback', () async {
+      final repo = FakeSpeakingRepository(shouldFail: true);
+      final provider = SpeakingProvider(
+        fetchSpeakingPrompts: FetchSpeakingPrompts(repo),
+        transcribeSpeakingAudio: TranscribeSpeakingAudio(repo),
+        evaluateSpeaking: EvaluateSpeaking(repo),
+        audioRecorder: FakeAudioRecorder(),
+      );
+
+      await provider.loadPrompts();
+      expect(provider.prompts.isEmpty, isTrue);
+      expect(provider.errorMessage, contains('Server unreachable'));
+    });
   });
 
-  group('Speaking Feature UI Presentation Widget Tests', () {
-    testWidgets(
-      'SpeakingScreen renders header, part switcher, cue card prompt, and record button',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(const MaterialApp(home: SpeakingScreen()));
-        await tester.pump();
-
-        expect(find.text('IELTS Speaking Practice'), findsOneWidget);
-        expect(find.text('Part 1'), findsOneWidget);
-        expect(find.text('Part 2 (Cue Card)'), findsOneWidget);
-        expect(find.text('Part 3'), findsOneWidget);
-        expect(find.byType(CueCardPromptWidget), findsOneWidget);
-        expect(find.byIcon(Icons.mic_rounded), findsOneWidget);
-      },
-    );
-
-    testWidgets('AIEvaluationWidget renders band score evaluation breakdown', (
+  group('Speaking UI Presentation Widget Tests', () {
+    testWidgets('SpeakingScreen renders header, prompt card, and controls', (
       WidgetTester tester,
     ) async {
-      final sampleEval = SpeakingEvaluationModel.fromJson({
-        'transcript': 'My hometown is famous for ancient architecture.',
-        'overall_band': 8.0,
-        'fluency_coherence_band': 8.0,
-        'pronunciation_band': 8.0,
-        'lexical_resource_band': 8.0,
-        'grammar_range_band': 8.0,
-        'strengths': ['Excellent vocabulary range'],
-        'grammar_errors': [],
-        'vocabulary_tips': ['Use advanced idioms'],
-      }).toEntity();
+      final repo = FakeSpeakingRepository();
+      final provider = SpeakingProvider(
+        fetchSpeakingPrompts: FetchSpeakingPrompts(repo),
+        transcribeSpeakingAudio: TranscribeSpeakingAudio(repo),
+        evaluateSpeaking: EvaluateSpeaking(repo),
+        audioRecorder: FakeAudioRecorder(),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(home: SpeakingScreen(provider: provider)),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.text('IELTS Speaking Practice'), findsOneWidget);
+      expect(find.text('Part 1'), findsOneWidget);
+      expect(find.text('Part 2 (Cue Card)'), findsOneWidget);
+      expect(find.text('Part 3'), findsOneWidget);
+      expect(find.byType(SpeakingPromptCard), findsOneWidget);
+    });
+
+    testWidgets('SpeakingScreen renders error widget on API error', (
+      WidgetTester tester,
+    ) async {
+      final repo = FakeSpeakingRepository(shouldFail: true);
+      final provider = SpeakingProvider(
+        fetchSpeakingPrompts: FetchSpeakingPrompts(repo),
+        transcribeSpeakingAudio: TranscribeSpeakingAudio(repo),
+        evaluateSpeaking: EvaluateSpeaking(repo),
+        audioRecorder: FakeAudioRecorder(),
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(home: SpeakingScreen(provider: provider)),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+
+      expect(find.byType(SpeakingErrorWidget), findsOneWidget);
+      expect(find.text('Retry Request'), findsOneWidget);
+    });
+
+    testWidgets('AIEvaluationCard renders criteria progress and accordions', (
+      WidgetTester tester,
+    ) async {
+      final repo = FakeSpeakingRepository();
+      final eval = await repo.evaluateSpeaking(transcript: 'Test speech');
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(body: AIEvaluationWidget(evaluation: sampleEval)),
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: AIEvaluationCard(evaluation: eval),
+            ),
+          ),
         ),
       );
-      await tester.pumpAndSettle();
+      await tester.pump(const Duration(milliseconds: 100));
 
       expect(find.text('AI Band Score Evaluation'), findsOneWidget);
-      expect(find.text('Key Strengths'), findsOneWidget);
-      expect(find.text('Lexical & Vocabulary Tips'), findsOneWidget);
-      expect(find.text('Excellent vocabulary range'), findsOneWidget);
+      expect(find.text('Band 7.0'), findsWidgets);
+      expect(find.text('Fluency & Coherence'), findsOneWidget);
+      expect(find.text('Pronunciation Tips (1)'), findsOneWidget);
+      expect(find.text('Pause Count Analysis (3 pauses detected)'), findsOneWidget);
+      expect(find.text('Band 9 Model Answer'), findsOneWidget);
     });
   });
 }

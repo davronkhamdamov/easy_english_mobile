@@ -10,3 +10,5 @@ class GetMockExamPaper {
     return repository.getExamPaperById(paperId);
   }
 }
+
+typedef GetExamPaperUseCase = GetMockExamPaper;

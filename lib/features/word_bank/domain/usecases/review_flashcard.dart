@@ -14,3 +14,5 @@ class ReviewFlashcard {
     return await _repository.submitReview(id: id, rating: rating);
   }
 }
+
+typedef SubmitFlashcardReviewUseCase = ReviewFlashcard;

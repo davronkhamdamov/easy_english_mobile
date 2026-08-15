@@ -1,6 +1,4 @@
-import '../../domain/entities/exam_enums.dart';
 import '../../domain/entities/mock_exam_paper.dart';
-import 'mock_exam_section_model.dart';
 
 class MockExamPaperModel extends MockExamPaper {
   const MockExamPaperModel({
@@ -9,27 +7,28 @@ class MockExamPaperModel extends MockExamPaper {
     required super.examType,
     required super.description,
     required super.difficulty,
-    required super.sections,
+    super.durationMinutes = 60,
+    super.totalQuestions = 40,
+    super.audioUrl,
+    super.passageText,
+    super.questions = const [],
+    super.sections = const [],
   });
 
   factory MockExamPaperModel.fromJson(Map<String, dynamic> json) {
+    final parsedPaper = MockExamPaper.fromJson(json);
     return MockExamPaperModel(
-      id: json['id'] as String? ?? 'paper_1',
-      title: json['title'] as String? ?? 'Mock Exam Paper',
-      examType: ExamType.fromString(
-        json['exam_type'] as String? ??
-            json['examType'] as String? ??
-            'academic',
-      ),
-      description: json['description'] as String? ?? '',
-      difficulty: json['difficulty'] as String? ?? 'Medium',
-      sections:
-          (json['sections'] as List<dynamic>?)
-              ?.map(
-                (s) => MockExamSectionModel.fromJson(s as Map<String, dynamic>),
-              )
-              .toList() ??
-          [],
+      id: parsedPaper.id,
+      title: parsedPaper.title,
+      examType: parsedPaper.examType,
+      description: parsedPaper.description,
+      difficulty: parsedPaper.difficulty,
+      durationMinutes: parsedPaper.durationMinutes,
+      totalQuestions: parsedPaper.totalQuestions,
+      audioUrl: parsedPaper.audioUrl,
+      passageText: parsedPaper.passageText,
+      questions: parsedPaper.questions,
+      sections: parsedPaper.sections,
     );
   }
 
@@ -40,9 +39,12 @@ class MockExamPaperModel extends MockExamPaper {
       examType: entity.examType,
       description: entity.description,
       difficulty: entity.difficulty,
-      sections: entity.sections
-          .map((s) => MockExamSectionModel.fromEntity(s))
-          .toList(),
+      durationMinutes: entity.durationMinutes,
+      totalQuestions: entity.totalQuestions,
+      audioUrl: entity.audioUrl,
+      passageText: entity.passageText,
+      questions: entity.questions,
+      sections: entity.sections,
     );
   }
 

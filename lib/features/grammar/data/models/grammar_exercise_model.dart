@@ -1,76 +1,32 @@
 import '../../domain/entities/grammar_exercise.dart';
 
-class GrammarExerciseModel {
-  final String id;
-  final String topicId;
-  final String ruleId;
-  final ExerciseType type;
-  final String prompt;
-  final String? sentenceWithBlank;
-  final List<String> options;
-  final String correctAnswer;
-  final String explanation;
-  final ExerciseDifficulty difficulty;
-
+class GrammarExerciseModel extends GrammarExercise {
   const GrammarExerciseModel({
-    required this.id,
-    required this.topicId,
-    required this.ruleId,
-    required this.type,
-    required this.prompt,
-    this.sentenceWithBlank,
-    required this.options,
-    required this.correctAnswer,
-    required this.explanation,
-    this.difficulty = ExerciseDifficulty.medium,
+    required super.id,
+    super.topicId = '',
+    super.ruleId = '',
+    super.type = ExerciseType.multipleChoice,
+    required super.prompt,
+    super.sentenceWithBlank,
+    super.options = const [],
+    required super.correctAnswer,
+    required super.explanation,
+    super.difficultyScore = 1,
   });
 
   factory GrammarExerciseModel.fromJson(Map<String, dynamic> json) {
+    final parsed = GrammarExercise.fromJson(json);
     return GrammarExerciseModel(
-      id: json['id'] as String? ?? '',
-      topicId: json['topic_id'] as String? ?? '',
-      ruleId: json['rule_id'] as String? ?? '',
-      type: ExerciseTypeExtension.fromString(
-        json['type'] as String? ?? 'multiple_choice',
-      ),
-      prompt: json['prompt'] as String? ?? '',
-      sentenceWithBlank: json['sentence_with_blank'] as String?,
-      options: List<String>.from(json['options'] as List? ?? []),
-      correctAnswer: json['correct_answer'] as String? ?? '',
-      explanation: json['explanation'] as String? ?? '',
-      difficulty: ExerciseDifficultyExtension.fromString(
-        json['difficulty'] as String? ?? 'medium',
-      ),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'topic_id': topicId,
-      'rule_id': ruleId,
-      'type': type.value,
-      'prompt': prompt,
-      'sentence_with_blank': sentenceWithBlank,
-      'options': options,
-      'correct_answer': correctAnswer,
-      'explanation': explanation,
-      'difficulty': difficulty.value,
-    };
-  }
-
-  GrammarExercise toEntity() {
-    return GrammarExercise(
-      id: id,
-      topicId: topicId,
-      ruleId: ruleId,
-      type: type,
-      prompt: prompt,
-      sentenceWithBlank: sentenceWithBlank,
-      options: options,
-      correctAnswer: correctAnswer,
-      explanation: explanation,
-      difficulty: difficulty,
+      id: parsed.id,
+      topicId: parsed.topicId,
+      ruleId: parsed.ruleId,
+      type: parsed.type,
+      prompt: parsed.prompt,
+      sentenceWithBlank: parsed.sentenceWithBlank,
+      options: parsed.options,
+      correctAnswer: parsed.correctAnswer,
+      explanation: parsed.explanation,
+      difficultyScore: parsed.difficultyScore,
     );
   }
 
@@ -85,7 +41,9 @@ class GrammarExerciseModel {
       options: entity.options,
       correctAnswer: entity.correctAnswer,
       explanation: entity.explanation,
-      difficulty: entity.difficulty,
+      difficultyScore: entity.difficultyScore,
     );
   }
+
+  GrammarExercise toEntity() => this;
 }

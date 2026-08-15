@@ -10,3 +10,5 @@ class GetDueCards {
     return await _repository.getDueFlashcards();
   }
 }
+
+typedef GetDueFlashcardsUseCase = GetDueCards;

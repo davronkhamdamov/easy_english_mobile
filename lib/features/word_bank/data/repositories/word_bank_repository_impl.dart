@@ -8,7 +8,7 @@ class WordBankRepositoryImpl implements WordBankRepository {
   final WordBankRemoteDataSource _remoteDataSource;
 
   WordBankRepositoryImpl({WordBankRemoteDataSource? remoteDataSource})
-    : _remoteDataSource = remoteDataSource ?? WordBankRemoteDataSourceImpl();
+      : _remoteDataSource = remoteDataSource ?? WordBankRemoteDataSourceImpl();
 
   @override
   Future<List<FlashcardItem>> getWordBankItems() async {
@@ -27,24 +27,14 @@ class WordBankRepositoryImpl implements WordBankRepository {
     required String id,
     required ReviewRating rating,
   }) async {
-    final items = await getWordBankItems();
-    final item = items.firstWhere(
-      (card) => card.id == id,
-      orElse: () => items.first,
-    );
-
-    final calcResult = SM2Algorithm.calculate(
-      currentEF: item.easinessFactor,
-      currentRepetition: item.repetitionCount,
-      currentInterval: item.intervalDays,
-      rating: rating,
-    );
-
+    final reviewData = {
+      'rating': rating.label,
+      'review_duration_ms': 3000,
+    };
     final updatedModel = await _remoteDataSource.submitReviewRating(
       id,
-      calcResult.toJson(),
+      reviewData,
     );
-
     return updatedModel.toEntity();
   }
 

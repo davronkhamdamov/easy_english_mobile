@@ -7,7 +7,9 @@ class GetAvailableMockExams {
 
   GetAvailableMockExams(this.repository);
 
-  Future<List<MockExamPaper>> call({ExamType? examType}) {
-    return repository.getAvailableExams(examType: examType);
+  Future<List<MockExamPaper>> call({ExamType? examType, String? type}) {
+    return repository.getAvailableExams(examType: examType, type: type);
   }
 }
+
+typedef GetAvailableExamsUseCase = GetAvailableMockExams;

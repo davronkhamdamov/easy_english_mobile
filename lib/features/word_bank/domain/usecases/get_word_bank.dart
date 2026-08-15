@@ -10,3 +10,5 @@ class GetWordBank {
     return await _repository.getWordBankItems();
   }
 }
+
+typedef GetWordBankItemsUseCase = GetWordBank;

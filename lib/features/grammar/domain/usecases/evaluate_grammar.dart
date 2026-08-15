@@ -6,7 +6,7 @@ class EvaluateGrammar {
   final GrammarRepository _repository;
 
   EvaluateGrammar({GrammarRepository? repository})
-    : _repository = repository ?? GrammarRepositoryImpl();
+      : _repository = repository ?? GrammarRepositoryImpl();
 
   Future<GrammarEvaluation> call({
     required String sentence,
@@ -18,3 +18,5 @@ class EvaluateGrammar {
     );
   }
 }
+
+typedef EvaluateGrammarSentenceUseCase = EvaluateGrammar;

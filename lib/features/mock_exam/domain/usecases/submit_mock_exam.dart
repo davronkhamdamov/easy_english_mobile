@@ -9,4 +9,18 @@ class SubmitMockExam {
   Future<MockExamResult> call(MockExamResult result) {
     return repository.submitExamResult(result);
   }
+
+  Future<MockExamResult> submitAnswers({
+    required String paperId,
+    required Map<String, String> userAnswers,
+    required int timeSpentSeconds,
+  }) {
+    return repository.submitExamAnswers(
+      paperId: paperId,
+      userAnswers: userAnswers,
+      timeSpentSeconds: timeSpentSeconds,
+    );
+  }
 }
+
+typedef SubmitExamUseCase = SubmitMockExam;

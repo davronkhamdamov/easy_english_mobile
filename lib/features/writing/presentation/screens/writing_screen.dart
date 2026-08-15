@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import '../providers/writing_provider.dart';
 import '../widgets/writing_editor.dart';
+import '../widgets/writing_error_widget.dart';
 import '../widgets/writing_evaluation_widget.dart';
 import '../widgets/writing_prompt_card.dart';
+import '../widgets/writing_submit_button.dart';
+import '../widgets/writing_task_selector.dart';
 
-/// Writing Task 1 & Task 2 Practice Screen with AI Evaluation Feedback Card.
+/// IELTS Writing Practice & AI Evaluation Screen.
 class WritingScreen extends StatefulWidget {
   final WritingProvider? provider;
 
@@ -18,14 +21,12 @@ class _WritingScreenState extends State<WritingScreen> {
   late final WritingProvider _provider;
   final TextEditingController _essayController = TextEditingController();
 
-  final String _task2Prompt =
-      'Some people believe that university education should be free for everyone, while others think students should pay. Discuss both views and give your opinion.';
-
   @override
   void initState() {
     super.initState();
     _provider = widget.provider ?? WritingProvider();
     _provider.addListener(_onProviderStateChanged);
+    _provider.loadPrompts();
   }
 
   @override
@@ -41,20 +42,15 @@ class _WritingScreenState extends State<WritingScreen> {
     }
   }
 
-  void _submitForAIEvaluation() async {
-    if (_essayController.text.trim().isEmpty) return;
-
+  void _submitForEvaluation() async {
     try {
-      await _provider.evaluateEssay(
-        essayText: _essayController.text.trim(),
-        prompt: _task2Prompt,
-      );
+      await _provider.evaluateEssay(essayText: _essayController.text);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Essay evaluation failed: ${e.toString().replaceAll('Exception: ', '')}',
+              'Evaluation failed: ${e.toString().replaceAll('Exception: ', '')}',
             ),
             backgroundColor: Colors.red,
           ),
@@ -66,21 +62,23 @@ class _WritingScreenState extends State<WritingScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final selectedTask = _provider.selectedTask;
-    final isEvaluating = _provider.isEvaluating;
-    final evaluationResult = _provider.evaluationResult;
+    final selectedPrompt = _provider.selectedPrompt;
+    final minWords = selectedPrompt?.minWordCount ?? (_provider.selectedTask == 1 ? 150 : 250);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('IELTS Writing Practice'),
         actions: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Chip(
-              label: Text(
-                selectedTask == 1 ? 'Task 1 (150 words)' : 'Task 2 (250 words)',
+            padding: const EdgeInsets.only(right: 12.0),
+            child: Center(
+              child: Chip(
+                label: Text(
+                  _provider.selectedTask == 1 ? 'Task 1' : 'Task 2',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                backgroundColor: theme.colorScheme.primaryContainer,
               ),
-              backgroundColor: theme.colorScheme.primaryContainer,
             ),
           ),
         ],
@@ -88,68 +86,84 @@ class _WritingScreenState extends State<WritingScreen> {
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         behavior: HitTestBehavior.opaque,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Task Switcher Tabs
-              Row(
-                children: [
-                  ChoiceChip(
-                    label: const Text('Task 1 (Graph/Diagram)'),
-                    selected: selectedTask == 1,
-                    onSelected: (val) => _provider.selectTask(1),
-                  ),
-                  const SizedBox(width: 8),
-                  ChoiceChip(
-                    label: const Text('Task 2 (Essay)'),
-                    selected: selectedTask == 2,
-                    onSelected: (val) => _provider.selectTask(2),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Prompt Card
-              WritingPromptCard(prompt: _task2Prompt),
-              const SizedBox(height: 16),
-
-              // Essay Input Area
-              WritingEditor(
-                controller: _essayController,
-                onChanged: (_) => setState(() {}),
-              ),
-              const SizedBox(height: 16),
-
-              // Submit Button
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton.icon(
-                  onPressed: isEvaluating ? null : _submitForAIEvaluation,
-                  icon: isEvaluating
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.auto_awesome),
-                  label: Text(
-                    isEvaluating
-                        ? 'AI Examiner Evaluating...'
-                        : 'Evaluate Essay with AI',
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // AI Band Score Card
-              if (evaluationResult != null)
-                WritingEvaluationWidget(evaluation: evaluationResult),
-            ],
-          ),
+        child: RefreshIndicator(
+          onRefresh: _provider.loadPrompts,
+          child: _buildBody(context, minWords),
         ),
+      ),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, int minWords) {
+    if (_provider.isLoadingPrompts) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Fetching IELTS Writing Prompts...'),
+          ],
+        ),
+      );
+    }
+
+    if (_provider.errorMessage != null && _provider.selectedPrompt == null) {
+      return WritingErrorWidget(
+        message: _provider.errorMessage!,
+        onRetry: _provider.loadPrompts,
+      );
+    }
+
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 1. Task Type Selector
+          WritingTaskSelector(
+            selectedTaskType: _provider.selectedTaskType,
+            onTaskSelected: (type) => _provider.selectTaskType(type),
+          ),
+          const SizedBox(height: 16),
+
+          // 2. Prompt Header Card
+          if (_provider.selectedPrompt != null)
+            WritingPromptCard(
+              prompt: _provider.selectedPrompt,
+              availablePrompts: _provider.filteredPrompts,
+              onPromptSelected: (p) => _provider.selectPrompt(p),
+            )
+          else
+            const Card(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text('No prompt available for selected task.'),
+              ),
+            ),
+          const SizedBox(height: 16),
+
+          // 3. Essay Editor Widget
+          WritingEditor(
+            controller: _essayController,
+            minWordCount: minWords,
+            validationError: _provider.validationError,
+            onChanged: (val) => _provider.updateEssayText(val),
+          ),
+          const SizedBox(height: 20),
+
+          // 4. AI Evaluation Action Button
+          WritingSubmitButton(
+            isEvaluating: _provider.isEvaluating,
+            onPressed: _submitForEvaluation,
+          ),
+          const SizedBox(height: 24),
+
+          // 5. AI Band Score Breakdown Card
+          if (_provider.evaluationResult != null)
+            WritingEvaluationWidget(evaluation: _provider.evaluationResult!),
+        ],
       ),
     );
   }

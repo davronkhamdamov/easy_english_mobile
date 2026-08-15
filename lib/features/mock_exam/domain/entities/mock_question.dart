@@ -24,37 +24,37 @@ class MockQuestion {
     this.sectionNumber = 1,
   });
 
+  int get questionNumber => orderIndex;
+  String get questionText => prompt;
+  String get type => questionType.name;
+
   factory MockQuestion.fromJson(Map<String, dynamic> json) {
     return MockQuestion(
-      id: json['id'] as String? ?? 'q_${json['order_index'] ?? 1}',
-      orderIndex: (json['order_index'] ?? json['orderIndex'] ?? 1) as int,
+      id: json['id'] as String? ?? 'q_${json['question_number'] ?? json['order_index'] ?? 1}',
+      orderIndex: (json['question_number'] ?? json['order_index'] ?? json['orderIndex'] ?? 1) as int,
       questionType: QuestionType.fromString(
-        json['question_type'] as String? ??
+        json['type'] as String? ??
+            json['question_type'] as String? ??
             json['questionType'] as String? ??
             'multipleChoice',
       ),
-      prompt: json['prompt'] as String? ?? '',
-      options:
-          (json['options'] as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          [],
-      correctAnswer:
-          json['correct_answer'] as String? ??
-          json['correctAnswer'] as String? ??
-          '',
+      prompt: json['question_text'] as String? ?? json['prompt'] as String? ?? '',
+      options: (json['options'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+      correctAnswer: json['correct_answer'] as String? ?? json['correctAnswer'] as String? ?? '',
       explanation: json['explanation'] as String? ?? '',
       passageId: json['passage_id'] as String? ?? json['passageId'] as String?,
-      sectionNumber:
-          (json['section_number'] ?? json['sectionNumber'] ?? 1) as int,
+      sectionNumber: (json['section_number'] ?? json['sectionNumber'] ?? 1) as int,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'question_number': orderIndex,
       'order_index': orderIndex,
+      'type': type,
       'question_type': questionType.name,
+      'question_text': prompt,
       'prompt': prompt,
       'options': options,
       'correct_answer': correctAnswer,

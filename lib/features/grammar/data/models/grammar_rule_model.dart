@@ -1,57 +1,30 @@
 import '../../domain/entities/grammar_rule.dart';
 
-class GrammarRuleModel {
-  final String id;
-  final String topicId;
-  final String title;
-  final String summary;
-  final String detailedExplanation;
-  final List<String> examples;
-  final List<String> commonPitfalls;
-
+class GrammarRuleModel extends GrammarRule {
   const GrammarRuleModel({
-    required this.id,
-    required this.topicId,
-    required this.title,
-    required this.summary,
-    required this.detailedExplanation,
-    required this.examples,
-    required this.commonPitfalls,
+    required super.id,
+    super.topicId = '',
+    required super.title,
+    super.summary = '',
+    super.detailedExplanation = '',
+    super.examples = const [],
+    super.commonPitfalls = const [],
+    super.explanation,
+    super.tip,
   });
 
   factory GrammarRuleModel.fromJson(Map<String, dynamic> json) {
+    final parsed = GrammarRule.fromJson(json);
     return GrammarRuleModel(
-      id: json['id'] as String? ?? '',
-      topicId: json['topic_id'] as String? ?? '',
-      title: json['title'] as String? ?? '',
-      summary: json['summary'] as String? ?? '',
-      detailedExplanation: json['detailed_explanation'] as String? ?? '',
-      examples: List<String>.from(json['examples'] as List? ?? []),
-      commonPitfalls: List<String>.from(json['common_pitfalls'] as List? ?? []),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'topic_id': topicId,
-      'title': title,
-      'summary': summary,
-      'detailed_explanation': detailedExplanation,
-      'examples': examples,
-      'common_pitfalls': commonPitfalls,
-    };
-  }
-
-  GrammarRule toEntity() {
-    return GrammarRule(
-      id: id,
-      topicId: topicId,
-      title: title,
-      summary: summary,
-      detailedExplanation: detailedExplanation,
-      examples: examples,
-      commonPitfalls: commonPitfalls,
+      id: parsed.id,
+      topicId: parsed.topicId,
+      title: parsed.title,
+      summary: parsed.summary,
+      detailedExplanation: parsed.detailedExplanation,
+      examples: parsed.examples,
+      commonPitfalls: parsed.commonPitfalls,
+      explanation: parsed.explanation,
+      tip: parsed.tip,
     );
   }
 
@@ -64,6 +37,10 @@ class GrammarRuleModel {
       detailedExplanation: entity.detailedExplanation,
       examples: entity.examples,
       commonPitfalls: entity.commonPitfalls,
+      explanation: entity.explanation,
+      tip: entity.tip,
     );
   }
+
+  GrammarRule toEntity() => this;
 }

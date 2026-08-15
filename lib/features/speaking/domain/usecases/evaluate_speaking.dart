@@ -1,12 +1,10 @@
-import '../../data/repositories/speaking_repository_impl.dart';
 import '../entities/speaking_evaluation.dart';
 import '../repositories/speaking_repository.dart';
 
 class EvaluateSpeaking {
   final SpeakingRepository _repository;
 
-  EvaluateSpeaking({SpeakingRepository? repository})
-    : _repository = repository ?? SpeakingRepositoryImpl();
+  EvaluateSpeaking(this._repository);
 
   Future<SpeakingAIEvaluation> call({
     String? audioFilePath,

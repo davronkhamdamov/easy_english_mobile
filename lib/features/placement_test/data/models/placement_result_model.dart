@@ -1,55 +1,76 @@
 import '../../domain/entities/placement_result.dart';
 
 class PlacementResultModel {
-  final double initialBandScore;
-  final double targetBandScore;
-  final List<String> weakAreas;
-  final String studyPlanSummary;
+  final String id;
+  final String estimatedCefrLevel;
+  final double estimatedIeltsBand;
+  final double accuracyPercentage;
+  final Map<String, SectionScoreDetail> sectionScores;
+  final String recommendedStartingPoint;
 
   PlacementResultModel({
-    required this.initialBandScore,
-    required this.targetBandScore,
-    required this.weakAreas,
-    required this.studyPlanSummary,
+    required this.id,
+    required this.estimatedCefrLevel,
+    required this.estimatedIeltsBand,
+    required this.accuracyPercentage,
+    required this.sectionScores,
+    required this.recommendedStartingPoint,
   });
 
+  double get initialBandScore => estimatedIeltsBand;
+
   factory PlacementResultModel.fromJson(Map<String, dynamic> json) {
+    final rawScores = json['section_scores'] as Map<String, dynamic>? ?? {};
+    final parsedScores = rawScores.map(
+      (k, v) => MapEntry(
+        k,
+        SectionScoreDetail.fromJson((v as Map<String, dynamic>?) ?? {}),
+      ),
+    );
+
     return PlacementResultModel(
-      initialBandScore: (json['initial_band_score'] as num?)?.toDouble() ?? 6.0,
-      targetBandScore: (json['target_band_score'] as num?)?.toDouble() ?? 7.5,
-      weakAreas:
-          (json['weak_areas'] as List?)?.map((e) => e.toString()).toList() ??
-          [],
-      studyPlanSummary:
-          json['study_plan_summary']?.toString() ??
-          'Initial study plan generated.',
+      id: json['id'] as String? ?? 'res_${DateTime.now().millisecondsSinceEpoch}',
+      estimatedCefrLevel: json['estimated_cefr_level'] as String? ?? 'B2',
+      estimatedIeltsBand: (json['estimated_ielts_band'] as num?)?.toDouble() ??
+          (json['initial_band_score'] as num?)?.toDouble() ?? 6.5,
+      accuracyPercentage: (json['accuracy_percentage'] as num?)?.toDouble() ?? 75.0,
+      sectionScores: parsedScores,
+      recommendedStartingPoint: json['recommended_starting_point'] as String? ??
+          json['study_plan_summary'] as String? ??
+          'Intermediate Course Plan',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'initial_band_score': initialBandScore,
-      'target_band_score': targetBandScore,
-      'weak_areas': weakAreas,
-      'study_plan_summary': studyPlanSummary,
+      'id': id,
+      'estimated_cefr_level': estimatedCefrLevel,
+      'estimated_ielts_band': estimatedIeltsBand,
+      'accuracy_percentage': accuracyPercentage,
+      'section_scores': sectionScores.map((k, v) => MapEntry(k, v.toJson())),
+      'recommended_starting_point': recommendedStartingPoint,
     };
   }
 
   PlacementResult toEntity() {
     return PlacementResult(
-      initialBandScore: initialBandScore,
-      targetBandScore: targetBandScore,
-      weakAreas: weakAreas,
-      studyPlanSummary: studyPlanSummary,
+      id: id,
+      estimatedCefrLevel: estimatedCefrLevel,
+      estimatedIeltsBand: estimatedIeltsBand,
+      accuracyPercentage: accuracyPercentage,
+      sectionScores: sectionScores,
+      recommendedStartingPoint: recommendedStartingPoint,
     );
   }
 
   factory PlacementResultModel.fromEntity(PlacementResult entity) {
     return PlacementResultModel(
-      initialBandScore: entity.initialBandScore,
-      targetBandScore: entity.targetBandScore,
-      weakAreas: entity.weakAreas,
-      studyPlanSummary: entity.studyPlanSummary,
+      id: entity.id,
+      estimatedCefrLevel: entity.estimatedCefrLevel,
+      estimatedIeltsBand: entity.estimatedIeltsBand,
+      accuracyPercentage: entity.accuracyPercentage,
+      sectionScores: entity.sectionScores,
+      recommendedStartingPoint: entity.recommendedStartingPoint,
     );
   }
 }

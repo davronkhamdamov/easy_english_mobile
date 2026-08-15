@@ -1,97 +1,53 @@
 import '../../domain/entities/exam_enums.dart';
 import '../../domain/entities/mock_exam_result.dart';
-import 'mock_question_model.dart';
 
 class MockExamResultModel extends MockExamResult {
   const MockExamResultModel({
     required super.id,
-    required super.userId,
+    super.userId = 'user_default',
     required super.examPaperId,
-    required super.examTitle,
-    required super.examType,
+    super.examTitle = 'Mock Exam',
+    super.examType = ExamType.academic,
     required super.overallBand,
-    required super.readingBand,
-    required super.listeningBand,
-    required super.writingBand,
-    required super.speakingBand,
-    required super.readingRawScore,
-    required super.listeningRawScore,
-    required super.totalReadingQuestions,
-    required super.totalListeningQuestions,
-    required super.timeTakenSeconds,
-    required super.userAnswers,
-    required super.allQuestions,
+    super.readingBand = 0.0,
+    super.listeningBand = 0.0,
+    super.writingBand = 0.0,
+    super.speakingBand = 0.0,
+    super.readingRawScore = 0,
+    super.listeningRawScore = 0,
+    super.totalReadingQuestions = 40,
+    super.totalListeningQuestions = 40,
+    super.timeTakenSeconds = 3600,
+    super.userAnswers = const {},
+    super.allQuestions = const [],
+    super.answerAnalysis = const [],
     super.detailedFeedback = const {},
     required super.createdAt,
   });
 
   factory MockExamResultModel.fromJson(Map<String, dynamic> json) {
+    final parsed = MockExamResult.fromJson(json);
     return MockExamResultModel(
-      id:
-          json['id'] as String? ??
-          'result_${DateTime.now().millisecondsSinceEpoch}',
-      userId:
-          json['user_id'] as String? ??
-          json['userId'] as String? ??
-          'user_default',
-      examPaperId:
-          json['exam_paper_id'] as String? ??
-          json['examPaperId'] as String? ??
-          'paper_1',
-      examTitle:
-          json['exam_title'] as String? ??
-          json['examTitle'] as String? ??
-          'Mock Exam',
-      examType: ExamType.fromString(
-        json['exam_type'] as String? ??
-            json['examType'] as String? ??
-            'academic',
-      ),
-      overallBand:
-          (json['overall_band'] ?? json['overallBand'] ?? 6.5) as double,
-      readingBand:
-          (json['reading_band'] ?? json['readingBand'] ?? 6.5) as double,
-      listeningBand:
-          (json['listening_band'] ?? json['listeningBand'] ?? 6.5) as double,
-      writingBand:
-          (json['writing_band'] ?? json['writingBand'] ?? 6.5) as double,
-      speakingBand:
-          (json['speaking_band'] ?? json['speakingBand'] ?? 6.5) as double,
-      readingRawScore:
-          (json['reading_raw_score'] ?? json['readingRawScore'] ?? 0) as int,
-      listeningRawScore:
-          (json['listening_raw_score'] ?? json['listeningRawScore'] ?? 0)
-              as int,
-      totalReadingQuestions:
-          (json['total_reading_questions'] ??
-                  json['totalReadingQuestions'] ??
-                  40)
-              as int,
-      totalListeningQuestions:
-          (json['total_listening_questions'] ??
-                  json['totalListeningQuestions'] ??
-                  40)
-              as int,
-      timeTakenSeconds:
-          (json['time_taken_seconds'] ?? json['timeTakenSeconds'] ?? 3600)
-              as int,
-      userAnswers:
-          (json['user_answers'] as Map<String, dynamic>?)?.map(
-            (k, v) => MapEntry(k, v.toString()),
-          ) ??
-          {},
-      allQuestions:
-          (json['all_questions'] as List<dynamic>?)
-              ?.map(
-                (q) => MockQuestionModel.fromJson(q as Map<String, dynamic>),
-              )
-              .toList() ??
-          [],
-      detailedFeedback:
-          (json['detailed_feedback'] as Map<String, dynamic>?) ?? {},
-      createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'] as String)
-          : DateTime.now(),
+      id: parsed.id,
+      userId: parsed.userId,
+      examPaperId: parsed.examPaperId,
+      examTitle: parsed.examTitle,
+      examType: parsed.examType,
+      overallBand: parsed.overallBand,
+      readingBand: parsed.readingBand,
+      listeningBand: parsed.listeningBand,
+      writingBand: parsed.writingBand,
+      speakingBand: parsed.speakingBand,
+      readingRawScore: parsed.readingRawScore,
+      listeningRawScore: parsed.listeningRawScore,
+      totalReadingQuestions: parsed.totalReadingQuestions,
+      totalListeningQuestions: parsed.totalListeningQuestions,
+      timeTakenSeconds: parsed.timeTakenSeconds,
+      userAnswers: parsed.userAnswers,
+      allQuestions: parsed.allQuestions,
+      answerAnalysis: parsed.answerAnalysis,
+      detailedFeedback: parsed.detailedFeedback,
+      createdAt: parsed.createdAt,
     );
   }
 
@@ -113,9 +69,8 @@ class MockExamResultModel extends MockExamResult {
       totalListeningQuestions: entity.totalListeningQuestions,
       timeTakenSeconds: entity.timeTakenSeconds,
       userAnswers: entity.userAnswers,
-      allQuestions: entity.allQuestions
-          .map((q) => MockQuestionModel.fromEntity(q))
-          .toList(),
+      allQuestions: entity.allQuestions,
+      answerAnalysis: entity.answerAnalysis,
       detailedFeedback: entity.detailedFeedback,
       createdAt: entity.createdAt,
     );

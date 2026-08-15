@@ -28,9 +28,8 @@ class FakeGrammarRepository implements GrammarRepository {
     return evaluationToReturn ??
         const GrammarEvaluation(
           isCorrect: true,
-          feedback: 'Excellent use of the target word in academic context.',
-          corrections: [],
-          modelExpressions: ['Foster academic innovation.'],
+          explanation: 'Excellent use of the target word in academic context.',
+          correctedSentence: 'Foster academic innovation.',
         );
   }
 
@@ -75,9 +74,8 @@ void main() {
         final repository = FakeGrammarRepository(
           evaluationToReturn: const GrammarEvaluation(
             isCorrect: true,
-            feedback: 'Great sentence structure.',
-            corrections: [],
-            modelExpressions: ['It is paramount to foster education.'],
+            explanation: 'Great sentence structure.',
+            correctedSentence: 'It is paramount to foster education.',
           ),
         );
         final evaluateGrammar = EvaluateGrammar(repository: repository);
@@ -176,9 +174,9 @@ void main() {
     ) async {
       const evaluation = GrammarEvaluation(
         isCorrect: false,
-        feedback: 'Minor grammar issues detected.',
-        corrections: ['Use passive voice here.'],
-        modelExpressions: ['Growth was fostered by policies.'],
+        explanation: 'Minor grammar issues detected.',
+        correctedSentence: 'Use passive voice here.',
+        suggestedExercises: ['Growth was fostered by policies.'],
       );
 
       await tester.pumpWidget(

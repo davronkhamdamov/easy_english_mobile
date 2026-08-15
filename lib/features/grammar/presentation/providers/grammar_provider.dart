@@ -1,68 +1,98 @@
 import 'package:flutter/foundation.dart';
+import '../../data/repositories/grammar_repository_impl.dart';
 import '../../domain/entities/grammar_evaluation.dart';
 import '../../domain/entities/grammar_mistake_record.dart';
 import '../../domain/entities/grammar_topic.dart';
+import '../../domain/repositories/grammar_repository.dart';
 import '../../domain/usecases/evaluate_grammar.dart';
 import '../../domain/usecases/get_grammar_mistakes.dart';
 import '../../domain/usecases/get_grammar_roadmap.dart';
+import '../state/grammar_state.dart';
 
 class GrammarProvider extends ChangeNotifier {
-  final GetGrammarRoadmap _getGrammarRoadmap;
-  final GetGrammarMistakes _getGrammarMistakes;
-  final EvaluateGrammar _evaluateGrammar;
+  final FetchGrammarRoadmapUseCase _getGrammarRoadmap;
+  final FetchGrammarMistakesUseCase _getGrammarMistakes;
+  final EvaluateGrammarSentenceUseCase _evaluateGrammar;
 
-  List<GrammarTopic> _topics = [];
-  List<GrammarMistakeRecord> _mistakes = [];
-  bool _isLoading = false;
-  String? _errorMessage;
+  GrammarState _state = const GrammarState();
 
   GrammarProvider({
-    GetGrammarRoadmap? getGrammarRoadmap,
-    GetGrammarMistakes? getGrammarMistakes,
-    EvaluateGrammar? evaluateGrammar,
-  }) : _getGrammarRoadmap = getGrammarRoadmap ?? GetGrammarRoadmap(),
-       _getGrammarMistakes = getGrammarMistakes ?? GetGrammarMistakes(),
-       _evaluateGrammar = evaluateGrammar ?? EvaluateGrammar();
+    GrammarRepository? repository,
+    FetchGrammarRoadmapUseCase? getGrammarRoadmap,
+    FetchGrammarMistakesUseCase? getGrammarMistakes,
+    EvaluateGrammarSentenceUseCase? evaluateGrammar,
+  })  : _getGrammarRoadmap = getGrammarRoadmap ?? GetGrammarRoadmap(repository: repository ?? GrammarRepositoryImpl()),
+        _getGrammarMistakes = getGrammarMistakes ?? GetGrammarMistakes(repository: repository ?? GrammarRepositoryImpl()),
+        _evaluateGrammar = evaluateGrammar ?? EvaluateGrammar(repository: repository ?? GrammarRepositoryImpl());
 
-  List<GrammarTopic> get topics => _topics;
-  List<GrammarMistakeRecord> get mistakes => _mistakes;
-  bool get isLoading => _isLoading;
-  String? get errorMessage => _errorMessage;
+  GrammarState get state => _state;
+  String get selectedCefrLevel => _state.selectedCefrLevel;
+  List<GrammarTopic> get topics => _state.topics;
+  List<GrammarMistakeRecord> get mistakes => _state.mistakes;
+  GrammarEvaluation? get currentEvaluation => _state.currentEvaluation;
+  bool get isLoading => _state.isLoading;
+  bool get isEvaluating => _state.isEvaluating;
+  String? get errorMessage => _state.errorMessage;
+
+  List<GrammarTopic> get filteredTopics {
+    if (_state.selectedCefrLevel == 'All') return _state.topics;
+    return _state.topics.where((t) => t.cefrLevel.toUpperCase() == _state.selectedCefrLevel.toUpperCase()).toList();
+  }
+
+  void selectCefrLevel(String level) {
+    if (_state.selectedCefrLevel != level) {
+      _state = _state.copyWith(selectedCefrLevel: level);
+      notifyListeners();
+    }
+  }
 
   Future<void> loadRoadmap() async {
-    _isLoading = true;
-    _errorMessage = null;
+    _state = _state.copyWith(isLoading: true, clearError: true);
     notifyListeners();
 
     try {
-      _topics = await _getGrammarRoadmap();
+      final loadedTopics = await _getGrammarRoadmap();
+      _state = _state.copyWith(isLoading: false, topics: loadedTopics);
     } catch (e) {
-      _errorMessage = e.toString();
-    } finally {
-      _isLoading = false;
-      notifyListeners();
+      _state = _state.copyWith(isLoading: false, errorMessage: e.toString().replaceAll('Exception: ', ''));
     }
+    notifyListeners();
   }
 
   Future<void> loadMistakes() async {
-    _isLoading = true;
-    _errorMessage = null;
+    _state = _state.copyWith(isLoading: true, clearError: true);
     notifyListeners();
 
     try {
-      _mistakes = await _getGrammarMistakes();
+      final loadedMistakes = await _getGrammarMistakes();
+      _state = _state.copyWith(isLoading: false, mistakes: loadedMistakes);
     } catch (e) {
-      _errorMessage = e.toString();
-    } finally {
-      _isLoading = false;
+      _state = _state.copyWith(isLoading: false, errorMessage: e.toString().replaceAll('Exception: ', ''));
+    }
+    notifyListeners();
+  }
+
+  Future<GrammarEvaluation?> evaluateSentence({
+    required String sentence,
+    String? targetWord,
+  }) async {
+    _state = _state.copyWith(isEvaluating: true, clearError: true, clearEvaluation: true);
+    notifyListeners();
+
+    try {
+      final eval = await _evaluateGrammar(sentence: sentence, targetWord: targetWord);
+      _state = _state.copyWith(isEvaluating: false, currentEvaluation: eval);
       notifyListeners();
+      return eval;
+    } catch (e) {
+      _state = _state.copyWith(isEvaluating: false, errorMessage: e.toString().replaceAll('Exception: ', ''));
+      notifyListeners();
+      return null;
     }
   }
 
-  Future<GrammarEvaluation> evaluateSentence({
-    required String sentence,
-    String? targetWord,
-  }) {
-    return _evaluateGrammar(sentence: sentence, targetWord: targetWord);
+  void clearEvaluation() {
+    _state = _state.copyWith(clearEvaluation: true);
+    notifyListeners();
   }
 }

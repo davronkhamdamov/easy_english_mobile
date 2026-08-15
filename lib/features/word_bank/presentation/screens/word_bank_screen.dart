@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import '../../data/repositories/word_bank_repository_impl.dart';
-import '../../domain/entities/flashcard_item.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../../domain/repositories/word_bank_repository.dart';
-import '../../domain/usecases/get_word_bank.dart';
+import '../providers/word_bank_provider.dart';
+import '../widgets/add_word_bottom_sheet.dart';
+import '../widgets/word_bank_error_widget.dart';
+import '../widgets/word_bank_filter_bar.dart';
+import '../widgets/word_bank_header_stats.dart';
+import '../widgets/word_bank_item_card.dart';
 import 'flashcard_review_screen.dart';
 
-/// Word Bank & Contextual Vocabulary Learning Screen.
 class WordBankScreen extends StatefulWidget {
   final WordBankRepository? repository;
 
@@ -16,45 +19,59 @@ class WordBankScreen extends StatefulWidget {
 }
 
 class _WordBankScreenState extends State<WordBankScreen> {
-  late final WordBankRepository _repository;
-  late final GetWordBank _getWordBank;
-
-  List<FlashcardItem> _wordBankItems = [];
-  bool _isLoading = true;
+  late final WordBankProvider _provider;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
-    _repository = widget.repository ?? WordBankRepositoryImpl();
-    _getWordBank = GetWordBank(_repository);
-    _loadData();
+    _provider = WordBankProvider(repository: widget.repository);
+    _provider.addListener(_onStateChange);
+    _provider.loadWordBank();
   }
 
-  Future<void> _loadData() async {
-    setState(() {
-      _isLoading = true;
-    });
+  @override
+  void dispose() {
+    _provider.removeListener(_onStateChange);
+    _provider.dispose();
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
+  void _onStateChange() {
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _playTts(String word) async {
     try {
-      final items = await _getWordBank();
-      if (mounted) {
-        setState(() {
-          _wordBankItems = items;
-          _isLoading = false;
-        });
-      }
-    } catch (_) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      final cleanText = word.replaceAll(RegExp(r'[^\w\s\-]'), '');
+      final url =
+          'https://dict.youdao.com/dictvoice?audio=${Uri.encodeComponent(cleanText)}&type=1';
+      await _audioPlayer.stop();
+      await _audioPlayer.play(UrlSource(url));
+    } catch (e) {
+      debugPrint('TTS Error: $e');
     }
   }
 
+  void _openAddWordSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => AddWordBottomSheet(onAddWord: _provider.addWord),
+    );
+  }
+
   void _startFlashcardReview() {
+    final state = _provider.state;
+    final reviewItems =
+        state.dueFlashcards.isNotEmpty ? state.dueFlashcards : state.wordItems;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => FlashcardReviewScreen(initialItems: _wordBankItems),
+        builder: (_) => FlashcardReviewScreen(initialItems: reviewItems),
       ),
     );
   }
@@ -62,164 +79,77 @@ class _WordBankScreenState extends State<WordBankScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final state = _provider.state;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('IELTS Word Bank'),
         actions: [
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.filter_list), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.add_circle_outline),
+            tooltip: 'Add Vocabulary',
+            onPressed: _openAddWordSheet,
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _provider.loadWordBank,
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _startFlashcardReview,
+        onPressed: state.wordItems.isEmpty ? null : _startFlashcardReview,
         icon: const Icon(Icons.style),
-        label: const Text(
-          'Review Flashcards (SM-2)',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        label: Text('Review Flashcards (${state.dueTodayCount} Due)'),
         backgroundColor: theme.colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      body: _isLoading
+      body: state.isLoading
           ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: _loadData,
-              child: ListView.builder(
-                padding: const EdgeInsets.all(16.0),
-                itemCount: _wordBankItems.length,
-                itemBuilder: (context, index) {
-                  final item = _wordBankItems[index];
-                  return Card(
-                    margin: const EdgeInsets.only(bottom: 16.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    item.word,
-                                    style: theme.textTheme.headlineSmall
-                                        ?.copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    item.phonetic,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: _getCefrColor(item.cefrLevel),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  item.cefrLevel,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            item.definition,
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                          const Divider(height: 20),
-
-                          // Collocations
-                          if (item.collocations.isNotEmpty) ...[
-                            Wrap(
-                              spacing: 6,
-                              runSpacing: 6,
-                              children: item.collocations
-                                  .map(
-                                    (col) => Chip(
-                                      label: Text(
-                                        col,
-                                        style: const TextStyle(fontSize: 11),
-                                      ),
-                                      backgroundColor: theme
-                                          .colorScheme
-                                          .primaryContainer
-                                          .withValues(alpha: 0.4),
-                                      padding: EdgeInsets.zero,
-                                      visualDensity: VisualDensity.compact,
-                                    ),
-                                  )
-                                  .toList(),
-                            ),
-                            const SizedBox(height: 8),
-                          ],
-
-                          // Example Sentence
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.surfaceContainerHighest
-                                  .withValues(alpha: 0.5),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Icon(
-                                  Icons.format_quote,
-                                  size: 16,
-                                  color: Colors.grey,
-                                ),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: Text(
-                                    item.example,
-                                    style: const TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+          : state.errorMessage != null && state.wordItems.isEmpty
+              ? WordBankErrorWidget(
+                  errorMessage: state.errorMessage!,
+                  onRetry: _provider.loadWordBank,
+                )
+              : RefreshIndicator(
+                  onRefresh: _provider.loadWordBank,
+                  child: ListView(
+                    padding: const EdgeInsets.all(16.0),
+                    children: [
+                      WordBankHeaderStats(
+                        totalWords: state.totalWordsCount,
+                        dueToday: state.dueTodayCount,
+                        mastered: state.masteredCount,
                       ),
-                    ),
-                  );
-                },
-              ),
-            ),
+                      const SizedBox(height: 16),
+                      WordBankFilterBar(
+                        searchQuery: state.searchQuery,
+                        selectedCefr: state.selectedCefrFilter,
+                        onSearchChanged: _provider.setSearchQuery,
+                        onCefrChanged: _provider.setCefrFilter,
+                      ),
+                      const SizedBox(height: 16),
+                      if (state.filteredWordItems.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 40),
+                          child: Center(
+                            child: Text(
+                              'No vocabulary items found.',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ),
+                        )
+                      else
+                        ...state.filteredWordItems.map(
+                          (item) => WordBankItemCard(
+                            item: item,
+                            onPlayAudio: () => _playTts(item.word),
+                            onDelete: () => _provider.deleteWord(item.id),
+                          ),
+                        ),
+                      const SizedBox(height: 80),
+                    ],
+                  ),
+                ),
     );
-  }
-
-  Color _getCefrColor(String cefr) {
-    switch (cefr.toUpperCase()) {
-      case 'C2':
-      case 'C1':
-        return Colors.purple;
-      case 'B2':
-      case 'B1':
-        return Colors.blue;
-      default:
-        return Colors.green;
-    }
   }
 }

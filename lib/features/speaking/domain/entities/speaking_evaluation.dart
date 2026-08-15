@@ -1,64 +1,53 @@
+import 'pronunciation_tip.dart';
+
 /// Represents an AI evaluation for an IELTS Speaking response.
 class SpeakingAIEvaluation {
   final String id;
-  final String submissionId;
-  final double overallBand;
-  final double fluencyCoherenceBand;
-  final double lexicalResourceBand;
-  final double grammarRangeBand;
-  final double pronunciationBand;
+  final double overallScore;
+  final double fluencyScore;
+  final double pronunciationScore;
+  final double lexicalScore;
+  final double grammarScore;
+  final String fluencyFeedback;
+  final String pronunciationFeedback;
+  final String lexicalFeedback;
+  final String grammarFeedback;
   final String transcript;
+  final List<PronunciationTip> pronunciationTips;
+  final int pauseCount;
+  final String sampleAnswer;
   final List<String> grammarErrors;
   final List<String> vocabularyTips;
   final List<String> strengths;
   final List<String> areasForImprovement;
   final DateTime evaluatedAt;
 
+  // Compatibility getters
+  double get overallBand => overallScore;
+  double get fluencyCoherenceBand => fluencyScore;
+  double get pronunciationBand => pronunciationScore;
+  double get lexicalResourceBand => lexicalScore;
+  double get grammarRangeBand => grammarScore;
+
   const SpeakingAIEvaluation({
     required this.id,
-    required this.submissionId,
-    required this.overallBand,
-    required this.fluencyCoherenceBand,
-    required this.lexicalResourceBand,
-    required this.grammarRangeBand,
-    required this.pronunciationBand,
+    required this.overallScore,
+    required this.fluencyScore,
+    required this.pronunciationScore,
+    required this.lexicalScore,
+    required this.grammarScore,
+    this.fluencyFeedback = '',
+    this.pronunciationFeedback = '',
+    this.lexicalFeedback = '',
+    this.grammarFeedback = '',
     required this.transcript,
+    this.pronunciationTips = const [],
+    this.pauseCount = 0,
+    this.sampleAnswer = '',
     this.grammarErrors = const [],
     this.vocabularyTips = const [],
     this.strengths = const [],
     this.areasForImprovement = const [],
     required this.evaluatedAt,
   });
-
-  SpeakingAIEvaluation copyWith({
-    String? id,
-    String? submissionId,
-    double? overallBand,
-    double? fluencyCoherenceBand,
-    double? lexicalResourceBand,
-    double? grammarRangeBand,
-    double? pronunciationBand,
-    String? transcript,
-    List<String>? grammarErrors,
-    List<String>? vocabularyTips,
-    List<String>? strengths,
-    List<String>? areasForImprovement,
-    DateTime? evaluatedAt,
-  }) {
-    return SpeakingAIEvaluation(
-      id: id ?? this.id,
-      submissionId: submissionId ?? this.submissionId,
-      overallBand: overallBand ?? this.overallBand,
-      fluencyCoherenceBand: fluencyCoherenceBand ?? this.fluencyCoherenceBand,
-      lexicalResourceBand: lexicalResourceBand ?? this.lexicalResourceBand,
-      grammarRangeBand: grammarRangeBand ?? this.grammarRangeBand,
-      pronunciationBand: pronunciationBand ?? this.pronunciationBand,
-      transcript: transcript ?? this.transcript,
-      grammarErrors: grammarErrors ?? this.grammarErrors,
-      vocabularyTips: vocabularyTips ?? this.vocabularyTips,
-      strengths: strengths ?? this.strengths,
-      areasForImprovement: areasForImprovement ?? this.areasForImprovement,
-      evaluatedAt: evaluatedAt ?? this.evaluatedAt,
-    );
-  }
 }

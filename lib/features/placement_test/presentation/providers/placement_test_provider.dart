@@ -1,188 +1,189 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import '../../data/repositories/placement_repository_impl.dart';
 import '../../domain/entities/diagnostic_session.dart';
 import '../../domain/entities/estimated_band_score.dart';
 import '../../domain/entities/placement_question.dart';
+import '../../domain/entities/placement_result.dart';
 import '../../domain/entities/study_plan_recommendation.dart';
-import '../../domain/usecases/calculate_placement_result.dart';
 import '../../domain/usecases/fetch_placement_questions.dart';
 import '../../domain/usecases/submit_placement_test.dart';
+import '../state/placement_test_state.dart';
 
 class PlacementTestProvider extends ChangeNotifier {
-  final FetchPlacementQuestions _fetchPlacementQuestions;
-  final SubmitPlacementTest _submitPlacementTestUseCase;
-  final CalculatePlacementResult _calculatePlacementResult;
+  final FetchPlacementQuestionsUseCase _fetchQuestionsUseCase;
+  final SubmitPlacementTestUseCase _submitTestUseCase;
 
-  late DiagnosticSession _session;
+  PlacementTestState _state = const PlacementTestState();
   Timer? _timer;
   bool _isPlayingAudio = false;
   double _audioProgress = 0.0;
   Timer? _audioTimer;
 
-  EstimatedBandScore? _calculatedScore;
-  StudyPlanRecommendation? _studyPlan;
-  bool _isSubmitting = false;
-  String? _errorMessage;
-
   PlacementTestProvider({
-    FetchPlacementQuestions? fetchPlacementQuestions,
-    SubmitPlacementTest? submitPlacementTestUseCase,
-    CalculatePlacementResult? calculatePlacementResult,
+    FetchPlacementQuestionsUseCase? fetchQuestionsUseCase,
+    SubmitPlacementTestUseCase? submitTestUseCase,
     List<PlacementQuestion>? initialQuestions,
-  }) : _fetchPlacementQuestions =
-           fetchPlacementQuestions ?? FetchPlacementQuestions(),
-       _submitPlacementTestUseCase =
-           submitPlacementTestUseCase ?? SubmitPlacementTest(),
-       _calculatePlacementResult =
-           calculatePlacementResult ?? CalculatePlacementResult() {
-    initDiagnosticSession(initialQuestions);
+  })  : _fetchQuestionsUseCase = fetchQuestionsUseCase ??
+            FetchPlacementQuestionsUseCase(PlacementRepositoryImpl()),
+        _submitTestUseCase = submitTestUseCase ??
+            SubmitPlacementTestUseCase(PlacementRepositoryImpl()) {
+    if (initialQuestions != null && initialQuestions.isNotEmpty) {
+      _state = _state.copyWith(questions: initialQuestions);
+      _startTimer();
+    } else {
+      loadQuestions();
+    }
   }
 
-  DiagnosticSession get session => _session;
+  PlacementTestState get state => _state;
+  bool get isLoading => _state.isLoading;
+  List<PlacementQuestion> get questions => _state.questions;
+  int get currentIndex => _state.currentIndex;
+  Map<String, int> get userAnswers => _state.userAnswers;
+  bool get isSubmitting => _state.isSubmitting;
+  PlacementResult? get result => _state.result;
+  String? get errorMessage => _state.errorMessage;
   bool get isPlayingAudio => _isPlayingAudio;
   double get audioProgress => _audioProgress;
-  EstimatedBandScore? get calculatedScore => _calculatedScore;
-  StudyPlanRecommendation? get studyPlan => _studyPlan;
-  bool get isSubmitting => _isSubmitting;
-  String? get errorMessage => _errorMessage;
+
+  DiagnosticSession get session => DiagnosticSession(
+        id: 'session_${DateTime.now().millisecondsSinceEpoch}',
+        startTime: DateTime.now(),
+        durationSeconds: 600,
+        questions: _state.questions,
+        userAnswers: Map.from(_state.userAnswers),
+        currentQuestionIndex: _state.currentIndex,
+        isCompleted: _state.result != null,
+        remainingSeconds: (600 - _state.elapsedSeconds).clamp(0, 600),
+      );
+  EstimatedBandScore? get calculatedScore => _state.result != null
+      ? EstimatedBandScore(
+          overallBand: _state.result!.estimatedIeltsBand,
+          grammarBand: _state.result!.estimatedIeltsBand,
+          vocabularyBand: _state.result!.estimatedIeltsBand,
+          readingBand: _state.result!.estimatedIeltsBand,
+          listeningBand: _state.result!.estimatedIeltsBand,
+          cefrEquivalent: 'CEFR ${_state.result!.estimatedCefrLevel}',
+          skillBreakdown: _state.result!.sectionScores.map((k, v) => MapEntry(k, v.score / 10.0)),
+          strengths: const ['Completed Diagnostic Assessment'],
+          weaknesses: _state.result!.weakAreas,
+        )
+      : null;
+  StudyPlanRecommendation? get studyPlan => _state.result != null
+      ? StudyPlanRecommendation.generate(bandScore: calculatedScore!, targetBand: _state.result!.targetBandScore)
+      : null;
 
   void initDiagnosticSession([List<PlacementQuestion>? customQuestions]) {
-    final questions = customQuestions ?? PlacementQuestion.sampleQuestions;
-    _session = DiagnosticSession(
-      id: 'diag_${DateTime.now().millisecondsSinceEpoch}',
-      startTime: DateTime.now(),
-      durationSeconds: 600, // 10 minutes countdown
-      questions: questions,
-    );
-    _calculatedScore = null;
-    _studyPlan = null;
-    _isSubmitting = false;
-    _isPlayingAudio = false;
-    _audioProgress = 0.0;
-    _audioTimer?.cancel();
-    _startCountdownTimer();
-    notifyListeners();
+    if (customQuestions != null && customQuestions.isNotEmpty) {
+      _state = PlacementTestState(questions: customQuestions);
+      _startTimer();
+      notifyListeners();
+    } else {
+      loadQuestions();
+    }
   }
 
-  Future<void> loadQuestionsFromApi() async {
+  Future<void> loadQuestions() async {
+    _state = _state.copyWith(isLoading: true, clearError: true);
+    notifyListeners();
     try {
-      final fetched = await _fetchPlacementQuestions();
-      if (fetched.isNotEmpty) {
-        initDiagnosticSession(fetched);
-      }
+      final qList = await _fetchQuestionsUseCase();
+      _state = _state.copyWith(isLoading: false, questions: qList, currentIndex: 0, userAnswers: {}, result: null);
+      _startTimer();
     } catch (e) {
-      _errorMessage = e.toString();
+      _state = _state.copyWith(isLoading: false, errorMessage: e.toString().replaceAll('Exception: ', ''));
+    } finally {
       notifyListeners();
     }
   }
 
-  void _startCountdownTimer() {
+  void _startTimer() {
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_session.isCompleted) {
-        timer.cancel();
-        return;
-      }
-      if (_session.remainingSeconds > 0) {
-        _session.remainingSeconds--;
-        notifyListeners();
-      } else {
-        _timer?.cancel();
-        submitTest();
-      }
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      _state = _state.copyWith(elapsedSeconds: _state.elapsedSeconds + 1);
+      notifyListeners();
     });
   }
 
-  void stopTimer() {
-    _timer?.cancel();
-    _audioTimer?.cancel();
-  }
-
-  void toggleAudioPlay() {
-    if (_isPlayingAudio) {
-      _audioTimer?.cancel();
-      _isPlayingAudio = false;
-      notifyListeners();
-    } else {
-      _isPlayingAudio = true;
-      notifyListeners();
-
-      _audioTimer?.cancel();
-      _audioTimer = Timer.periodic(const Duration(milliseconds: 200), (timer) {
-        _audioProgress += 0.05;
-        if (_audioProgress >= 1.0) {
-          _audioProgress = 0.0;
-          _isPlayingAudio = false;
-          timer.cancel();
-        }
-        notifyListeners();
-      });
-    }
-  }
-
   void selectOption(int index) {
-    if (_session.isCompleted) return;
-    final currentQ = _session.currentQuestion;
-    _session.userAnswers[currentQ.id] = index;
+    if (_state.isSubmitting || _state.result != null) return;
+    final q = _state.currentQuestion;
+    if (q == null) return;
+    final updated = Map<String, int>.from(_state.userAnswers)..[q.id] = index;
+    _state = _state.copyWith(userAnswers: updated);
     notifyListeners();
   }
 
   void nextQuestion() {
-    if (_session.currentQuestionIndex < _session.questions.length - 1) {
-      _session.currentQuestionIndex++;
-      _isPlayingAudio = false;
-      _audioProgress = 0.0;
-      _audioTimer?.cancel();
+    if (_state.currentIndex < _state.questions.length - 1) {
+      _state = _state.copyWith(currentIndex: _state.currentIndex + 1);
+      _resetAudio();
       notifyListeners();
     }
   }
 
   void previousQuestion() {
-    if (_session.currentQuestionIndex > 0) {
-      _session.currentQuestionIndex--;
-      _isPlayingAudio = false;
-      _audioProgress = 0.0;
-      _audioTimer?.cancel();
+    if (_state.currentIndex > 0) {
+      _state = _state.copyWith(currentIndex: _state.currentIndex - 1);
+      _resetAudio();
       notifyListeners();
     }
   }
 
   void goToQuestion(int index) {
-    if (index >= 0 && index < _session.questions.length) {
-      _session.currentQuestionIndex = index;
-      _isPlayingAudio = false;
-      _audioProgress = 0.0;
-      _audioTimer?.cancel();
+    if (index >= 0 && index < _state.questions.length) {
+      _state = _state.copyWith(currentIndex: index);
+      _resetAudio();
       notifyListeners();
     }
   }
 
-  void submitTest() {
-    if (_isSubmitting || _session.isCompleted) return;
-
-    _isSubmitting = true;
+  void toggleAudioPlay() {
+    if (_isPlayingAudio) {
+      _isPlayingAudio = false;
+      _audioTimer?.cancel();
+    } else {
+      _isPlayingAudio = true;
+      _audioTimer?.cancel();
+      _audioTimer = Timer.periodic(const Duration(milliseconds: 200), (t) {
+        _audioProgress += 0.05;
+        if (_audioProgress >= 1.0) {
+          _audioProgress = 0.0;
+          _isPlayingAudio = false;
+          t.cancel();
+        }
+        notifyListeners();
+      });
+    }
     notifyListeners();
+  }
 
-    Future.delayed(const Duration(milliseconds: 800), () async {
-      _session.isCompleted = true;
-      _isSubmitting = false;
+  void _resetAudio() {
+    _isPlayingAudio = false;
+    _audioProgress = 0.0;
+    _audioTimer?.cancel();
+  }
 
-      final result = _calculatePlacementResult(_session, targetBand: 7.5);
-      _calculatedScore = result.score;
-      _studyPlan = result.studyPlan;
-
-      // Silently sync with backend API if needed
-      try {
-        await _submitPlacementTestUseCase(_session.userAnswers);
-      } catch (_) {}
-
+  Future<void> submitTest() async {
+    if (_state.isSubmitting || _state.result != null) return;
+    _state = _state.copyWith(isSubmitting: true, clearError: true);
+    notifyListeners();
+    try {
+      final res = await _submitTestUseCase(answers: _state.userAnswers, totalTimeSeconds: _state.elapsedSeconds);
+      _timer?.cancel();
+      _state = _state.copyWith(isSubmitting: false, result: res);
+    } catch (e) {
+      _state = _state.copyWith(isSubmitting: false, errorMessage: e.toString().replaceAll('Exception: ', ''));
+    } finally {
       notifyListeners();
-    });
+    }
   }
 
   @override
   void dispose() {
-    stopTimer();
+    _timer?.cancel();
+    _audioTimer?.cancel();
     super.dispose();
   }
 }

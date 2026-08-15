@@ -7,7 +7,7 @@ class AiCoachRemoteDatasource {
   final ApiClient _client;
 
   AiCoachRemoteDatasource({ApiClient? client})
-    : _client = client ?? ApiClient();
+      : _client = client ?? ApiClient();
 
   /// Fetches AI Content Recommendations (GET /api/v1/content-recommendations/)
   Future<AiCoachRecommendationDto?> fetchRecommendations() async {
@@ -16,7 +16,7 @@ class AiCoachRemoteDatasource {
       final jsonMap = jsonDecode(response.body) as Map<String, dynamic>;
       return AiCoachRecommendationDto.fromJson(jsonMap);
     }
-    return null;
+    throw Exception('API Server Error (${response.statusCode})');
   }
 
   /// Fetches 5-Tier Educational Recommendation Plan (GET /api/v1/content-recommendations/)
@@ -24,8 +24,13 @@ class AiCoachRemoteDatasource {
     final response = await _client.get('/api/v1/content-recommendations/');
     if (response.statusCode == 200) {
       final jsonMap = jsonDecode(response.body) as Map<String, dynamic>;
+      if (jsonMap.containsKey('five_tier_plan')) {
+        return FiveTierRecommendationDto.fromJson(
+          jsonMap['five_tier_plan'] as Map<String, dynamic>,
+        );
+      }
       return FiveTierRecommendationDto.fromJson(jsonMap);
     }
-    return null;
+    throw Exception('API Server Error (${response.statusCode})');
   }
 }

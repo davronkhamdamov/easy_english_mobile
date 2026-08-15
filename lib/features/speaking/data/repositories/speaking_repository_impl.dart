@@ -7,7 +7,22 @@ class SpeakingRepositoryImpl implements SpeakingRepository {
   final SpeakingRemoteDatasource _remoteDatasource;
 
   SpeakingRepositoryImpl({SpeakingRemoteDatasource? remoteDatasource})
-    : _remoteDatasource = remoteDatasource ?? SpeakingRemoteDatasource();
+      : _remoteDatasource = remoteDatasource ?? SpeakingRemoteDatasource();
+
+  @override
+  Future<List<SpeakingPrompt>> fetchSpeakingPrompts({int? part}) async {
+    final models = await _remoteDatasource.fetchSpeakingPrompts();
+    final entities = models.map((m) => m.toEntity()).toList();
+    if (part != null) {
+      return entities.where((p) => p.part == part).toList();
+    }
+    return entities;
+  }
+
+  @override
+  Future<String> transcribeSpeakingAudio(String audioFilePath) {
+    return _remoteDatasource.transcribeSpeakingAudio(audioFilePath);
+  }
 
   @override
   Future<SpeakingAIEvaluation> evaluateSpeaking({
@@ -23,19 +38,5 @@ class SpeakingRepositoryImpl implements SpeakingRepository {
       prompt: prompt,
     );
     return model.toEntity();
-  }
-
-  @override
-  Future<String> transcribeSpeakingAudio(String audioFilePath) {
-    return _remoteDatasource.transcribeSpeakingAudio(audioFilePath);
-  }
-
-  @override
-  Future<List<SpeakingPrompt>> fetchSpeakingPrompts() async {
-    final models = await _remoteDatasource.fetchSpeakingPrompts();
-    if (models.isEmpty) {
-      return SpeakingPrompt.samplePrompts;
-    }
-    return models.map((m) => m.toEntity()).toList();
   }
 }

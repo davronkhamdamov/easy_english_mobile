@@ -1,140 +1,156 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/writing_evaluation.dart';
+import 'writing_criterion_row.dart';
+import 'writing_grammar_corrections_card.dart';
+import 'writing_vocabulary_card.dart';
 
 class WritingEvaluationWidget extends StatelessWidget {
   final WritingEvaluation evaluation;
 
   const WritingEvaluationWidget({super.key, required this.evaluation});
 
+  Color _getScoreColor(double score) {
+    if (score >= 8.0) return Colors.green;
+    if (score >= 7.0) return Colors.teal;
+    if (score >= 6.0) return Colors.orange;
+    return Colors.red;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
-      color: theme.colorScheme.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'AI Evaluation Feedback',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Overall Band Score Header Card
+        Card(
+          elevation: 3,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 36,
+                  backgroundColor: _getScoreColor(evaluation.overallBandScore),
+                  child: Text(
+                    evaluation.overallBandScore.toStringAsFixed(1),
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Overall IELTS Band Score',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Evaluated Essay Word Count: ${evaluation.wordCount} words',
+                        style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const Divider(height: 24),
-
-            // Strengths
-            if (evaluation.strengths.isNotEmpty) ...[
-              Text(
-                'Strengths:',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
-                ),
-              ),
-              ...evaluation.strengths.map(
-                (s) => Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.check_circle,
-                        size: 16,
-                        color: Colors.green,
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(child: Text(s)),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-
-            // Weaknesses
-            if (evaluation.weaknesses.isNotEmpty) ...[
-              Text(
-                'Areas for Improvement:',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.orange,
-                ),
-              ),
-              ...evaluation.weaknesses.map(
-                (w) => Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.warning, size: 16, color: Colors.orange),
-                      const SizedBox(width: 6),
-                      Expanded(child: Text(w)),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-
-            // Grammar Corrections
-            if (evaluation.grammarCorrections.isNotEmpty) ...[
-              Text(
-                'Grammar Corrections:',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.redAccent,
-                ),
-              ),
-              ...evaluation.grammarCorrections.map(
-                (g) => Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.build_circle,
-                        size: 16,
-                        color: Colors.redAccent,
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(child: Text(g)),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-            ],
-
-            // Improved Sample Answer
-            if (evaluation.improvedSample.isNotEmpty) ...[
-              Text(
-                'Improved Model Sample:',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.blue.withValues(alpha: 0.08),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
-                ),
-                child: Text(
-                  evaluation.improvedSample,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    height: 1.4,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ),
-            ],
-          ],
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+
+        // 4 Sub-score Progress Bars
+        Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'IELTS Criteria Breakdown',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                WritingCriterionRow(
+                  label: 'Task Achievement',
+                  criterionScore: evaluation.taskAchievement,
+                ),
+                const SizedBox(height: 12),
+                WritingCriterionRow(
+                  label: 'Coherence & Cohesion',
+                  criterionScore: evaluation.coherenceCohesion,
+                ),
+                const SizedBox(height: 12),
+                WritingCriterionRow(
+                  label: 'Lexical Resource',
+                  criterionScore: evaluation.lexicalResource,
+                ),
+                const SizedBox(height: 12),
+                WritingCriterionRow(
+                  label: 'Grammatical Range',
+                  criterionScore: evaluation.grammaticalRange,
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Expandable Accordions
+        WritingGrammarCorrectionsCard(corrections: evaluation.grammarCorrections),
+
+        if (evaluation.vocabularySuggestions.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          WritingVocabularyCard(vocabularySuggestions: evaluation.vocabularySuggestions),
+        ],
+
+        if (evaluation.sampleAnswer.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            child: ExpansionTile(
+              leading: const Icon(Icons.star, color: Colors.amber),
+              title: const Text(
+                'Band 9 Sample Model Answer',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.amber.withValues(alpha: 0.3)),
+                    ),
+                    child: SelectableText(
+                      evaluation.sampleAnswer,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        height: 1.5,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

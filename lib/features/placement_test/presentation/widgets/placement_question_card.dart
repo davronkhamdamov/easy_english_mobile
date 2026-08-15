@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../domain/entities/diagnostic_skill.dart';
 import '../../domain/entities/placement_question.dart';
+import 'placement_audio_player_widget.dart';
+import 'placement_reading_passage_widget.dart';
 
 class PlacementQuestionCard extends StatelessWidget {
   final PlacementQuestion question;
@@ -29,17 +30,14 @@ class PlacementQuestionCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Audio Player Card (If Listening Skill)
-        if (question.skill == DiagnosticSkill.listening &&
-            question.audioUrl != null)
-          _buildAudioPlayerCard(theme, isDark),
-
-        // Reading Passage Card (If Reading Skill)
-        if (question.skill == DiagnosticSkill.reading &&
-            question.passage != null)
-          _buildReadingPassageCard(theme, isDark),
-
-        // Question Prompt Card
+        if (question.audioUrl != null && question.audioUrl!.isNotEmpty)
+          PlacementAudioPlayerWidget(
+            isPlaying: isPlayingAudio,
+            progress: audioProgress,
+            onTogglePlay: onToggleAudioPlay,
+          ),
+        if (question.passage != null && question.passage!.isNotEmpty)
+          PlacementReadingPassageWidget(passage: question.passage!),
         Card(
           elevation: 1,
           shape: RoundedRectangleBorder(
@@ -49,7 +47,7 @@ class PlacementQuestionCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              question.prompt,
+              question.questionText,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
                 height: 1.4,
@@ -58,11 +56,9 @@ class PlacementQuestionCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-
-        // Answer Options List
         ...List.generate(question.options.length, (index) {
           final isSelected = selectedOptionIndex == index;
-          final optionLabel = String.fromCharCode(65 + index); // A, B, C, D
+          final optionLabel = String.fromCharCode(65 + index);
 
           return Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
@@ -78,16 +74,12 @@ class PlacementQuestionCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: isSelected
                       ? AppColors.primary.withValues(alpha: 0.12)
-                      : (isDark
-                            ? AppColors.darkSurface
-                            : AppColors.lightSurface),
+                      : (isDark ? AppColors.darkSurface : AppColors.lightSurface),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: isSelected
                         ? AppColors.primary
-                        : (isDark
-                              ? AppColors.darkBorder
-                              : AppColors.lightBorder),
+                        : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
                     width: isSelected ? 2 : 1,
                   ),
                 ),
@@ -101,8 +93,8 @@ class PlacementQuestionCard extends StatelessWidget {
                         color: isSelected
                             ? AppColors.primary
                             : (isDark
-                                  ? AppColors.darkSurfaceVariant
-                                  : AppColors.lightSurfaceVariant),
+                                ? AppColors.darkSurfaceVariant
+                                : AppColors.lightSurfaceVariant),
                       ),
                       alignment: Alignment.center,
                       child: Text(
@@ -112,8 +104,8 @@ class PlacementQuestionCard extends StatelessWidget {
                           color: isSelected
                               ? Colors.white
                               : (isDark
-                                    ? AppColors.darkTextPrimary
-                                    : AppColors.lightTextPrimary),
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary),
                         ),
                       ),
                     ),
@@ -128,8 +120,8 @@ class PlacementQuestionCard extends StatelessWidget {
                           color: isSelected
                               ? AppColors.primary
                               : (isDark
-                                    ? AppColors.darkTextPrimary
-                                    : AppColors.lightTextPrimary),
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary),
                         ),
                       ),
                     ),
@@ -140,108 +132,6 @@ class PlacementQuestionCard extends StatelessWidget {
           );
         }),
       ],
-    );
-  }
-
-  Widget _buildAudioPlayerCard(ThemeData theme, bool isDark) {
-    return Card(
-      elevation: 0,
-      margin: const EdgeInsets.only(bottom: 16),
-      color: AppColors.secondaryLight.withValues(alpha: 0.4),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.secondary, width: 1),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(14.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.headphones, color: AppColors.secondary),
-                const SizedBox(width: 8),
-                Text(
-                  'Listening Audio Stimulus',
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.secondary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                IconButton(
-                  onPressed: onToggleAudioPlay,
-                  icon: Icon(
-                    isPlayingAudio
-                        ? Icons.pause_circle_filled
-                        : Icons.play_circle_fill,
-                  ),
-                  iconSize: 40,
-                  color: AppColors.secondary,
-                ),
-                Expanded(
-                  child: LinearProgressIndicator(
-                    value: audioProgress,
-                    backgroundColor: Colors.white,
-                    valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColors.secondary,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  '${(audioProgress * 30).round()}s / 30s',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReadingPassageCard(ThemeData theme, bool isDark) {
-    return Card(
-      elevation: 0,
-      margin: const EdgeInsets.only(bottom: 16),
-      color: isDark
-          ? AppColors.darkSurfaceVariant
-          : AppColors.lightSurfaceVariant,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.menu_book, size: 18, color: AppColors.primary),
-                const SizedBox(width: 6),
-                Text(
-                  'Reading Passage',
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              question.passage!,
-              style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -2,29 +2,38 @@ import '../../domain/entities/writing_prompt.dart';
 
 class WritingPromptModel {
   final String id;
-  final int taskType;
+  final String taskType;
+  final String topic;
   final String title;
   final String promptText;
-  final int suggestedWordCount;
+  final int minWordCount;
+  final String difficulty;
 
   WritingPromptModel({
     required this.id,
     required this.taskType,
+    required this.topic,
     required this.title,
     required this.promptText,
-    required this.suggestedWordCount,
+    required this.minWordCount,
+    required this.difficulty,
   });
 
   factory WritingPromptModel.fromJson(Map<String, dynamic> json) {
+    final rawTaskType = json['task_type'] ?? json['taskType'] ?? 'task2';
+    final normalizedTask = rawTaskType.toString().contains('1') ? 'task1' : 'task2';
+
     return WritingPromptModel(
       id: json['id']?.toString() ?? '',
-      taskType: (json['task_type'] ?? json['taskType'] as num?)?.toInt() ?? 2,
+      taskType: normalizedTask,
+      topic: json['topic']?.toString() ?? 'General',
       title: json['title']?.toString() ?? 'Writing Prompt',
-      promptText: json['prompt_text'] ?? json['prompt'] ?? '',
-      suggestedWordCount:
-          (json['suggested_word_count'] ?? json['suggestedWordCount'] as num?)
+      promptText: (json['prompt_text'] ?? json['prompt'] ?? '').toString(),
+      minWordCount:
+          (json['min_word_count'] ?? json['suggested_word_count'] as num?)
               ?.toInt() ??
-          250,
+          (normalizedTask == 'task1' ? 150 : 250),
+      difficulty: json['difficulty']?.toString() ?? 'Intermediate',
     );
   }
 
@@ -32,9 +41,11 @@ class WritingPromptModel {
     return {
       'id': id,
       'task_type': taskType,
+      'topic': topic,
       'title': title,
       'prompt_text': promptText,
-      'suggested_word_count': suggestedWordCount,
+      'min_word_count': minWordCount,
+      'difficulty': difficulty,
     };
   }
 
@@ -42,9 +53,11 @@ class WritingPromptModel {
     return WritingPrompt(
       id: id,
       taskType: taskType,
+      topic: topic,
       title: title,
       promptText: promptText,
-      suggestedWordCount: suggestedWordCount,
+      minWordCount: minWordCount,
+      difficulty: difficulty,
     );
   }
 
@@ -52,9 +65,11 @@ class WritingPromptModel {
     return WritingPromptModel(
       id: entity.id,
       taskType: entity.taskType,
+      topic: entity.topic,
       title: entity.title,
       promptText: entity.promptText,
-      suggestedWordCount: entity.suggestedWordCount,
+      minWordCount: entity.minWordCount,
+      difficulty: entity.difficulty,
     );
   }
 }

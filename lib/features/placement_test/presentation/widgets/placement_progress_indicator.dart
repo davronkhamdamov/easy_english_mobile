@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/diagnostic_session.dart';
-import '../../domain/entities/diagnostic_skill.dart';
 
 class PlacementProgressIndicator extends StatelessWidget {
   final DiagnosticSession session;
@@ -19,17 +18,12 @@ class PlacementProgressIndicator extends StatelessWidget {
     return '${mins.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
   }
 
-  IconData _getSkillIcon(DiagnosticSkill skill) {
-    switch (skill) {
-      case DiagnosticSkill.grammar:
-        return Icons.spellcheck;
-      case DiagnosticSkill.vocabulary:
-        return Icons.translate;
-      case DiagnosticSkill.reading:
-        return Icons.menu_book;
-      case DiagnosticSkill.listening:
-        return Icons.headphones;
-    }
+  IconData _getSectionIcon(String section) {
+    final lower = section.toLowerCase();
+    if (lower.contains('listening')) return Icons.headphones;
+    if (lower.contains('reading')) return Icons.menu_book;
+    if (lower.contains('vocab')) return Icons.translate;
+    return Icons.spellcheck;
   }
 
   @override
@@ -46,9 +40,10 @@ class PlacementProgressIndicator extends StatelessWidget {
       timerColor = AppColors.warning;
     }
 
+    final sectionTitle = q.section.isNotEmpty ? q.section : 'General';
+
     return Column(
       children: [
-        // Top Header: Skill Badge + Countdown Timer
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
@@ -64,12 +59,8 @@ class PlacementProgressIndicator extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Skill Badge
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.primaryLight,
                   borderRadius: BorderRadius.circular(20),
@@ -77,13 +68,13 @@ class PlacementProgressIndicator extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(
-                      _getSkillIcon(q.skill),
+                      _getSectionIcon(sectionTitle),
                       size: 16,
                       color: AppColors.primary,
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      '${q.skill.displayName} (${q.cefrLevel})',
+                      '$sectionTitle (${q.cefrLevel})',
                       style: const TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
@@ -93,13 +84,8 @@ class PlacementProgressIndicator extends StatelessWidget {
                   ],
                 ),
               ),
-
-              // Countdown Timer Widget
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: timerColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(20),
@@ -115,7 +101,6 @@ class PlacementProgressIndicator extends StatelessWidget {
                         color: timerColor,
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
-                        fontFeatures: const [FontFeature.tabularFigures()],
                       ),
                     ),
                   ],
@@ -124,13 +109,11 @@ class PlacementProgressIndicator extends StatelessWidget {
             ],
           ),
         ),
-
-        // Progress Bar
         LinearProgressIndicator(
-          value: (session.currentQuestionIndex + 1) / session.totalQuestions,
-          backgroundColor: isDark
-              ? AppColors.darkBorder
-              : AppColors.lightBorder,
+          value: session.totalQuestions > 0
+              ? (session.currentQuestionIndex + 1) / session.totalQuestions
+              : 0.0,
+          backgroundColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
           valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
           minHeight: 4,
         ),

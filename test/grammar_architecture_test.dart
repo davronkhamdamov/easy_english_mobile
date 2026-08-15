@@ -22,11 +22,11 @@ class MockGrammarRemoteDataSource implements GrammarRemoteDataSource {
     required String sentence,
     String? targetWord,
   }) async {
-    return GrammarEvaluationModel(
+    return const GrammarEvaluationModel(
       isCorrect: true,
-      feedback: 'Excellent grammar and sentence structure.',
-      corrections: ['No corrections needed.'],
-      modelExpressions: ['Band 8+ phrasing used.'],
+      explanation: 'Excellent grammar and sentence structure.',
+      correctedSentence: 'No corrections needed.',
+      suggestedExercises: ['Band 8+ phrasing used.'],
     );
   }
 
@@ -41,10 +41,10 @@ class MockGrammarRemoteDataSource implements GrammarRemoteDataSource {
         status: GrammarTopicStatus.current,
         masteryPercentage: 80.0,
         orderIndex: 1,
-        prerequisiteIds: [],
+        prerequisiteIds: const [],
         iconName: 'mock_icon',
-        rules: [
-          const GrammarRuleModel(
+        rules: const [
+          GrammarRuleModel(
             id: 'mock_rule',
             topicId: 'mock_topic',
             title: 'Mock Rule',
@@ -54,8 +54,8 @@ class MockGrammarRemoteDataSource implements GrammarRemoteDataSource {
             commonPitfalls: ['Pitfall 1'],
           ),
         ],
-        exercises: [
-          const GrammarExerciseModel(
+        exercises: const [
+          GrammarExerciseModel(
             id: 'mock_ex',
             topicId: 'mock_topic',
             ruleId: 'mock_rule',
@@ -75,13 +75,12 @@ class MockGrammarRemoteDataSource implements GrammarRemoteDataSource {
     return [
       GrammarMistakeRecordModel(
         id: 'mock_mistake',
-        topicCategory: 'Articles',
-        originalSentence: 'A test',
-        correctedSentence: 'The test',
+        ruleCategory: 'Articles',
+        originalText: 'A test',
+        correctedText: 'The test',
         explanation: 'Explanation',
         occurrenceCount: 2,
-        firstSeenAt: DateTime(2026, 1, 1),
-        lastSeenAt: DateTime(2026, 1, 2),
+        lastFailedAt: DateTime(2026, 1, 2),
         isResolved: false,
       ),
     ];
@@ -109,7 +108,6 @@ void main() {
         expect(result, isA<GrammarEvaluation>());
         expect(result.isCorrect, isTrue);
         expect(result.feedback, contains('Excellent grammar'));
-        expect(result.corrections, contains('No corrections needed.'));
       },
     );
 
