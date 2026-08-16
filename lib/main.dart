@@ -10,6 +10,10 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  final initialMode = await ThemeController.loadThemeMode();
+  final themeController = ThemeController(initialMode);
+
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -21,37 +25,48 @@ void main() async {
   } catch (e) {
     debugPrint('Firebase.initializeApp warning: $e');
   }
-  runApp(const EasyIeltsApp());
+  runApp(EasyIeltsApp(themeController: themeController));
 }
 
 class EasyIeltsApp extends StatefulWidget {
-  const EasyIeltsApp({super.key});
+  final ThemeController? themeController;
+
+  const EasyIeltsApp({super.key, this.themeController});
 
   @override
   State<EasyIeltsApp> createState() => _EasyIeltsAppState();
 }
 
 class _EasyIeltsAppState extends State<EasyIeltsApp> {
-  final ThemeController _themeController = ThemeController(ThemeMode.dark);
+  late final ThemeController _themeController;
+
+  @override
+  void initState() {
+    super.initState();
+    _themeController = widget.themeController ?? ThemeController(ThemeMode.dark);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: _themeController,
-      builder: (context, mode, child) {
-        return MaterialApp(
-          navigatorKey: ApiDebuggerOverlay.navigatorKey,
-          title: 'Easy IELTS',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: mode,
-          builder: (context, child) {
-            return ApiDebuggerOverlay(child: child ?? const SizedBox());
-          },
-          home: const AuthWrapper(),
-        );
-      },
+    return ThemeScope(
+      themeController: _themeController,
+      child: ValueListenableBuilder<ThemeMode>(
+        valueListenable: _themeController,
+        builder: (context, mode, child) {
+          return MaterialApp(
+            navigatorKey: ApiDebuggerOverlay.navigatorKey,
+            title: 'Easy IELTS',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: mode,
+            builder: (context, child) {
+              return ApiDebuggerOverlay(child: child ?? const SizedBox());
+            },
+            home: const AuthWrapper(),
+          );
+        },
+      ),
     );
   }
 }
