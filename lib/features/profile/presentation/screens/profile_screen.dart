@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../auth/data/auth_service.dart';
 import '../../../../design_system/design_system.dart';
-import '../../../notification/presentation/notification_settings_screen.dart';
+import '../../../notification/presentation/notifications_screen.dart';
 
 /// Full-featured Profile Screen powered by Google Account details.
 class ProfileScreen extends StatefulWidget {
@@ -15,7 +15,147 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final AuthService _authService = AuthService();
 
   String _selectedLanguage = 'English';
-  bool _isDarkMode = false;
+
+  String _getThemeLabel(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.light:
+        return 'Light';
+      case ThemeMode.dark:
+        return 'Dark';
+      case ThemeMode.system:
+        return 'System Default';
+    }
+  }
+
+  void _showThemeSelectorModal() {
+    final themeController = ThemeController.maybeOf(context);
+    final currentMode = themeController?.value ?? ThemeMode.system;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtextColor =
+        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: cardColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'App Theme',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Choose your preferred visual appearance',
+              style: TextStyle(fontSize: 13, color: subtextColor),
+            ),
+            AppSpacing.gapVerticalMd,
+            _buildThemeRadioOption(
+              ctx,
+              title: 'Light Mode',
+              subtitle: 'Crisp & vibrant light theme',
+              icon: Icons.wb_sunny_outlined,
+              mode: ThemeMode.light,
+              currentMode: currentMode,
+              themeController: themeController,
+              isDark: isDark,
+            ),
+            _buildThemeRadioOption(
+              ctx,
+              title: 'Dark Mode',
+              subtitle: 'Sleek & comfortable dark theme',
+              icon: Icons.nightlight_round_outlined,
+              mode: ThemeMode.dark,
+              currentMode: currentMode,
+              themeController: themeController,
+              isDark: isDark,
+            ),
+            _buildThemeRadioOption(
+              ctx,
+              title: 'System Default',
+              subtitle: 'Match system device settings',
+              icon: Icons.brightness_auto_outlined,
+              mode: ThemeMode.system,
+              currentMode: currentMode,
+              themeController: themeController,
+              isDark: isDark,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildThemeRadioOption(
+    BuildContext bottomSheetContext, {
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required ThemeMode mode,
+    required ThemeMode currentMode,
+    required ThemeController? themeController,
+    required bool isDark,
+  }) {
+    final isSelected = currentMode == mode;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtextColor =
+        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final activeColor = isDark ? Colors.white : AppColors.primary;
+    final activeBgColor = isDark
+        ? Colors.white.withValues(alpha: 0.15)
+        : AppColors.primary.withValues(alpha: 0.15);
+
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? activeBgColor
+              : (isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9)),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          color: isSelected ? activeColor : subtextColor,
+          size: 22,
+        ),
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          color: isSelected ? activeColor : textColor,
+        ),
+      ),
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(fontSize: 12, color: subtextColor),
+      ),
+      trailing: isSelected
+          ? Icon(Icons.check_circle_rounded, color: activeColor)
+          : Icon(
+              Icons.radio_button_unchecked,
+              color: subtextColor.withValues(alpha: 0.5),
+            ),
+      onTap: () {
+        themeController?.setThemeMode(mode);
+        Navigator.pop(bottomSheetContext);
+      },
+    );
+  }
 
   Future<void> _handleSignOut() async {
     final confirm = await showDialog<bool>(
@@ -53,8 +193,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _showSecurityModal() {
     final googleUser = _authService.currentUser;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtextColor =
+        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final activeIconColor = isDark ? Colors.white : AppColors.primary;
+
     showModalBottomSheet(
       context: context,
+      backgroundColor: cardColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -64,18 +212,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
+            Text(
               'Security',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
             ),
             AppSpacing.gapVerticalMd,
             ListTile(
-              leading: const Icon(Icons.lock_outline, color: AppColors.primary),
-              title: const Text('Change Password'),
-              subtitle: const Text(
+              leading: Icon(Icons.lock_outline, color: activeIconColor),
+              title: Text('Change Password', style: TextStyle(color: textColor)),
+              subtitle: Text(
                 'Password reset email via Google Authentication',
+                style: TextStyle(fontSize: 12, color: subtextColor),
               ),
-              trailing: const Icon(Icons.chevron_right),
+              trailing: Icon(Icons.chevron_right, color: subtextColor),
               onTap: () {
                 Navigator.pop(ctx);
                 DSSnackbar.show(
@@ -86,14 +239,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 );
               },
             ),
-            const ListTile(
-              leading: Icon(
+            ListTile(
+              leading: const Icon(
                 Icons.verified_user_outlined,
                 color: AppColors.success,
               ),
-              title: Text('Two-Factor Authentication'),
-              subtitle: Text('Protected by Google Account Security'),
-              trailing: Icon(Icons.check_circle, color: AppColors.success),
+              title: Text(
+                'Two-Factor Authentication',
+                style: TextStyle(color: textColor),
+              ),
+              subtitle: Text(
+                'Protected by Google Account Security',
+                style: TextStyle(fontSize: 12, color: subtextColor),
+              ),
+              trailing: const Icon(Icons.check_circle, color: AppColors.success),
             ),
           ],
         ),
@@ -110,8 +269,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'French',
       'German',
     ];
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final activeColor = isDark ? Colors.white : AppColors.primary;
+
     showModalBottomSheet(
       context: context,
+      backgroundColor: cardColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -121,16 +286,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Select Language',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
             ),
             AppSpacing.gapVerticalMd,
             ...languages.map(
               (lang) => ListTile(
-                title: Text(lang),
+                title: Text(
+                  lang,
+                  style: TextStyle(
+                    color: _selectedLanguage == lang ? activeColor : textColor,
+                    fontWeight: _selectedLanguage == lang
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                ),
                 trailing: _selectedLanguage == lang
-                    ? const Icon(Icons.check, color: AppColors.primary)
+                    ? Icon(Icons.check, color: activeColor)
                     : null,
                 onTap: () {
                   setState(() => _selectedLanguage = lang);
@@ -145,13 +322,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showAboutUsDialog() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showAboutDialog(
       context: context,
       applicationName: 'Easy English IELTS',
       applicationVersion: 'v1.0.0',
-      applicationIcon: const CircleAvatar(
-        backgroundColor: AppColors.primary,
-        child: Icon(Icons.school, color: Colors.white),
+      applicationIcon: CircleAvatar(
+        backgroundColor: isDark ? Colors.white : AppColors.primary,
+        child: Icon(
+          Icons.school,
+          color: isDark ? AppColors.carbonBlack : Colors.white,
+        ),
       ),
       children: const [
         Text(
@@ -162,8 +343,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showHelpCenter() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subtextColor =
+        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final activeIconColor = isDark ? Colors.white : AppColors.primary;
+
     showModalBottomSheet(
       context: context,
+      backgroundColor: cardColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -173,23 +362,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Help Center & Support',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
             ),
             AppSpacing.gapVerticalMd,
-            const ListTile(
-              leading: Icon(Icons.email_outlined, color: AppColors.primary),
-              title: Text('Contact Support'),
-              subtitle: Text('support@easy-english.uz'),
+            ListTile(
+              leading: Icon(Icons.email_outlined, color: activeIconColor),
+              title: Text('Contact Support', style: TextStyle(color: textColor)),
+              subtitle: Text(
+                'support@easy-english.uz',
+                style: TextStyle(fontSize: 12, color: subtextColor),
+              ),
             ),
-            const ListTile(
+            ListTile(
               leading: Icon(
                 Icons.question_answer_outlined,
-                color: AppColors.secondary,
+                color: isDark ? const Color(0xFFCBD5E1) : AppColors.secondary,
               ),
-              title: Text('Frequently Asked Questions'),
-              subtitle: Text('Browse FAQs and study guides'),
+              title: Text(
+                'Frequently Asked Questions',
+                style: TextStyle(color: textColor),
+              ),
+              subtitle: Text(
+                'Browse FAQs and study guides',
+                style: TextStyle(fontSize: 12, color: subtextColor),
+              ),
             ),
           ],
         ),
@@ -313,7 +515,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const NotificationSettingsScreen(),
+                          builder: (_) => const NotificationsScreen(),
                         ),
                       );
                     },
@@ -352,8 +554,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildProfileTile(
                     icon: Icons.brightness_6_outlined,
                     title: 'Theme',
-                    trailingText: _isDarkMode ? 'Dark' : 'Light',
-                    onTap: () => setState(() => _isDarkMode = !_isDarkMode),
+                    trailingText: _getThemeLabel(
+                      ThemeController.maybeOf(context)?.value ?? ThemeMode.system,
+                    ),
+                    onTap: _showThemeSelectorModal,
                     isDark: isDark,
                   ),
                 ],
