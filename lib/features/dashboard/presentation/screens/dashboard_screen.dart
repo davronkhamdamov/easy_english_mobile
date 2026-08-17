@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../../design_system/design_system.dart';
 import '../../../grammar/presentation/screens/grammar_roadmap_screen.dart';
@@ -12,7 +13,7 @@ import '../widgets/new_dashboard_header_widget.dart';
 import '../widgets/skill_activity_progress_card_widget.dart';
 import '../widgets/study_time_progress_card_widget.dart';
 
-/// Easy IELTS Student Dashboard featuring the Floating Pill Navigation Bar.
+/// Easy IELTS Student Dashboard featuring platform-native bottom navigation.
 class DashboardScreen extends StatefulWidget {
   final DashboardRepository? repository;
   final int initialIndex;
@@ -26,7 +27,30 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late int _currentIndex;
 
-  final List<FloatingNavItem> _navItems = const [
+  final List<IosNavItem> _iosNavItems = const [
+    IosNavItem(
+      icon: CupertinoIcons.house,
+      activeIcon: CupertinoIcons.house_fill,
+      label: 'Home',
+    ),
+    IosNavItem(
+      icon: CupertinoIcons.doc_plaintext,
+      activeIcon: CupertinoIcons.doc_plaintext_fill,
+      label: 'Practice',
+    ),
+    IosNavItem(
+      icon: CupertinoIcons.chart_bar,
+      activeIcon: CupertinoIcons.chart_bar_fill,
+      label: 'Progress',
+    ),
+    IosNavItem(
+      icon: CupertinoIcons.person,
+      activeIcon: CupertinoIcons.person_fill,
+      label: 'Profile',
+    ),
+  ];
+
+  final List<FloatingNavItem> _androidNavItems = const [
     FloatingNavItem(
       icon: Icons.home_outlined,
       activeIcon: Icons.home_rounded,
@@ -52,7 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex < _navItems.length ? widget.initialIndex : 0;
+    _currentIndex = widget.initialIndex < _iosNavItems.length ? widget.initialIndex : 0;
   }
 
   Widget _buildBody() {
@@ -73,7 +97,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildDashboardCanvasContent() {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -134,25 +158,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
+    if (isIOS) {
+      return Scaffold(
+        body: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 250),
+          child: KeyedSubtree(
+            key: ValueKey<int>(_currentIndex),
+            child: _buildBody(),
+          ),
+        ),
+        bottomNavigationBar: IosNativeTabBar(
+          currentIndex: _currentIndex,
+          onTap: (index) => setState(() => _currentIndex = index),
+          items: _iosNavItems,
+        ),
+      );
+    }
+
     return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
-              child: KeyedSubtree(
-                key: ValueKey<int>(_currentIndex),
-                child: _buildBody(),
-              ),
-            ),
-          ),
-          FloatingPillNavBar(
-            currentIndex: _currentIndex,
-            onTap: (index) => setState(() => _currentIndex = index),
-            items: _navItems,
-          ),
-        ],
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        child: KeyedSubtree(
+          key: ValueKey<int>(_currentIndex),
+          child: _buildBody(),
+        ),
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (index) => setState(() => _currentIndex = index),
+        destinations: _androidNavItems.map((item) {
+          return NavigationDestination(
+            icon: Icon(item.icon),
+            selectedIcon: Icon(item.activeIcon ?? item.icon),
+            label: item.label,
+          );
+        }).toList(),
       ),
     );
   }
-}
