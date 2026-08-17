@@ -27,23 +27,23 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late int _currentIndex;
 
-  final List<IosNavItem> _iosNavItems = const [
-    IosNavItem(
+  final List<FloatingNavItem> _iosNavItems = const [
+    FloatingNavItem(
       icon: CupertinoIcons.house,
       activeIcon: CupertinoIcons.house_fill,
       label: 'Home',
     ),
-    IosNavItem(
+    FloatingNavItem(
       icon: CupertinoIcons.doc_text,
       activeIcon: CupertinoIcons.doc_text_fill,
       label: 'Practice',
     ),
-    IosNavItem(
+    FloatingNavItem(
       icon: CupertinoIcons.chart_bar,
       activeIcon: CupertinoIcons.chart_bar_fill,
       label: 'Progress',
     ),
-    IosNavItem(
+    FloatingNavItem(
       icon: CupertinoIcons.person,
       activeIcon: CupertinoIcons.person_fill,
       label: 'Profile',
@@ -79,10 +79,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _currentIndex = widget.initialIndex < _iosNavItems.length ? widget.initialIndex : 0;
   }
 
-  Widget _buildBody() {
+  Widget _buildBody({required bool isIOS}) {
     switch (_currentIndex) {
       case 0:
-        return _buildDashboardCanvasContent();
+        return _buildDashboardCanvasContent(isIOS: isIOS);
       case 1:
         return const PracticeScreen();
       case 2:
@@ -90,14 +90,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 3:
         return _buildProfileContent();
       default:
-        return _buildDashboardCanvasContent();
+        return _buildDashboardCanvasContent(isIOS: isIOS);
     }
   }
 
-  Widget _buildDashboardCanvasContent() {
+  Widget _buildDashboardCanvasContent({required bool isIOS}) {
     return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+        padding: EdgeInsets.fromLTRB(16, 12, 16, isIOS ? 100 : 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -162,17 +162,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     if (isIOS) {
       return Scaffold(
-        body: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 250),
-          child: KeyedSubtree(
-            key: ValueKey<int>(_currentIndex),
-            child: _buildBody(),
-          ),
-        ),
-        bottomNavigationBar: IosNativeTabBar(
-          currentIndex: _currentIndex,
-          onTap: (index) => setState(() => _currentIndex = index),
-          items: _iosNavItems,
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                child: KeyedSubtree(
+                  key: ValueKey<int>(_currentIndex),
+                  child: _buildBody(isIOS: true),
+                ),
+              ),
+            ),
+            FloatingPillNavBar(
+              currentIndex: _currentIndex,
+              onTap: (index) => setState(() => _currentIndex = index),
+              items: _iosNavItems,
+            ),
+          ],
         ),
       );
     }
@@ -182,7 +188,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         duration: const Duration(milliseconds: 250),
         child: KeyedSubtree(
           key: ValueKey<int>(_currentIndex),
-          child: _buildBody(),
+          child: _buildBody(isIOS: false),
         ),
       ),
       bottomNavigationBar: NavigationBar(

@@ -337,7 +337,7 @@ void main() {
     );
 
     testWidgets(
-      'DashboardScreen renders native IosNativeTabBar when TargetPlatform.iOS',
+      'DashboardScreen renders iOS FloatingPillNavBar when TargetPlatform.iOS',
       (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(
@@ -347,7 +347,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        expect(find.byType(IosNativeTabBar), findsOneWidget);
+        expect(find.byType(FloatingPillNavBar), findsOneWidget);
         expect(find.byType(NavigationBar), findsNothing);
       },
     );
@@ -364,7 +364,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byType(NavigationBar), findsOneWidget);
-        expect(find.byType(IosNativeTabBar), findsNothing);
+        expect(find.byType(FloatingPillNavBar), findsNothing);
       },
     );
   });
