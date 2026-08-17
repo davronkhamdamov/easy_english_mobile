@@ -34,8 +34,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       label: 'Home',
     ),
     IosNavItem(
-      icon: CupertinoIcons.doc_plaintext,
-      activeIcon: CupertinoIcons.doc_plaintext_fill,
+      icon: CupertinoIcons.doc_text,
+      activeIcon: CupertinoIcons.doc_text_fill,
       label: 'Practice',
     ),
     IosNavItem(
@@ -198,3 +198,4 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+}
