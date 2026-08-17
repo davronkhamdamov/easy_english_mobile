@@ -123,9 +123,9 @@ class CupertinoSettingsScreen extends StatelessWidget {
               if (!isLast)
                 const Padding(
                   padding: EdgeInsets.only(left: 54),
-                  child: Container(
+                  child: SizedBox(
                     height: 0.5,
-                    color: CupertinoColors.separator,
+                    child: ColoredBox(color: CupertinoColors.separator),
                   ),
                 ),
             ],
