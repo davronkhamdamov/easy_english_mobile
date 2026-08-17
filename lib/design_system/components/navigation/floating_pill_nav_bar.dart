@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -15,7 +16,8 @@ class FloatingNavItem {
 }
 
 /// A floating, pill-shaped bottom navigation bar with vertical iOS-style layout
-/// (icon on top, text label at the bottom).
+/// (icon on top, text label at the bottom) featuring native glassmorphism and liquid pill highlights,
+/// styled identically to native iOS navigation bars (e.g. App Store).
 class FloatingPillNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -37,9 +39,9 @@ class FloatingPillNavBar extends StatelessWidget {
     this.activeBackgroundColor,
     this.activeForegroundColor,
     this.inactiveForegroundColor,
-    this.height = 70.0,
-    this.margin = const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
-    this.padding = const EdgeInsets.symmetric(horizontal: 9.0, vertical: 2.0),
+    this.height = 68.0,
+    this.margin = const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+    this.padding = const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
   });
 
   @override
@@ -49,103 +51,118 @@ class FloatingPillNavBar extends StatelessWidget {
 
     final navBgColor =
         backgroundColor ??
-        (isDark ? const Color(0xFF1E293B) : const Color(0xFFEDEDF0));
+        (isDark ? const Color(0xD91E1E24) : const Color(0xE6F2F2F7));
 
     final activeBg =
         activeBackgroundColor ??
-        (isDark ? const Color(0xFFFFFFFF) : const Color(0xFF0F172A));
+        (isDark
+            ? Colors.white.withValues(alpha: 0.16)
+            : Colors.black.withValues(alpha: 0.10));
 
     final activeFg =
-        activeForegroundColor ??
-        (isDark ? const Color(0xFF0F172A) : const Color(0xFFFFFFFF));
+        activeForegroundColor ?? const Color(0xFF007AFF); // Native iOS system blue
 
     final inactiveFg =
         inactiveForegroundColor ??
-        (isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569));
+        (isDark
+            ? Colors.white.withValues(alpha: 0.70)
+            : Colors.black.withValues(alpha: 0.60));
 
     return Align(
       alignment: Alignment.bottomCenter,
       child: SafeArea(
         child: ConstrainedBox(
-          constraints: const BoxConstraints.tightFor(width: 360),
+          constraints: const BoxConstraints.tightFor(width: 375),
           child: Container(
-            height: height,
             margin: margin,
-            padding: padding,
             decoration: BoxDecoration(
-              color: navBgColor,
-              borderRadius: BorderRadius.circular(height / 2),
+              borderRadius: BorderRadius.circular(36),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
-                  blurRadius: 20,
-                  spreadRadius: 1,
-                  offset: const Offset(0, 6),
+                  color: Colors.black.withValues(alpha: isDark ? 0.45 : 0.12),
+                  blurRadius: 28,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 8),
                 ),
               ],
-              border: Border.all(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.08)
-                    : Colors.black.withValues(alpha: 0.04),
-                width: 1,
-              ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: List.generate(items.length, (index) {
-                final isSelected = index == currentIndex;
-                final item = items[index];
-
-                return Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      HapticFeedback.selectionClick();
-                      onTap(index);
-                    },
-                    behavior: HitTestBehavior.opaque,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 240),
-                      curve: Curves.easeOutCubic,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: isSelected ? activeBg : Colors.transparent,
-                        borderRadius: BorderRadius.circular((height - 8) / 2),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            isSelected
-                                ? (item.activeIcon ?? item.icon)
-                                : item.icon,
-                            color: isSelected ? activeFg : inactiveFg,
-                            size: 25,
-                          ),
-                          const SizedBox(height: 3),
-                          Text(
-                            item.label,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: isSelected ? activeFg : inactiveFg,
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.w500,
-                              fontSize: 12.5,
-                              letterSpacing: -0.2,
-                            ),
-                          ),
-                        ],
-                      ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(36),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+                child: Container(
+                  height: height,
+                  padding: padding,
+                  decoration: BoxDecoration(
+                    color: navBgColor,
+                    borderRadius: BorderRadius.circular(36),
+                    border: Border.all(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.14)
+                          : Colors.black.withValues(alpha: 0.08),
+                      width: 0.8,
                     ),
                   ),
-                );
-              }),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: List.generate(items.length, (index) {
+                      final isSelected = index == currentIndex;
+                      final item = items[index];
+
+                      return Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            onTap(index);
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 220),
+                            curve: Curves.easeOutCubic,
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isSelected ? activeBg : Colors.transparent,
+                              borderRadius: BorderRadius.circular(28),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  isSelected
+                                      ? (item.activeIcon ?? item.icon)
+                                      : item.icon,
+                                  color: isSelected ? activeFg : inactiveFg,
+                                  size: 24,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  item.label,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: isSelected ? activeFg : inactiveFg,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.w500,
+                                    fontSize: 11.5,
+                                    letterSpacing: -0.2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ),
             ),
           ),
         ),

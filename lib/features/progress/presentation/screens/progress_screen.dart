@@ -1,83 +1,83 @@
 import 'package:flutter/material.dart';
-import '../../../../design_system/design_system.dart';
+import '../../../ai_coach/presentation/screens/ai_coach_screen.dart';
+import '../../../dashboard/presentation/widgets/quick_actions_grid_widget.dart';
+import '../../../grammar/presentation/screens/grammar_roadmap_screen.dart';
+import '../../../mock_exam/presentation/screens/mock_exam_selection_screen.dart';
+import '../../../placement_test/presentation/screens/placement_test_screen.dart';
+import '../../../sentence_builder/presentation/screens/sentence_builder_screen.dart';
+import '../../../speaking/presentation/screens/speaking_screen.dart';
+import '../../../word_bank/presentation/screens/word_bank_screen.dart';
+import '../../../writing/presentation/screens/writing_screen.dart';
 
-/// Blank Progress Screen.
+/// Progress Screen featuring Quick Actions Grid.
 class ProgressScreen extends StatelessWidget {
   const ProgressScreen({super.key});
+
+  void _navigateTo(BuildContext context, Widget page) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  }
+
+  void _handleModuleTap(BuildContext context, String moduleKey) {
+    switch (moduleKey) {
+      case 'grammar':
+        _navigateTo(context, const GrammarRoadmapScreen());
+        break;
+      case 'writing':
+        _navigateTo(context, const WritingScreen());
+        break;
+      case 'speaking':
+        _navigateTo(context, const SpeakingScreen());
+        break;
+      case 'word_bank':
+        _navigateTo(context, const WordBankScreen());
+        break;
+      case 'placement':
+      case 'placement_test':
+        _navigateTo(context, const PlacementTestScreen());
+        break;
+      case 'sentence':
+      case 'sentence_builder':
+        _navigateTo(context, const SentenceBuilderScreen());
+        break;
+      case 'mock_exam':
+        _navigateTo(context, const MockExamSelectionScreen());
+        break;
+      case 'ai_coach':
+      default:
+        _navigateTo(context, const AICoachScreen());
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
-    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final subtextColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text(
           'Progress',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
+        centerTitle: false,
+        backgroundColor: backgroundColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
       ),
       body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Container(
-              padding: const EdgeInsets.all(32.0),
-              decoration: BoxDecoration(
-                color: cardColor,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              QuickActionsGridWidget(
+                title: 'Quick actions',
+                onModuleTap: (key) => _handleModuleTap(context, key),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.bar_chart_rounded,
-                      size: 48,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Progress',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Your learning progress and statistics will appear here.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: subtextColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            ],
           ),
         ),
       ),

@@ -1,83 +1,54 @@
 import 'package:flutter/material.dart';
-import '../../../../design_system/design_system.dart';
+import '../../../grammar/presentation/screens/grammar_roadmap_screen.dart';
+import '../../../word_bank/presentation/screens/word_bank_screen.dart';
+import '../../../dashboard/presentation/widgets/essential_vocabularies_section_widget.dart';
+import '../../../dashboard/presentation/widgets/grammar_banner_carousel_widget.dart';
 
-/// Blank Practice Screen.
+/// Practice Screen featuring Grammar Roadmap & Essential Vocabularies.
 class PracticeScreen extends StatelessWidget {
   const PracticeScreen({super.key});
+
+  void _navigateTo(BuildContext context, Widget page) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
-    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final subtextColor = isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final backgroundColor =
+        isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
         title: const Text(
           'Practice',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
+        centerTitle: false,
+        backgroundColor: backgroundColor,
         elevation: 0,
+        scrolledUnderElevation: 0,
       ),
       body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Container(
-              padding: const EdgeInsets.all(32.0),
-              decoration: BoxDecoration(
-                color: cardColor,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 1. App Store Inspired Grammar Featured Hero Carousel
+              GrammarBannerCarouselWidget(
+                onSeeAllTap: () =>
+                    _navigateTo(context, const GrammarRoadmapScreen()),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.assignment_outlined,
-                      size: 48,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Practice',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Practice modules and exercises will appear here.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: subtextColor,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 24),
+
+              // 2. App Store Inspired Essential Vocabularies Section
+              EssentialVocabulariesSectionWidget(
+                onSeeAllTap: () =>
+                    _navigateTo(context, const WordBankScreen()),
               ),
-            ),
+            ],
           ),
         ),
       ),
