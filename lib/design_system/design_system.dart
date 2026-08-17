@@ -18,6 +18,7 @@ export 'components/progress/ds_segmented_progress_indicator.dart';
 export 'components/snackbar/ds_snackbar.dart';
 export 'components/navigation/floating_pill_nav_bar.dart';
 export 'components/navigation/ios_native_tab_bar.dart';
+export 'components/navigation/cupertino_large_title_navigation_bar.dart';
 export 'pages/component_page_wrapper.dart';
 export 'pages/button_page.dart';
 export 'pages/input_page.dart';
