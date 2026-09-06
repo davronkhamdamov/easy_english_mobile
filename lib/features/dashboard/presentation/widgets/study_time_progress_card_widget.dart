@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
 
 /// Study Time Progress Card ("Card 1") inspired by Apple Watch / Health widgets.
 /// Clean monochrome design without bright accent colors.
@@ -24,15 +23,15 @@ class StudyTimeProgressCardWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final cardBgColor = isDark ? const Color(0xFF222327) : AppColors.lightSurface;
-    final textPrimaryColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final textSecondaryColor =
-        isDark ? Colors.white.withValues(alpha: 0.5) : AppColors.lightTextSecondary;
-    final badgeBgColor = isDark ? const Color(0xFF2D2E33) : AppColors.lightSurfaceVariant;
+    final cardBgColor = theme.colorScheme.surface;
+    final textPrimaryColor = theme.colorScheme.onSurface;
+    final textSecondaryColor = theme.colorScheme.onSurfaceVariant;
+    final badgeBgColor = theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5);
 
-    final cardBorder = isDark
-        ? null
-        : Border.all(color: AppColors.lightBorder, width: 1);
+    final cardBorder = Border.all(
+      color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
+      width: 1,
+    );
     final cardShadow = isDark
         ? null
         : [
@@ -66,7 +65,9 @@ class StudyTimeProgressCardWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: badgeBgColor,
                     borderRadius: BorderRadius.circular(20),
-                    border: isDark ? null : Border.all(color: AppColors.lightBorder),
+                    border: Border.all(
+                      color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.2),
+                    ),
                   ),
                   child: Icon(
                     Icons.school_rounded,

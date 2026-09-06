@@ -12,6 +12,9 @@ class AiCoachErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -21,21 +24,24 @@ class AiCoachErrorWidget extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFEF4444).withValues(alpha: 0.1),
+                color: theme.colorScheme.surfaceContainerHighest,
                 shape: BoxShape.circle,
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+                ),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.cloud_off_rounded,
-                color: Color(0xFFF87171),
+                color: theme.colorScheme.onSurface,
                 size: 48,
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Unable to Load AI Recommendations',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -46,8 +52,8 @@ class AiCoachErrorWidget extends StatelessWidget {
                   ? 'The backend server is currently unreachable. Please check your connection and try again.'
                   : errorMessage,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Color(0xFF94A3B8),
+              style: TextStyle(
+                color: theme.colorScheme.onSurfaceVariant,
                 fontSize: 13,
               ),
             ),
@@ -57,8 +63,8 @@ class AiCoachErrorWidget extends StatelessWidget {
               icon: const Icon(Icons.refresh_rounded),
               label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6366F1),
-                foregroundColor: Colors.white,
+                backgroundColor: theme.colorScheme.onSurface,
+                foregroundColor: theme.colorScheme.surface,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 12,

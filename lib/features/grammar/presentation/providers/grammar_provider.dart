@@ -35,7 +35,6 @@ class GrammarProvider extends ChangeNotifier {
   String? get errorMessage => _state.errorMessage;
 
   List<GrammarTopic> get filteredTopics {
-    if (_state.selectedCefrLevel == 'All') return _state.topics;
     return _state.topics.where((t) => t.cefrLevel.toUpperCase() == _state.selectedCefrLevel.toUpperCase()).toList();
   }
 

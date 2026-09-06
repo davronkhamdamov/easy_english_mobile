@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
 
 /// Activity Progress Card ("Card 5" / Last progress card from image).
-/// Features top total/best stats and a full-width Github-style green activity matrix of squares.
+/// Features top title and a full-width monochrome activity matrix of squares.
 class SkillActivityProgressCardWidget extends StatelessWidget {
   final String title;
   final VoidCallback? onTap;
@@ -18,12 +17,13 @@ class SkillActivityProgressCardWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final cardBgColor = isDark ? const Color(0xFF222327) : AppColors.lightSurface;
-    final textPrimaryColor = isDark ? Colors.white : AppColors.lightTextPrimary;
+    final cardBgColor = theme.colorScheme.surface;
+    final textPrimaryColor = theme.colorScheme.onSurface;
 
-    final cardBorder = isDark
-        ? null
-        : Border.all(color: AppColors.lightBorder, width: 1);
+    final cardBorder = Border.all(
+      color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
+      width: 1,
+    );
     final cardShadow = isDark
         ? null
         : [
@@ -63,8 +63,8 @@ class SkillActivityProgressCardWidget extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Main Content: Full-width Green Activity Squares Matrix
-                _buildActivityGrid(isDark),
+                // Main Content: Full-width Monochrome Activity Squares Matrix
+                _buildActivityGrid(theme, isDark),
               ],
             ),
           ),
@@ -73,7 +73,7 @@ class SkillActivityProgressCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildActivityGrid(bool isDark) {
+  Widget _buildActivityGrid(ThemeData theme, bool isDark) {
     // 5 rows x 17 columns activity matrix
     final List<List<int>> matrixData = [
       [0, 1, 0, 2, 0, 1, 3, 0, 1, 0, 2, 1, 0, 3, 0, 1, 2],
@@ -85,15 +85,17 @@ class SkillActivityProgressCardWidget extends StatelessWidget {
 
     Color getTileColor(int level) {
       if (level == 0) {
-        return isDark ? const Color(0xFF2D2E33) : const Color(0xFFE9ECEF);
+        return isDark
+            ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.35)
+            : theme.colorScheme.outline.withValues(alpha: 0.15);
       } else if (level == 1) {
-        return const Color(0xFFD8F3DC); // Light green
+        return theme.colorScheme.onSurface.withValues(alpha: 0.25);
       } else if (level == 2) {
-        return const Color(0xFF74C69D); // Medium green
+        return theme.colorScheme.onSurface.withValues(alpha: 0.55);
       } else if (level == 3) {
-        return const Color(0xFF2D6A4F); // Deep green
+        return theme.colorScheme.onSurface.withValues(alpha: 0.85);
       } else {
-        return const Color(0xFF1B4332); // Dark green
+        return theme.colorScheme.onSurface;
       }
     }
 
@@ -111,14 +113,6 @@ class SkillActivityProgressCardWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: color,
                   borderRadius: BorderRadius.circular(3),
-                  boxShadow: level == 3
-                      ? [
-                          BoxShadow(
-                            color: const Color(0xFF00FF87).withValues(alpha: 0.6),
-                            blurRadius: 4,
-                          ),
-                        ]
-                      : null,
                 ),
               );
             }).toList(),

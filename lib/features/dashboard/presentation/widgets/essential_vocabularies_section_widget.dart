@@ -8,7 +8,6 @@ class VocabularyEssentialItem {
   final String subtitle;
   final String actionLabel;
   final IconData icon;
-  final Color iconBackgroundColor;
 
   const VocabularyEssentialItem({
     required this.id,
@@ -16,12 +15,11 @@ class VocabularyEssentialItem {
     required this.subtitle,
     required this.actionLabel,
     required this.icon,
-    required this.iconBackgroundColor,
   });
 }
 
 /// App Store inspired "Vocabularies >" section displaying horizontally scrollable
-/// lists of vocabulary packs and flashcard decks.
+/// lists of vocabulary packs and flashcard decks using global theme tokens.
 class EssentialVocabulariesSectionWidget extends StatelessWidget {
   final List<VocabularyEssentialItem> items;
   final VoidCallback? onSeeAllTap;
@@ -34,7 +32,6 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
       subtitle: '50 High-frequency terms for Task 2 essays',
       actionLabel: 'Practice',
       icon: Icons.style_outlined,
-      iconBackgroundColor: Color(0xFFFF9500),
     ),
     VocabularyEssentialItem(
       id: 'v2',
@@ -42,7 +39,6 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
       subtitle: 'Essential phrasal verbs & idiom pairs',
       actionLabel: 'Open',
       icon: Icons.auto_stories_rounded,
-      iconBackgroundColor: Color(0xFF5856D6),
     ),
     VocabularyEssentialItem(
       id: 'v3',
@@ -50,7 +46,6 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
       subtitle: 'Fluency phrases & connector vocabulary',
       actionLabel: 'Learn',
       icon: Icons.record_voice_over_outlined,
-      iconBackgroundColor: Color(0xFF007AFF),
     ),
     VocabularyEssentialItem(
       id: 'v4',
@@ -58,7 +53,6 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
       subtitle: 'Fluctuation, trend & percentage verbs',
       actionLabel: 'Practice',
       icon: Icons.show_chart_rounded,
-      iconBackgroundColor: Color(0xFF34C759),
     ),
     VocabularyEssentialItem(
       id: 'v5',
@@ -66,7 +60,6 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
       subtitle: 'Swap informal words for C1/C2 terms',
       actionLabel: 'Open',
       icon: Icons.find_replace_rounded,
-      iconBackgroundColor: Color(0xFFAF52DE),
     ),
     VocabularyEssentialItem(
       id: 'v6',
@@ -74,7 +67,6 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
       subtitle: 'Stress patterns & silent letters',
       actionLabel: 'Start',
       icon: Icons.volume_up_outlined,
-      iconBackgroundColor: Color(0xFFFF2D55),
     ),
   ];
 
@@ -173,18 +165,21 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
         child: Row(
           children: [
-            // App-icon style rounded container
+            // Global theme styled icon container
             Container(
-              width: 54,
-              height: 54,
+              width: 52,
+              height: 52,
               decoration: BoxDecoration(
-                color: item.iconBackgroundColor,
+                color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                ),
               ),
               child: Icon(
                 item.icon,
-                color: Colors.white,
-                size: 26,
+                color: theme.colorScheme.onSurface,
+                size: 24,
               ),
             ),
             const SizedBox(width: 14),
@@ -199,6 +194,7 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
                     style: theme.textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
+                      color: theme.colorScheme.onSurface,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -218,22 +214,23 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
             ),
             const SizedBox(width: 8),
 
-            // Action Pill Button
+            // Global theme Action Pill Button
             Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: 18,
-                vertical: 8,
+                horizontal: 16,
+                vertical: 7,
               ),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest.withValues(
-                  alpha: 0.6,
-                ),
+                color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                ),
               ),
               child: Text(
                 item.actionLabel,
                 style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.primary,
+                  color: theme.colorScheme.onSurface,
                   fontWeight: FontWeight.bold,
                 ),
               ),

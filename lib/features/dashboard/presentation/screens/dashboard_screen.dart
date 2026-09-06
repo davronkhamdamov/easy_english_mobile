@@ -1,15 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../../design_system/design_system.dart';
+import '../../../ai_coach/presentation/screens/ai_coach_screen.dart';
 import '../../../grammar/presentation/screens/grammar_roadmap_screen.dart';
+import '../../../mock_exam/presentation/screens/mock_exam_selection_screen.dart';
+import '../../../placement_test/presentation/screens/placement_test_screen.dart';
 import '../../../practice/presentation/screens/practice_screen.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
-import '../../../progress/presentation/screens/progress_screen.dart';
+import '../../../sentence_builder/presentation/screens/sentence_builder_screen.dart';
+import '../../../speaking/presentation/screens/speaking_screen.dart';
 import '../../../word_bank/presentation/screens/word_bank_screen.dart';
+import '../../../writing/presentation/screens/writing_screen.dart';
 import '../../domain/repositories/dashboard_repository.dart';
 import '../screens/yearly_activity_screen.dart';
 import '../widgets/dashboard_stat_cards_widget.dart';
 import '../widgets/new_dashboard_header_widget.dart';
+import '../widgets/quick_actions_grid_widget.dart';
 import '../widgets/skill_activity_progress_card_widget.dart';
 import '../widgets/study_time_progress_card_widget.dart';
 
@@ -39,9 +45,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       label: 'Practice',
     ),
     FloatingNavItem(
-      icon: CupertinoIcons.chart_bar,
-      activeIcon: CupertinoIcons.chart_bar_fill,
-      label: 'Progress',
+      icon: CupertinoIcons.text_quote,
+      activeIcon: CupertinoIcons.text_quote,
+      label: 'Text Lab',
     ),
     FloatingNavItem(
       icon: CupertinoIcons.person,
@@ -62,9 +68,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       label: 'Practice',
     ),
     FloatingNavItem(
-      icon: Icons.bar_chart_outlined,
-      activeIcon: Icons.bar_chart_rounded,
-      label: 'Progress',
+      icon: Icons.text_snippet_outlined,
+      activeIcon: Icons.text_snippet_rounded,
+      label: 'Text Lab',
     ),
     FloatingNavItem(
       icon: Icons.person_outline_rounded,
@@ -79,6 +85,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _currentIndex = widget.initialIndex < _iosNavItems.length ? widget.initialIndex : 0;
   }
 
+  void _navigateTo(BuildContext context, Widget page) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  }
+
+  void _handleModuleTap(BuildContext context, String moduleKey) {
+    switch (moduleKey) {
+      case 'grammar':
+        _navigateTo(context, const GrammarRoadmapScreen());
+        break;
+      case 'writing':
+        _navigateTo(context, const WritingScreen());
+        break;
+      case 'speaking':
+        _navigateTo(context, const SpeakingScreen());
+        break;
+      case 'word_bank':
+        _navigateTo(context, const WordBankScreen());
+        break;
+      case 'placement':
+      case 'placement_test':
+        _navigateTo(context, const PlacementTestScreen());
+        break;
+      case 'sentence':
+      case 'sentence_builder':
+        _navigateTo(context, const SentenceBuilderScreen());
+        break;
+      case 'text_lab':
+      case 'interactive_text':
+        _navigateTo(context, const InteractiveTextPlaygroundScreen());
+        break;
+      case 'mock_exam':
+        _navigateTo(context, const MockExamSelectionScreen());
+        break;
+      case 'ai_coach':
+      default:
+        _navigateTo(context, const AICoachScreen());
+        break;
+    }
+  }
+
   Widget _buildBody({required bool isIOS}) {
     switch (_currentIndex) {
       case 0:
@@ -86,7 +132,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 1:
         return const PracticeScreen();
       case 2:
-        return const ProgressScreen();
+        return const InteractiveTextPlaygroundScreen();
       case 3:
         return _buildProfileContent();
       default:
@@ -105,7 +151,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const NewDashboardHeaderWidget(),
             const SizedBox(height: 16),
 
-            // Top Stats: Learned Grammar & Learned Vocabularies cards (Untouched)
+            // Top Stats: Learned Grammar & Learned Vocabularies cards
             DashboardStatCardsWidget(
               grammarCount: '14',
               grammarUnit: 'topics',
@@ -137,7 +183,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(height: 14),
 
-            // Card 5: Activity Matrix Progress Card -> Opens 12-Month Yearly Activity Screen
+            // Card 2: Activity Matrix Progress Card -> Opens 12-Month Yearly Activity Screen
             SkillActivityProgressCardWidget(
               title: 'Learning activity',
               onTap: () {
@@ -145,6 +191,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   MaterialPageRoute(builder: (_) => const YearlyActivityScreen()),
                 );
               },
+            ),
+            const SizedBox(height: 14),
+
+            // Card 3: Quick Actions Grid Section at the end of Home items
+            QuickActionsGridWidget(
+              title: 'Quick actions',
+              onModuleTap: (key) => _handleModuleTap(context, key),
             ),
           ],
         ),

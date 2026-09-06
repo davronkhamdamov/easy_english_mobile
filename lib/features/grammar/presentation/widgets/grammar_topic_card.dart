@@ -14,20 +14,26 @@ class GrammarTopicCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isCompleted = topic.isCompleted || topic.status == GrammarTopicStatus.completed;
+    final isDark = theme.brightness == Brightness.dark;
+    final isCompleted = topic.isCompleted || topic.status == GrammarTopicStatus.completed || topic.progressPercent >= 100;
+    final isUnfinished = topic.status == GrammarTopicStatus.current || (topic.progressPercent > 0 && !isCompleted);
 
-    Color badgeColor = theme.colorScheme.secondaryContainer;
-    Color badgeTextColor = theme.colorScheme.onSecondaryContainer;
-    String statusText = 'In Progress';
+    Color badgeColor;
+    Color badgeTextColor;
+    String statusText;
 
     if (isCompleted) {
-      badgeColor = Colors.green.shade100;
-      badgeTextColor = Colors.green.shade900;
-      statusText = 'Completed';
-    } else if (topic.status == GrammarTopicStatus.locked) {
+      badgeColor = isDark ? Colors.green.withValues(alpha: 0.2) : Colors.green.shade100;
+      badgeTextColor = isDark ? Colors.green.shade300 : Colors.green.shade900;
+      statusText = 'Learnt';
+    } else if (isUnfinished) {
+      badgeColor = isDark ? theme.colorScheme.primary.withValues(alpha: 0.2) : theme.colorScheme.secondaryContainer;
+      badgeTextColor = isDark ? theme.colorScheme.primary : theme.colorScheme.onSecondaryContainer;
+      statusText = 'Unfinished';
+    } else {
       badgeColor = theme.colorScheme.surfaceContainerHighest;
-      badgeTextColor = theme.colorScheme.outline;
-      statusText = 'Locked';
+      badgeTextColor = theme.colorScheme.onSurfaceVariant;
+      statusText = 'New';
     }
 
     return Card(
@@ -98,22 +104,35 @@ class GrammarTopicCard extends StatelessWidget {
               ],
               const SizedBox(height: 12),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: LinearProgressIndicator(
-                        value: (topic.progressPercent / 100).clamp(0.0, 1.0),
-                        minHeight: 6,
-                        backgroundColor: theme.colorScheme.surfaceContainerHighest,
-                        color: isCompleted ? Colors.green : theme.colorScheme.primary,
+                  Row(
+                    children: [
+                      Icon(Icons.menu_book_rounded, size: 14, color: theme.colorScheme.primary),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Lesson (${topic.readTime})',
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w600,
+                          color: theme.colorScheme.primary,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  Text(
-                    '${topic.progressPercent.toInt()}%',
-                    style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold),
+                  Row(
+                    children: [
+                      Text(
+                        'Read Article',
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w500,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      Icon(Icons.arrow_forward_ios_rounded, size: 10, color: theme.colorScheme.primary),
+                    ],
                   ),
                 ],
               ),

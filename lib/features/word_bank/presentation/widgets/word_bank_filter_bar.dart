@@ -29,21 +29,28 @@ class WordBankFilterBar extends StatelessWidget {
           onChanged: onSearchChanged,
           decoration: InputDecoration(
             hintText: 'Search vocabulary or definitions...',
-            prefixIcon: const Icon(Icons.search),
+            hintStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant),
+            prefixIcon: Icon(Icons.search, color: theme.colorScheme.onSurface),
             suffixIcon: searchQuery.isNotEmpty
                 ? IconButton(
-                    icon: const Icon(Icons.clear),
+                    icon: Icon(Icons.clear, color: theme.colorScheme.onSurface),
                     onPressed: () => onSearchChanged(''),
                   )
                 : null,
             filled: true,
-            fillColor: isDark
-                ? const Color(0xFF1E293B)
-                : const Color(0xFFF1F5F9),
+            fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
+              borderSide: BorderSide(
+                color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.2),
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.2),
+              ),
             ),
           ),
         ),
@@ -61,14 +68,20 @@ class WordBankFilterBar extends StatelessWidget {
                   label: Text(level),
                   selected: isSelected,
                   onSelected: (_) => onCefrChanged(level),
-                  selectedColor: theme.colorScheme.primary,
+                  selectedColor: theme.colorScheme.onSurface,
                   labelStyle: TextStyle(
-                    color: isSelected ? Colors.white : theme.textTheme.bodyMedium?.color,
+                    color: isSelected
+                        ? theme.colorScheme.surface
+                        : theme.colorScheme.onSurface,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
-                  backgroundColor: isDark
-                      ? const Color(0xFF1E293B)
-                      : const Color(0xFFF1F5F9),
+                  backgroundColor:
+                      theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  side: BorderSide(
+                    color: isSelected
+                        ? theme.colorScheme.onSurface
+                        : theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),

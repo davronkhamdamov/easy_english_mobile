@@ -47,25 +47,30 @@ class _AICoachScreenState extends State<AICoachScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final recommendation = _provider.recommendation;
     final plan = _provider.fiveTierPlan;
     final errorMessage = _provider.errorMessage;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1E293B),
-        title: const Text(
+        backgroundColor: Colors.transparent,
+        title: Text(
           'AI Personal Coach',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: theme.textTheme.titleLarge?.copyWith(
+            color: theme.colorScheme.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         elevation: 0,
+        iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
       ),
       body: RefreshIndicator(
         onRefresh: () => _provider.refresh(),
-        color: const Color(0xFF6366F1),
-        backgroundColor: const Color(0xFF1E293B),
-        child: _buildBody(recommendation, plan, errorMessage),
+        color: theme.colorScheme.onSurface,
+        backgroundColor: theme.colorScheme.surface,
+        child: _buildBody(recommendation, plan, errorMessage, theme),
       ),
     );
   }
@@ -74,10 +79,11 @@ class _AICoachScreenState extends State<AICoachScreen> {
     dynamic recommendation,
     dynamic plan,
     String? errorMessage,
+    ThemeData theme,
   ) {
     if (_provider.isLoading && recommendation == null) {
-      return const Center(
-        child: CircularProgressIndicator(color: Color(0xFF6366F1)),
+      return Center(
+        child: CircularProgressIndicator(color: theme.colorScheme.onSurface),
       );
     }
 

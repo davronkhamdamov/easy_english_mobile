@@ -10,7 +10,7 @@ class CefrLevelChips extends StatelessWidget {
     required this.onLevelSelected,
   });
 
-  static const levels = ['All', 'A1', 'A2', 'B1', 'B2', 'C1'];
+  static const levels = ['A1', 'A2', 'B1', 'B2', 'C1'];
 
   @override
   Widget build(BuildContext context) {

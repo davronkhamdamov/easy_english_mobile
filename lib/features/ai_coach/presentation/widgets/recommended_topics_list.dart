@@ -13,14 +13,16 @@ class RecommendedTopicsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (topics.isEmpty) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Recommended Practice Topics',
-          style: TextStyle(
-            color: Colors.white,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: theme.colorScheme.onSurface,
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
@@ -40,21 +42,25 @@ class RecommendedTopicsList extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6366F1).withValues(alpha: 0.15),
+                    color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(22),
                     border: Border.all(
-                      color: const Color(0xFF6366F1).withValues(alpha: 0.4),
+                      color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
                     ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.bolt, color: Color(0xFF818CF8), size: 18),
+                      Icon(
+                        Icons.bolt,
+                        color: theme.colorScheme.onSurface,
+                        size: 18,
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         topic,
-                        style: const TextStyle(
-                          color: Color(0xFFE0E7FF),
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurface,
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),

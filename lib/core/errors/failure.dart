@@ -21,3 +21,13 @@ class NetworkFailure extends Failure {
 class AiFailure extends Failure {
   const AiFailure({required super.message, super.code, super.cause});
 }
+
+/// Forbidden access (403).
+class ForbiddenFailure extends Failure {
+  const ForbiddenFailure({required super.message, super.code, super.cause});
+}
+
+/// Unauthorized access (401).
+class UnauthorizedFailure extends Failure {
+  const UnauthorizedFailure({required super.message, super.code, super.cause});
+}

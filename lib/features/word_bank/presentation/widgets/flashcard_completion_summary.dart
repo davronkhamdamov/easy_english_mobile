@@ -29,10 +29,10 @@ class FlashcardCompletionSummary extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(24.0),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+          color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
         ),
       ),
       child: Column(
@@ -41,13 +41,16 @@ class FlashcardCompletionSummary extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.15),
+              color: theme.colorScheme.surfaceContainerHighest,
               shape: BoxShape.circle,
+              border: Border.all(
+                color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+              ),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.emoji_events_rounded,
               size: 56,
-              color: Colors.amber,
+              color: theme.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 16),
@@ -55,21 +58,24 @@ class FlashcardCompletionSummary extends StatelessWidget {
             'Session Completed!',
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'You reviewed $totalCards flashcards today.',
-            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
           ),
           const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _buildStat('Again', againCount, Colors.red),
-              _buildStat('Hard', hardCount, Colors.amber.shade700),
-              _buildStat('Good', goodCount, Colors.blue),
-              _buildStat('Easy', easyCount, Colors.green),
+              _buildStat(context, 'Again', againCount),
+              _buildStat(context, 'Hard', hardCount),
+              _buildStat(context, 'Good', goodCount),
+              _buildStat(context, 'Easy', easyCount),
             ],
           ),
           const SizedBox(height: 32),
@@ -79,6 +85,10 @@ class FlashcardCompletionSummary extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: onRestart,
                   style: OutlinedButton.styleFrom(
+                    foregroundColor: theme.colorScheme.onSurface,
+                    side: BorderSide(
+                      color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -92,6 +102,8 @@ class FlashcardCompletionSummary extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: onDone,
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.onSurface,
+                    foregroundColor: theme.colorScheme.surface,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -107,7 +119,8 @@ class FlashcardCompletionSummary extends StatelessWidget {
     );
   }
 
-  Widget _buildStat(String label, int count, Color color) {
+  Widget _buildStat(BuildContext context, String label, int count) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         Text(
@@ -115,13 +128,16 @@ class FlashcardCompletionSummary extends StatelessWidget {
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: color,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 2),
         Text(
           label,
-          style: const TextStyle(fontSize: 12, color: Colors.grey),
+          style: TextStyle(
+            fontSize: 12,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
       ],
     );

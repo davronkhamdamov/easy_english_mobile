@@ -7,7 +7,10 @@ class GrammarTopic {
   final String id;
   final String title;
   final String description;
+  final String category;
   final String cefrLevel;
+  final String readTime;
+  final String markdownContent;
   final bool isCompleted;
   final double progressPercent;
   final GrammarTopicStatus status;
@@ -23,6 +26,9 @@ class GrammarTopic {
     required this.title,
     required this.description,
     required this.cefrLevel,
+    this.category = 'General Grammar',
+    this.readTime = '5 min read',
+    this.markdownContent = '',
     this.isCompleted = false,
     this.progressPercent = 0.0,
     this.status = GrammarTopicStatus.locked,
@@ -43,7 +49,10 @@ class GrammarTopic {
       id: json['id'] as String? ?? 'topic_1',
       title: json['title'] as String? ?? 'Grammar Topic',
       description: json['description'] as String? ?? '',
+      category: json['category'] as String? ?? 'General Grammar',
       cefrLevel: json['cefr_level'] as String? ?? json['cefrLevel'] as String? ?? 'A1',
+      readTime: json['read_time'] as String? ?? json['readTime'] as String? ?? '5 min read',
+      markdownContent: json['markdown_content'] as String? ?? json['markdownContent'] as String? ?? '',
       isCompleted: isComp,
       progressPercent: pct.toDouble(),
       status: _statusFromString(statusStr),
@@ -61,7 +70,10 @@ class GrammarTopic {
       'id': id,
       'title': title,
       'description': description,
+      'category': category,
       'cefr_level': cefrLevel,
+      'read_time': readTime,
+      'markdown_content': markdownContent,
       'is_completed': isCompleted,
       'progress_percent': progressPercent,
       'status': status.name,
@@ -77,10 +89,14 @@ class GrammarTopic {
   static GrammarTopicStatus _statusFromString(String val) {
     switch (val.toLowerCase()) {
       case 'completed':
+      case 'learnt':
+      case 'learned':
         return GrammarTopicStatus.completed;
       case 'current':
       case 'in_progress':
+      case 'unfinished':
         return GrammarTopicStatus.current;
+      case 'new':
       case 'locked':
       default:
         return GrammarTopicStatus.locked;
@@ -91,7 +107,10 @@ class GrammarTopic {
     String? id,
     String? title,
     String? description,
+    String? category,
     String? cefrLevel,
+    String? readTime,
+    String? markdownContent,
     bool? isCompleted,
     double? progressPercent,
     GrammarTopicStatus? status,
@@ -106,7 +125,10 @@ class GrammarTopic {
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
+      category: category ?? this.category,
       cefrLevel: cefrLevel ?? this.cefrLevel,
+      readTime: readTime ?? this.readTime,
+      markdownContent: markdownContent ?? this.markdownContent,
       isCompleted: isCompleted ?? this.isCompleted,
       progressPercent: progressPercent ?? this.progressPercent,
       status: status ?? this.status,

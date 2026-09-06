@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'design_system.dart';
-import '../core/debug/api_debugger_screen.dart';
 
 enum ShowcasePage {
   overview,
@@ -12,7 +11,8 @@ enum ShowcasePage {
   snackbar,
   dialog,
   tokens,
-  apiDebugger,
+  interactiveText,
+  richMarkdown,
 }
 
 class DSShowcaseScreen extends StatefulWidget {
@@ -56,18 +56,6 @@ class _DSShowcaseScreenState extends State<DSShowcaseScreen> {
   @override
   Widget build(BuildContext context) {
     switch (_activePage) {
-      case ShowcasePage.apiDebugger:
-        return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () =>
-                  setState(() => _activePage = ShowcasePage.overview),
-            ),
-            title: const Text('API Debugger'),
-          ),
-          body: const ApiDebuggerScreen(),
-        );
       case ShowcasePage.login:
         return DSLoginPage(
           themeController: widget.themeController,
@@ -112,6 +100,18 @@ class _DSShowcaseScreenState extends State<DSShowcaseScreen> {
         );
       case ShowcasePage.tokens:
         return DSTokensPage(
+          themeController: widget.themeController,
+          onBackToOverview: () =>
+              setState(() => _activePage = ShowcasePage.overview),
+        );
+      case ShowcasePage.interactiveText:
+        return DSInteractiveTextPage(
+          themeController: widget.themeController,
+          onBackToOverview: () =>
+              setState(() => _activePage = ShowcasePage.overview),
+        );
+      case ShowcasePage.richMarkdown:
+        return RichMarkdownPage(
           themeController: widget.themeController,
           onBackToOverview: () =>
               setState(() => _activePage = ShowcasePage.overview),
@@ -277,13 +277,6 @@ class _DSShowcaseScreenState extends State<DSShowcaseScreen> {
   Widget _buildNavigationHubCard(bool isDark) {
     final navItems = [
       {
-        'page': ShowcasePage.apiDebugger,
-        'title': 'API Call Inspector',
-        'desc': 'Real-time Network Logger • cURL • Headers • Payload',
-        'icon': Icons.api_rounded,
-        'color': AppColors.primary,
-      },
-      {
         'page': ShowcasePage.login,
         'title': 'Login Screen',
         'desc': 'Full Auth Flow • Vector Hero • Social Pills',
@@ -338,6 +331,20 @@ class _DSShowcaseScreenState extends State<DSShowcaseScreen> {
         'desc': 'Colors • Typography • Shadows',
         'icon': Icons.token_rounded,
         'color': AppColors.secondary,
+      },
+      {
+        'page': ShowcasePage.interactiveText,
+        'title': 'Interactive Text',
+        'desc': 'Word Click • Dropdown • Dictionary',
+        'icon': Icons.text_snippet_rounded,
+        'color': AppColors.primary,
+      },
+      {
+        'page': ShowcasePage.richMarkdown,
+        'title': 'Rich Markdown',
+        'desc': 'Full MD • GitHub Alerts • Code • Tables',
+        'icon': Icons.description_rounded,
+        'color': AppColors.primaryHover,
       },
     ];
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../design_system/components/rich_markdown/ds_rich_markdown.dart';
 import '../../domain/entities/grammar_evaluation.dart';
 
 class EvaluationResultCard extends StatelessWidget {
@@ -95,8 +96,8 @@ class EvaluationResultCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Explanation & Rule:', style: theme.textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 2),
-                    Text(evaluation.explanation, style: theme.textTheme.bodySmall),
+                    const SizedBox(height: 6),
+                    DSRichMarkdown(evaluation.explanation),
                     if (evaluation.ruleReference.isNotEmpty) ...[
                       const SizedBox(height: 4),
                       Text('Reference: ${evaluation.ruleReference}', style: theme.textTheme.labelSmall?.copyWith(fontStyle: FontStyle.italic)),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
 
 /// Stat cards widget inspired by Apple Health/Fitness dashboard cards.
 /// Displays symmetric side-by-side cards for "Learned Grammar" and "Learned Vocabularies",
@@ -52,14 +51,14 @@ class DashboardStatCardsWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final cardBgColor = isDark ? const Color(0xFF222327) : AppColors.lightSurface;
-    final textPrimaryColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final textSecondaryColor =
-        isDark ? Colors.white.withValues(alpha: 0.5) : AppColors.lightTextSecondary;
+    final cardBgColor = theme.colorScheme.surface;
+    final textPrimaryColor = theme.colorScheme.onSurface;
+    final textSecondaryColor = theme.colorScheme.onSurfaceVariant;
 
-    final cardBorder = isDark
-        ? null
-        : Border.all(color: AppColors.lightBorder, width: 1);
+    final cardBorder = Border.all(
+      color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
+      width: 1,
+    );
     final cardShadow = isDark
         ? null
         : [
@@ -159,14 +158,14 @@ class DashboardStatCardsWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final cardBgColor = isDark ? const Color(0xFF222327) : AppColors.lightSurface;
-    final textPrimaryColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final textSecondaryColor =
-        isDark ? Colors.white.withValues(alpha: 0.5) : AppColors.lightTextSecondary;
+    final cardBgColor = theme.colorScheme.surface;
+    final textPrimaryColor = theme.colorScheme.onSurface;
+    final textSecondaryColor = theme.colorScheme.onSurfaceVariant;
 
-    final cardBorder = isDark
-        ? null
-        : Border.all(color: AppColors.lightBorder, width: 1);
+    final cardBorder = Border.all(
+      color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
+      width: 1,
+    );
     final cardShadow = isDark
         ? null
         : [

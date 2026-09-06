@@ -32,7 +32,21 @@ class GrammarRemoteDataSourceImpl implements GrammarRemoteDataSource {
     final response = await _client.post('/api/v1/grammar/evaluate/', body);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      final jsonMap = jsonDecode(response.body) as Map<String, dynamic>;
+      final decoded = jsonDecode(response.body);
+      final Map<String, dynamic> jsonMap;
+      if (decoded is Map) {
+        if (decoded['data'] is Map) {
+          jsonMap = Map<String, dynamic>.from(decoded['data'] as Map);
+        } else if (decoded['evaluation'] is Map) {
+          jsonMap = Map<String, dynamic>.from(decoded['evaluation'] as Map);
+        } else if (decoded['result'] is Map) {
+          jsonMap = Map<String, dynamic>.from(decoded['result'] as Map);
+        } else {
+          jsonMap = Map<String, dynamic>.from(decoded);
+        }
+      } else {
+        throw Exception('Invalid response format for grammar evaluation');
+      }
       return GrammarEvaluationModel.fromJson(jsonMap);
     } else {
       throw Exception('Failed to evaluate grammar sentence: ${response.statusCode}');
@@ -44,9 +58,11 @@ class GrammarRemoteDataSourceImpl implements GrammarRemoteDataSource {
     final response = await _client.get('/api/v1/grammar/topics');
 
     if (response.statusCode == 200) {
-      final List<dynamic> jsonList = jsonDecode(response.body) as List<dynamic>;
+      final decoded = jsonDecode(response.body);
+      final List<dynamic> jsonList = _extractList(decoded, const ['topics', 'results', 'data', 'items']);
       return jsonList
-          .map((json) => GrammarTopicModel.fromJson(json as Map<String, dynamic>))
+          .whereType<Map>()
+          .map((json) => GrammarTopicModel.fromJson(Map<String, dynamic>.from(json)))
           .toList();
     } else {
       throw Exception('Failed to fetch grammar topics: ${response.statusCode}');
@@ -58,12 +74,33 @@ class GrammarRemoteDataSourceImpl implements GrammarRemoteDataSource {
     final response = await _client.get('/api/v1/grammar/mistakes');
 
     if (response.statusCode == 200) {
-      final List<dynamic> jsonList = jsonDecode(response.body) as List<dynamic>;
+      final decoded = jsonDecode(response.body);
+      final List<dynamic> jsonList = _extractList(decoded, const ['mistakes', 'results', 'data', 'items', 'records']);
       return jsonList
-          .map((json) => GrammarMistakeRecordModel.fromJson(json as Map<String, dynamic>))
+          .whereType<Map>()
+          .map((json) => GrammarMistakeRecordModel.fromJson(Map<String, dynamic>.from(json)))
           .toList();
     } else {
       throw Exception('Failed to fetch grammar mistakes: ${response.statusCode}');
     }
+  }
+
+  List<dynamic> _extractList(dynamic decoded, List<String> preferredKeys) {
+    if (decoded is List) {
+      return decoded;
+    }
+    if (decoded is Map) {
+      for (final key in preferredKeys) {
+        if (decoded[key] is List) {
+          return decoded[key] as List<dynamic>;
+        }
+      }
+      for (final value in decoded.values) {
+        if (value is List) {
+          return value;
+        }
+      }
+    }
+    return const [];
   }
 }

@@ -82,12 +82,15 @@ class DSBadge extends StatelessWidget {
             ),
             const SizedBox(width: 4),
           ],
-          Text(
-            label,
-            style: AppTypography.caption.copyWith(
-              color: fg,
-              fontWeight: FontWeight.w600,
-              fontSize: 11,
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: AppTypography.caption.copyWith(
+                color: fg,
+                fontWeight: FontWeight.w600,
+                fontSize: 11,
+              ),
             ),
           ),
         ],

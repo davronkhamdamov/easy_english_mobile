@@ -14,11 +14,11 @@ class FlashcardCardBack extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: theme.colorScheme.primary.withValues(alpha: 0.4),
-          width: 2.0,
+          color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
+          width: 1.5,
         ),
       ),
       padding: const EdgeInsets.all(20.0),
@@ -34,34 +34,41 @@ class FlashcardCardBack extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : const Color(0xFF0F172A),
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
-                _buildCefrBadge(card.cefrLevel),
+                _buildCefrBadge(context, card.cefrLevel),
               ],
             ),
-            const Divider(height: 20),
-            const Text(
+            Divider(
+              height: 20,
+              color: theme.colorScheme.outline.withValues(alpha: 0.2),
+            ),
+            Text(
               'DEFINITION',
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 4),
             Text(
               card.definition,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: theme.colorScheme.onSurface,
+              ),
             ),
             if (card.collocations.isNotEmpty) ...[
               const SizedBox(height: 12),
-              const Text(
+              Text(
                 'COLLOCATIONS',
                 style: TextStyle(
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey,
+                  color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
               const SizedBox(height: 4),
@@ -71,9 +78,18 @@ class FlashcardCardBack extends StatelessWidget {
                 children: card.collocations
                     .map(
                       (c) => Chip(
-                        label: Text(c, style: const TextStyle(fontSize: 11)),
+                        label: Text(
+                          c,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: theme.colorScheme.onSurface,
+                          ),
+                        ),
                         backgroundColor:
-                            theme.colorScheme.primary.withValues(alpha: 0.1),
+                            theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                        side: BorderSide(
+                          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                        ),
                         visualDensity: VisualDensity.compact,
                       ),
                     )
@@ -86,18 +102,23 @@ class FlashcardCardBack extends StatelessWidget {
     );
   }
 
-  Widget _buildCefrBadge(String cefr) {
+  Widget _buildCefrBadge(BuildContext context, String cefr) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.purple,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+        ),
       ),
       child: Text(
         cefr,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: theme.colorScheme.onSurface,
           fontSize: 11,
         ),
       ),

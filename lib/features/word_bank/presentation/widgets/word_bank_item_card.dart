@@ -20,13 +20,14 @@ class WordBankItemCard extends StatelessWidget {
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12.0),
+      color: theme.colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+          color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
         ),
       ),
-      elevation: 1,
+      elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -42,8 +43,9 @@ class WordBankItemCard extends StatelessWidget {
                       Flexible(
                         child: Text(
                           item.word,
-                          style: theme.textTheme.titleLarge?.copyWith(
+                          style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onSurface,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -51,9 +53,10 @@ class WordBankItemCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       Text(
                         item.phonetic,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey,
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurfaceVariant,
                           fontFamily: 'monospace',
+                          fontSize: 13,
                         ),
                       ),
                       if (onPlayAudio != null) ...[
@@ -62,7 +65,7 @@ class WordBankItemCard extends StatelessWidget {
                           onPressed: onPlayAudio,
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
-                          color: theme.colorScheme.primary,
+                          color: theme.colorScheme.onSurface,
                         ),
                       ],
                     ],
@@ -76,14 +79,17 @@ class WordBankItemCard extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: _getCefrColor(item.cefrLevel),
+                        color: theme.colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+                        ),
                       ),
                       child: Text(
                         item.cefrLevel,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: theme.colorScheme.onSurface,
                           fontSize: 12,
                         ),
                       ),
@@ -98,14 +104,14 @@ class WordBankItemCard extends StatelessWidget {
                             value: 'delete',
                             child: Row(
                               children: [
-                                Icon(Icons.delete, color: Colors.red, size: 18),
+                                Icon(Icons.delete_outline, color: Colors.redAccent, size: 18),
                                 SizedBox(width: 8),
                                 Text('Delete Word'),
                               ],
                             ),
                           ),
                         ],
-                        icon: const Icon(Icons.more_vert, size: 20),
+                        icon: Icon(Icons.more_vert, size: 20, color: theme.colorScheme.onSurface),
                       ),
                   ],
                 ),
@@ -114,7 +120,10 @@ class WordBankItemCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               item.definition,
-              style: theme.textTheme.bodyMedium,
+              style: TextStyle(
+                color: theme.colorScheme.onSurface,
+                fontSize: 14,
+              ),
             ),
             if (item.collocations.isNotEmpty) ...[
               const SizedBox(height: 8),
@@ -126,10 +135,16 @@ class WordBankItemCard extends StatelessWidget {
                       (col) => Chip(
                         label: Text(
                           col,
-                          style: const TextStyle(fontSize: 11),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: theme.colorScheme.onSurface,
+                          ),
                         ),
-                        backgroundColor: theme.colorScheme.primary
-                            .withValues(alpha: 0.1),
+                        backgroundColor:
+                            theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                        side: BorderSide(
+                          color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                        ),
                         padding: EdgeInsets.zero,
                         visualDensity: VisualDensity.compact,
                       ),
@@ -142,27 +157,28 @@ class WordBankItemCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? const Color(0xFF1E293B)
-                      : theme.colorScheme.surfaceContainerHighest
-                          .withValues(alpha: 0.5),
+                  color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.2),
+                  ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.format_quote,
                       size: 16,
-                      color: Colors.grey,
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         item.example,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontStyle: FontStyle.italic,
                           fontSize: 13,
+                          color: theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ),
@@ -174,18 +190,5 @@ class WordBankItemCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Color _getCefrColor(String cefr) {
-    switch (cefr.toUpperCase()) {
-      case 'C2':
-      case 'C1':
-        return Colors.purple;
-      case 'B2':
-      case 'B1':
-        return Colors.blue;
-      default:
-        return Colors.green;
-    }
   }
 }

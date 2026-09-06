@@ -9,6 +9,8 @@ class EvaluationResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final isCorrect = evaluation.isCorrect;
     final feedback = evaluation.feedback;
     final corrections = evaluation.corrections;
@@ -18,10 +20,10 @@ class EvaluationResultCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isCorrect ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+          color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.3),
           width: 1.5,
         ),
       ),
@@ -31,18 +33,14 @@ class EvaluationResultCard extends StatelessWidget {
           Row(
             children: [
               Icon(
-                isCorrect ? Icons.check_circle : Icons.error,
-                color: isCorrect
-                    ? const Color(0xFF10B981)
-                    : const Color(0xFFEF4444),
+                isCorrect ? Icons.check_circle : Icons.error_outline,
+                color: theme.colorScheme.onSurface,
               ),
               const SizedBox(width: 10),
               Text(
                 isCorrect ? 'Excellent Sentence' : 'Needs Improvement',
                 style: TextStyle(
-                  color: isCorrect
-                      ? const Color(0xFF10B981)
-                      : const Color(0xFFEF4444),
+                  color: theme.colorScheme.onSurface,
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
@@ -52,18 +50,18 @@ class EvaluationResultCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             feedback,
-            style: const TextStyle(
-              color: Color(0xFFCBD5E1),
+            style: TextStyle(
+              color: theme.colorScheme.onSurfaceVariant,
               fontSize: 14,
               height: 1.4,
             ),
           ),
           if (corrections.isNotEmpty) ...[
             const SizedBox(height: 14),
-            const Text(
+            Text(
               'Corrections:',
               style: TextStyle(
-                color: Color(0xFFF87171),
+                color: theme.colorScheme.onSurface,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
@@ -74,17 +72,17 @@ class EvaluationResultCard extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 4.0),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.build_circle,
                       size: 14,
-                      color: Color(0xFFF87171),
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         c,
-                        style: const TextStyle(
-                          color: Color(0xFFFCA5A5),
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurface,
                           fontSize: 13,
                         ),
                       ),
@@ -96,10 +94,10 @@ class EvaluationResultCard extends StatelessWidget {
           ],
           if (modelExpressions.isNotEmpty) ...[
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Model Expressions:',
               style: TextStyle(
-                color: Color(0xFF94A3B8),
+                color: theme.colorScheme.onSurfaceVariant,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
@@ -111,18 +109,18 @@ class EvaluationResultCard extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       '• ',
                       style: TextStyle(
-                        color: Color(0xFF3B82F6),
+                        color: theme.colorScheme.onSurface,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Expanded(
                       child: Text(
                         expr,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurface,
                           fontSize: 13,
                           fontStyle: FontStyle.italic,
                         ),

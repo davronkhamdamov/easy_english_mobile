@@ -15,6 +15,7 @@ import 'package:easy_english/features/dashboard/presentation/widgets/quick_actio
 import 'package:easy_english/features/dashboard/presentation/widgets/skill_activity_progress_card_widget.dart';
 import 'package:easy_english/features/dashboard/presentation/widgets/study_time_progress_card_widget.dart';
 import 'package:easy_english/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:easy_english/features/grammar/domain/entities/grammar_topic.dart';
 import 'package:easy_english/design_system/design_system.dart';
 
 void main() {
@@ -151,6 +152,17 @@ void main() {
             home: Scaffold(
               body: SingleChildScrollView(
                 child: GrammarBannerCarouselWidget(
+                  topics: const [
+                    GrammarTopic(
+                      id: 't1',
+                      title: 'Conditionals & Inversion',
+                      description: 'Master hypothetical conditions',
+                      cefrLevel: 'B2',
+                      category: 'Complex Sentences',
+                      readTime: '5 min',
+                      orderIndex: 1,
+                    ),
+                  ],
                   onSeeAllTap: () => headerTapped = true,
                 ),
               ),

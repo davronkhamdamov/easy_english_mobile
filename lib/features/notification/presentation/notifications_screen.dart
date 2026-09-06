@@ -156,11 +156,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   void _showNotificationDetailModal(NotificationItem item) {
     _markAsRead(item.id);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final subtextColor =
-        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final cardColor = theme.colorScheme.surface;
+    final textColor = theme.colorScheme.onSurface;
+    final subtextColor = theme.colorScheme.onSurfaceVariant;
 
     showModalBottomSheet(
       context: context,
@@ -482,10 +482,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Widget _buildNotificationCard(NotificationItem item, bool isDark) {
-    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final textPrimary = isDark ? Colors.white : Colors.black87;
-    final textSecondary =
-        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final theme = Theme.of(context);
+    final cardColor = theme.colorScheme.surface;
+    final textPrimary = theme.colorScheme.onSurface;
+    final textSecondary = theme.colorScheme.onSurfaceVariant;
 
     return Dismissible(
       key: ValueKey(item.id),
@@ -616,9 +616,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 
   Widget _buildEmptyState(bool isDark) {
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final subtextColor =
-        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final theme = Theme.of(context);
+    final textColor = theme.colorScheme.onSurface;
+    final subtextColor = theme.colorScheme.onSurfaceVariant;
 
     return Center(
       child: Padding(
@@ -629,15 +629,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: isDark
-                    ? const Color(0xFF1E293B)
-                    : AppColors.primaryLight.withValues(alpha: 0.4),
+                color: theme.colorScheme.surfaceContainerHighest,
                 shape: BoxShape.circle,
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+                ),
               ),
               child: Icon(
                 Icons.notifications_off_outlined,
                 size: 44,
-                color: isDark ? const Color(0xFF64748B) : AppColors.primary,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 14),

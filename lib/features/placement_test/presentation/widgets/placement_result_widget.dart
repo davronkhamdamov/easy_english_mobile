@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/placement_result.dart';
 
 class PlacementResultWidget extends StatelessWidget {
@@ -26,11 +25,19 @@ class PlacementResultWidget extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              gradient: const LinearGradient(
-                colors: [Color(0xFF4F46E5), Color(0xFF0EA5E9)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+              color: theme.colorScheme.surface,
+              border: Border.all(
+                color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
               ),
+              boxShadow: isDark
+                  ? null
+                  : [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
             ),
             padding: const EdgeInsets.all(24.0),
             child: Row(
@@ -39,9 +46,12 @@ class PlacementResultWidget extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Estimated IELTS Band & CEFR Level',
-                        style: TextStyle(color: Colors.white70, fontSize: 13),
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 13,
+                        ),
                       ),
                       const SizedBox(height: 6),
                       Row(
@@ -50,16 +60,19 @@ class PlacementResultWidget extends StatelessWidget {
                         children: [
                           Text(
                             result.estimatedIeltsBand.toStringAsFixed(1),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 42,
                               fontWeight: FontWeight.w800,
-                              color: Colors.white,
+                              color: theme.colorScheme.onSurface,
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Text(
+                          Text(
                             '/ 9.0',
-                            style: TextStyle(fontSize: 18, color: Colors.white70),
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: theme.colorScheme.onSurfaceVariant,
+                            ),
                           ),
                         ],
                       ),
@@ -67,13 +80,16 @@ class PlacementResultWidget extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.25),
+                          color: theme.colorScheme.surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+                          ),
                         ),
                         child: Text(
                           'CEFR Level: ${result.estimatedCefrLevel}',
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurface,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                           ),
@@ -87,10 +103,17 @@ class PlacementResultWidget extends StatelessWidget {
                   height: 68,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white.withValues(alpha: 0.2),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.5), width: 2),
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    border: Border.all(
+                      color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+                      width: 1.5,
+                    ),
                   ),
-                  child: const Icon(Icons.workspace_premium, size: 38, color: Colors.white),
+                  child: Icon(
+                    Icons.workspace_premium,
+                    size: 38,
+                    color: theme.colorScheme.onSurface,
+                  ),
                 ),
               ],
             ),
@@ -100,7 +123,10 @@ class PlacementResultWidget extends StatelessWidget {
           // Skill accuracy breakdown bars
           Text(
             'Skill Accuracy Breakdown',
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onSurface,
+            ),
           ),
           const SizedBox(height: 12),
           ...result.sectionScores.entries.map((entry) {
@@ -116,11 +142,18 @@ class PlacementResultWidget extends StatelessWidget {
                     children: [
                       Text(
                         entry.key.replaceAll('_', ' ').toUpperCase(),
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                          color: theme.colorScheme.onSurface,
+                        ),
                       ),
                       Text(
                         '${score.toStringAsFixed(1)}% ($level)',
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onSurface,
+                        ),
                       ),
                     ],
                   ),
@@ -130,8 +163,8 @@ class PlacementResultWidget extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: (score / 100).clamp(0.0, 1.0),
                       minHeight: 8,
-                      backgroundColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                      backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                      valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.onSurface),
                     ),
                   ),
                 ],
@@ -144,27 +177,36 @@ class PlacementResultWidget extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+              color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+              border: Border.all(
+                color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Row(
+                Row(
                   children: [
-                    Icon(Icons.route, color: AppColors.primary),
-                    SizedBox(width: 8),
+                    Icon(Icons.route, color: theme.colorScheme.onSurface),
+                    const SizedBox(width: 8),
                     Text(
                       'Recommended Learning Path',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: theme.colorScheme.onSurface,
+                      ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
                 Text(
                   result.recommendedStartingPoint,
-                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
+                  style: TextStyle(
+                    height: 1.4,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
@@ -174,8 +216,8 @@ class PlacementResultWidget extends StatelessWidget {
                     icon: const Icon(Icons.arrow_forward),
                     label: const Text('Start Learning'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
+                      backgroundColor: theme.colorScheme.onSurface,
+                      foregroundColor: theme.colorScheme.surface,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),

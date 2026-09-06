@@ -16,24 +16,28 @@ class AiCoachHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF334155), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
+          width: 1,
+        ),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,36 +49,38 @@ class AiCoachHeaderCard extends StatelessWidget {
                 width: 52,
                 height: 52,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF6366F1), Color(0xFF818CF8)],
-                  ),
+                  color: theme.colorScheme.surfaceContainerHighest,
                   shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF6366F1).withValues(alpha: 0.4),
-                      blurRadius: 8,
-                    ),
-                  ],
+                  border: Border.all(
+                    color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+                  ),
                 ),
-                child: const Icon(Icons.psychology, color: Colors.white, size: 30),
+                child: Icon(
+                  Icons.psychology,
+                  color: theme.colorScheme.onSurface,
+                  size: 28,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       'AI IELTS Coach',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: theme.colorScheme.onSurface,
                         fontWeight: FontWeight.bold,
+                        fontSize: 18,
                       ),
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
                       'Personalized Band Score Insights',
-                      style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
                     ),
                   ],
                 ),
@@ -87,9 +93,11 @@ class AiCoachHeaderCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFF0F172A),
+              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: const Color(0xFF1E293B)),
+              border: Border.all(
+                color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.2),
+              ),
             ),
             child: Row(
               children: [
@@ -97,15 +105,18 @@ class AiCoachHeaderCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Predicted IELTS Band',
-                        style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurfaceVariant,
+                          fontSize: 11,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Band $predictedOverallBand',
-                        style: const TextStyle(
-                          color: Color(0xFF818CF8),
+                        style: TextStyle(
+                          color: theme.colorScheme.onSurface,
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
@@ -113,22 +124,29 @@ class AiCoachHeaderCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(height: 36, width: 1, color: const Color(0xFF334155)),
+                Container(
+                  height: 36,
+                  width: 1,
+                  color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Target Score',
-                          style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontSize: 11,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'Target: Band $targetBand',
-                          style: const TextStyle(
-                            color: Color(0xFF34D399),
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurface,
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
@@ -146,19 +164,25 @@ class AiCoachHeaderCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFFEF2F2).withValues(alpha: 0.08),
+                color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFFF87171).withValues(alpha: 0.3)),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                ),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.warning_amber_rounded, color: Color(0xFFF87171), size: 18),
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    color: theme.colorScheme.onSurface,
+                    size: 18,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       'Focus Area: $primaryWeakness',
-                      style: const TextStyle(
-                        color: Color(0xFFFCA5A5),
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurface,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                       ),

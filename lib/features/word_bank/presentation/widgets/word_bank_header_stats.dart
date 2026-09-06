@@ -20,14 +20,14 @@ class WordBankHeaderStats extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+          color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -41,23 +41,23 @@ class WordBankHeaderStats extends StatelessWidget {
             label: 'Total Words',
             value: totalWords.toString(),
             icon: Icons.bookmark_outline,
-            color: theme.colorScheme.primary,
+            color: theme.colorScheme.onSurface,
           ),
-          _buildDivider(isDark),
+          _buildDivider(theme),
           _buildStatTile(
             context,
             label: 'Due Today',
             value: dueToday.toString(),
             icon: Icons.timer_outlined,
-            color: Colors.orange,
+            color: theme.colorScheme.onSurface,
           ),
-          _buildDivider(isDark),
+          _buildDivider(theme),
           _buildStatTile(
             context,
             label: 'Mastered',
             value: mastered.toString(),
             icon: Icons.verified_outlined,
-            color: Colors.green,
+            color: theme.colorScheme.onSurface,
           ),
         ],
       ),
@@ -71,6 +71,7 @@ class WordBankHeaderStats extends StatelessWidget {
     required IconData icon,
     required Color color,
   }) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         Row(
@@ -91,17 +92,20 @@ class WordBankHeaderStats extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           label,
-          style: const TextStyle(fontSize: 11, color: Colors.grey),
+          style: TextStyle(
+            fontSize: 11,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildDivider(bool isDark) {
+  Widget _buildDivider(ThemeData theme) {
     return Container(
-      height: 30,
+      height: 32,
       width: 1,
-      color: isDark ? Colors.white24 : Colors.black12,
+      color: theme.colorScheme.outline.withValues(alpha: 0.2),
     );
   }
 }

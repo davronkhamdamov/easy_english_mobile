@@ -59,14 +59,10 @@ class FloatingPillNavBar extends StatelessWidget {
             ? Colors.white.withValues(alpha: 0.16)
             : Colors.black.withValues(alpha: 0.10));
 
-    final activeFg =
-        activeForegroundColor ?? const Color(0xFF007AFF); // Native iOS system blue
+    final activeFg = activeForegroundColor ?? theme.colorScheme.onSurface;
 
     final inactiveFg =
-        inactiveForegroundColor ??
-        (isDark
-            ? Colors.white.withValues(alpha: 0.70)
-            : Colors.black.withValues(alpha: 0.60));
+        inactiveForegroundColor ?? theme.colorScheme.onSurfaceVariant;
 
     return Align(
       alignment: Alignment.bottomCenter,

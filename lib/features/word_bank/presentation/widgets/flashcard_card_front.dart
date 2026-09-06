@@ -21,15 +21,15 @@ class FlashcardCardFront extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+          color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.08),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -42,23 +42,26 @@ class FlashcardCardFront extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildCefrBadge(card.cefrLevel),
+              _buildCefrBadge(context, card.cefrLevel),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withValues(alpha: 0.15),
+                  color: theme.colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+                  ),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.star, size: 14, color: Colors.amber),
+                    Icon(Icons.star, size: 14, color: theme.colorScheme.onSurface),
                     const SizedBox(width: 4),
                     Text(
                       'Mastery Stage ${card.masteryLevel}/5',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: Colors.amber,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                   ],
@@ -73,7 +76,7 @@ class FlashcardCardFront extends StatelessWidget {
             style: TextStyle(
               fontSize: 34,
               fontWeight: FontWeight.w900,
-              color: isDark ? Colors.white : const Color(0xFF0F172A),
+              color: theme.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
@@ -85,14 +88,14 @@ class FlashcardCardFront extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
-                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                  color: theme.colorScheme.onSurfaceVariant,
                   fontFamily: 'monospace',
                 ),
               ),
               const SizedBox(width: 8),
               IconButton(
                 onPressed: onPlayWordAudio,
-                icon: Icon(Icons.volume_up_rounded, color: theme.colorScheme.primary),
+                icon: Icon(Icons.volume_up_rounded, color: theme.colorScheme.onSurface),
                 tooltip: 'Pronounce',
               ),
             ],
@@ -101,8 +104,11 @@ class FlashcardCardFront extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14.0),
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withValues(alpha: 0.06),
+              color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.2),
+              ),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +116,7 @@ class FlashcardCardFront extends StatelessWidget {
                 Icon(
                   Icons.format_quote_rounded,
                   size: 20,
-                  color: theme.colorScheme.primary,
+                  color: theme.colorScheme.onSurface,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -125,7 +131,7 @@ class FlashcardCardFront extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w800,
-                              color: theme.colorScheme.primary,
+                              color: theme.colorScheme.onSurface,
                             ),
                           ),
                           GestureDetector(
@@ -133,7 +139,7 @@ class FlashcardCardFront extends StatelessWidget {
                             child: Icon(
                               Icons.volume_up_rounded,
                               size: 16,
-                              color: theme.colorScheme.primary,
+                              color: theme.colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -141,9 +147,10 @@ class FlashcardCardFront extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         card.example,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontStyle: FontStyle.italic,
+                          color: theme.colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -157,18 +164,23 @@ class FlashcardCardFront extends StatelessWidget {
     );
   }
 
-  Widget _buildCefrBadge(String cefr) {
+  Widget _buildCefrBadge(BuildContext context, String cefr) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.purple,
+        color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+        ),
       ),
       child: Text(
         cefr,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: theme.colorScheme.onSurface,
           fontSize: 11,
         ),
       ),

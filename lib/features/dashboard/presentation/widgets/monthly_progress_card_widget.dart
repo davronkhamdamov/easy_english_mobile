@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
 
 /// Monthly progress card widget inspired by Apple Health/Fitness dashboard.
 /// Renders a 3-month activity dot grid with glowing active day indicators
@@ -34,24 +33,22 @@ class MonthlyProgressCardWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final cardBgColor = isDark ? const Color(0xFF222327) : AppColors.lightSurface;
-    final textPrimaryColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final textSecondaryColor =
-        isDark ? Colors.white.withValues(alpha: 0.5) : AppColors.lightTextSecondary;
-    final dividerColor = isDark ? const Color(0xFF2E2F35) : AppColors.lightBorder;
+    final cardBgColor = theme.colorScheme.surface;
+    final textPrimaryColor = theme.colorScheme.onSurface;
+    final textSecondaryColor = theme.colorScheme.onSurfaceVariant;
+    final dividerColor = theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25);
 
-    final cardBorder = isDark
-        ? null
-        : Border.all(color: AppColors.lightBorder, width: 1);
-    final cardShadow = isDark
-        ? null
-        : [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ];
+    final cardBorder = Border.all(
+      color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
+      width: 1,
+    );
+    final cardShadow = [
+      BoxShadow(
+        color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+        blurRadius: 10,
+        offset: const Offset(0, 4),
+      ),
+    ];
 
     return Container(
       decoration: BoxDecoration(
@@ -76,7 +73,7 @@ class MonthlyProgressCardWidget extends StatelessWidget {
                   children: List.generate(months.length, (monthIdx) {
                     final monthName = months[monthIdx];
                     final activeSet = activeDaysPerMonth[monthIdx] ?? {};
-                    return _buildMonthGrid(monthName, activeSet, textPrimaryColor, isDark);
+                    return _buildMonthGrid(monthName, activeSet, textPrimaryColor, isDark, theme);
                   }),
                 ),
                 const SizedBox(height: 20),
@@ -140,6 +137,7 @@ class MonthlyProgressCardWidget extends StatelessWidget {
     Set<int> activeDayIndices,
     Color textPrimaryColor,
     bool isDark,
+    ThemeData theme,
   ) {
     return Column(
       children: [
@@ -159,7 +157,7 @@ class MonthlyProgressCardWidget extends StatelessWidget {
             runSpacing: 7,
             children: List.generate(28, (index) {
               final isActive = activeDayIndices.contains(index);
-              return _buildDot(isActive: isActive, isDark: isDark);
+              return _buildDot(isActive: isActive, isDark: isDark, theme: theme);
             }),
           ),
         ),
@@ -167,30 +165,30 @@ class MonthlyProgressCardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildDot({required bool isActive, required bool isDark}) {
+  Widget _buildDot({required bool isActive, required bool isDark, required ThemeData theme}) {
     Color activeColor;
     Color inactiveColor;
     List<BoxShadow>? shadow;
 
     if (isDark) {
-      activeColor = Colors.white;
-      inactiveColor = Colors.white.withValues(alpha: 0.15);
+      activeColor = theme.colorScheme.onSurface;
+      inactiveColor = theme.colorScheme.onSurface.withValues(alpha: 0.15);
       shadow = isActive
           ? [
               BoxShadow(
-                color: Colors.white.withValues(alpha: 0.85),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.85),
                 blurRadius: 6,
                 spreadRadius: 1,
               ),
             ]
           : null;
     } else {
-      activeColor = AppColors.primary;
-      inactiveColor = AppColors.lightBorder;
+      activeColor = theme.colorScheme.onSurface;
+      inactiveColor = theme.colorScheme.outline.withValues(alpha: 0.3);
       shadow = isActive
           ? [
               BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.4),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
                 blurRadius: 6,
                 spreadRadius: 1,
               ),
@@ -226,9 +224,10 @@ class _RingGaugeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = isDark ? Colors.white : AppColors.lightTextPrimary;
-    final trackColor = isDark ? const Color(0xFF38383E) : AppColors.lightBorder;
-    final arcColor = isDark ? Colors.white : AppColors.primary;
+    final theme = Theme.of(context);
+    final textColor = theme.colorScheme.onSurface;
+    final trackColor = theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.25);
+    final arcColor = theme.colorScheme.onSurface;
 
     return SizedBox(
       width: size,

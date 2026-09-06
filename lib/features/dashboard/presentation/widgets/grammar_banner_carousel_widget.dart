@@ -1,84 +1,119 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import '../../../grammar/domain/entities/grammar_topic.dart';
+import '../../../grammar/presentation/providers/grammar_provider.dart';
+import '../../../grammar/presentation/screens/grammar_article_screen.dart';
 import '../../../grammar/presentation/screens/grammar_roadmap_screen.dart';
 
-// TODO: Replace mock grammar featured lessons with remote API data
-class GrammarBannerItem {
-  final String id;
-  final String eyebrow;
-  final String title;
-  final String description;
-  final String actionLabel;
-  final List<Color> gradientColors;
-  final IconData icon;
-
-  const GrammarBannerItem({
-    required this.id,
-    required this.eyebrow,
-    required this.title,
-    required this.description,
-    required this.actionLabel,
-    required this.gradientColors,
-    required this.icon,
-  });
-}
-
-/// App Store inspired Grammar Featured Banner Carousel.
-/// Displays grammar topic hero cards scrolling horizontally.
-class GrammarBannerCarouselWidget extends StatelessWidget {
-  final List<GrammarBannerItem> items;
+/// Grammar Featured Banner Carousel dynamically powered by actual [GrammarTopic]s.
+/// Redesigned with a clean monochrome aesthetic.
+class GrammarBannerCarouselWidget extends StatefulWidget {
+  final List<GrammarTopic>? topics;
+  final GrammarProvider? provider;
   final VoidCallback? onSeeAllTap;
-
-  // TODO: Replace mock grammar items with domain repository call
-  static const List<GrammarBannerItem> mockGrammarItems = [
-    GrammarBannerItem(
-      id: 'g1',
-      eyebrow: 'HAPPENING NOW',
-      title: 'Conditionals & Inversion',
-      description: 'Master Band 8+ complex structures for Task 2',
-      actionLabel: 'Start',
-      gradientColors: [Color(0xFF1A2980), Color(0xFF26D0CE)],
-      icon: Icons.auto_awesome_rounded,
-    ),
-    GrammarBannerItem(
-      id: 'g2',
-      eyebrow: 'GRAMMAR FOCUS',
-      title: 'Relative & Noun Clauses',
-      description: 'Avoid run-on sentences & boost cohesion',
-      actionLabel: 'Practice',
-      gradientColors: [Color(0xFF0F2027), Color(0xFF2C5364)],
-      icon: Icons.rule_rounded,
-    ),
-    GrammarBannerItem(
-      id: 'g3',
-      eyebrow: 'BAND 8+ ACCURACY',
-      title: 'Passive Voice Mastery',
-      description: 'Academic reporting verbs for Task 1 reports',
-      actionLabel: 'Explore',
-      gradientColors: [Color(0xFF4A00E0), Color(0xFF8E2DE2)],
-      icon: Icons.spellcheck_rounded,
-    ),
-  ];
 
   const GrammarBannerCarouselWidget({
     super.key,
-    this.items = mockGrammarItems,
+    this.topics,
+    this.provider,
     this.onSeeAllTap,
   });
 
+  @override
+  State<GrammarBannerCarouselWidget> createState() =>
+      _GrammarBannerCarouselWidgetState();
+}
+
+class _GrammarBannerCarouselWidgetState
+    extends State<GrammarBannerCarouselWidget> {
+  late GrammarProvider _provider;
+  bool _isLocalProvider = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.provider != null) {
+      _provider = widget.provider!;
+    } else {
+      _provider = GrammarProvider();
+      _isLocalProvider = true;
+    }
+    _provider.addListener(_onProviderChange);
+    if (widget.topics == null && _provider.topics.isEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _provider.loadRoadmap();
+      });
+    }
+  }
+
+  void _onProviderChange() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _provider.removeListener(_onProviderChange);
+    if (_isLocalProvider) {
+      _provider.dispose();
+    }
+    super.dispose();
+  }
+
   void _openGrammarRoadmap(BuildContext context) {
-    if (onSeeAllTap != null) {
-      onSeeAllTap!();
+    if (widget.onSeeAllTap != null) {
+      widget.onSeeAllTap!();
     } else {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const GrammarRoadmapScreen()),
+        MaterialPageRoute(
+          builder: (_) => GrammarRoadmapScreen(provider: _provider),
+        ),
       );
     }
+  }
+
+  void _openGrammarArticle(
+      BuildContext context, GrammarTopic topic, List<GrammarTopic> allTopics) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => GrammarArticleScreen(
+          topic: topic,
+          allTopics: allTopics,
+        ),
+      ),
+    );
+  }
+
+  IconData _getTopicIcon(GrammarTopic topic) {
+    final lower =
+        '${topic.iconName} ${topic.title} ${topic.category}'.toLowerCase();
+    if (lower.contains('condition') || lower.contains('flash')) {
+      return Icons.auto_awesome_rounded;
+    }
+    if (lower.contains('relative') ||
+        lower.contains('clause') ||
+        lower.contains('link')) {
+      return Icons.rule_rounded;
+    }
+    if (lower.contains('passive') || lower.contains('science')) {
+      return Icons.science_rounded;
+    }
+    if (lower.contains('subject') ||
+        lower.contains('spell') ||
+        lower.contains('verb')) {
+      return Icons.spellcheck_rounded;
+    }
+    if (lower.contains('article')) {
+      return Icons.article_rounded;
+    }
+    return Icons.menu_book_rounded;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final actualTopics = widget.topics ?? _provider.topics;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,37 +149,56 @@ class GrammarBannerCarouselWidget extends StatelessWidget {
         // Horizontal Banner Carousel
         SizedBox(
           height: 220,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemCount: items.length,
-            separatorBuilder: (context, index) => const SizedBox(width: 14),
-            itemBuilder: (context, index) {
-              final item = items[index];
-              return _buildGrammarCard(context, item);
-            },
-          ),
+          child: actualTopics.isEmpty
+              ? (_provider.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : Center(
+                      child: Text(
+                        'No grammar topics available',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ))
+              : ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: actualTopics.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 14),
+                  itemBuilder: (context, index) {
+                    final topic = actualTopics[index];
+                    return _buildGrammarCard(
+                        context, topic, actualTopics, isDark);
+                  },
+                ),
         ),
       ],
     );
   }
 
-  Widget _buildGrammarCard(BuildContext context, GrammarBannerItem item) {
+  Widget _buildGrammarCard(BuildContext context, GrammarTopic topic,
+      List<GrammarTopic> allTopics, bool isDark) {
     final theme = Theme.of(context);
+    final icon = _getTopicIcon(topic);
+    final eyebrow = topic.category.isNotEmpty
+        ? topic.category.toUpperCase()
+        : 'CEFR ${topic.cefrLevel}';
 
     return Container(
       width: 300,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: LinearGradient(
-          colors: item.gradientColors,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color:
+              theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
+          width: 1.0,
         ),
         boxShadow: [
           BoxShadow(
-            color: item.gradientColors.first.withValues(alpha: 0.25),
-            blurRadius: 12,
+            color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.04),
+            blurRadius: 16,
             offset: const Offset(0, 6),
           ),
         ],
@@ -152,18 +206,18 @@ class GrammarBannerCarouselWidget extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => _openGrammarRoadmap(context),
-          borderRadius: BorderRadius.circular(20),
+          onTap: () => _openGrammarArticle(context, topic, allTopics),
+          borderRadius: BorderRadius.circular(22),
           child: Stack(
             children: [
-              // Background Decorative Icon
+              // Background Decorative Monochrome Icon
               Positioned(
                 right: -10,
                 top: -10,
                 child: Icon(
-                  item.icon,
+                  icon,
                   size: 140,
-                  color: Colors.white.withValues(alpha: 0.12),
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.04),
                 ),
               ),
 
@@ -173,39 +227,79 @@ class GrammarBannerCarouselWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Eyebrow label
-                    Text(
-                      item.eyebrow,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: Colors.white70,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.1,
-                      ),
+                    // Eyebrow label + CEFR badge
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: theme.colorScheme.outline
+                                  .withValues(alpha: isDark ? 0.15 : 0.2),
+                            ),
+                          ),
+                          child: Text(
+                            eyebrow,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primaryContainer,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            topic.cefrLevel,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.onPrimaryContainer,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 10),
                     // Main Title
                     Text(
-                      item.title,
+                      topic.title,
                       style: theme.textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
+                        color: theme.colorScheme.onSurface,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: 17,
+                        letterSpacing: -0.3,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 4),
                     Text(
-                      item.description,
+                      topic.description.isNotEmpty
+                          ? topic.description
+                          : 'Master key grammar patterns for IELTS.',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.85),
+                        color: theme.colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                        height: 1.35,
                       ),
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const Spacer(),
 
-                    // Bottom Glass Pill Action Card
+                    // Bottom Monochrome Glass Pill Action Card
                     ClipRRect(
                       borderRadius: BorderRadius.circular(14),
                       child: BackdropFilter(
@@ -216,20 +310,29 @@ class GrammarBannerCarouselWidget extends StatelessWidget {
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.25),
+                            color: theme.colorScheme.surfaceContainerHighest
+                                .withValues(alpha: 0.3),
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.2),
+                              color: theme.colorScheme.outline
+                                  .withValues(alpha: isDark ? 0.15 : 0.25),
                             ),
                           ),
                           child: Row(
                             children: [
+                              Icon(
+                                Icons.menu_book_rounded,
+                                size: 14,
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                              const SizedBox(width: 6),
                               Expanded(
                                 child: Text(
-                                  item.title,
+                                  topic.readTime,
                                   style: theme.textTheme.labelMedium?.copyWith(
-                                    color: Colors.white,
+                                    color: theme.colorScheme.onSurfaceVariant,
                                     fontWeight: FontWeight.w600,
+                                    fontSize: 12,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -238,18 +341,19 @@ class GrammarBannerCarouselWidget extends StatelessWidget {
                               const SizedBox(width: 8),
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
+                                  horizontal: 14,
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.25),
+                                  color: theme.colorScheme.onSurface,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
-                                  item.actionLabel,
+                                  'Lesson',
                                   style: theme.textTheme.labelMedium?.copyWith(
-                                    color: Colors.white,
+                                    color: theme.colorScheme.surface,
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 12,
                                   ),
                                 ),
                               ),

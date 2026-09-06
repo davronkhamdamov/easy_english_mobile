@@ -3,7 +3,7 @@ import '../../../auth/data/auth_service.dart';
 import '../../../../design_system/design_system.dart';
 import '../../../notification/presentation/notifications_screen.dart';
 
-/// Full-featured Profile Screen powered by Google Account details.
+/// Full-featured Profile Screen styled with the global monochrome design system.
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -30,15 +30,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _showThemeSelectorModal() {
     final themeController = ThemeController.maybeOf(context);
     final currentMode = themeController?.value ?? ThemeMode.system;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final subtextColor =
-        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: cardColor,
+      backgroundColor: theme.colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -50,16 +47,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Text(
               'App Theme',
-              style: TextStyle(
+              style: theme.textTheme.titleMedium?.copyWith(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: textColor,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 4),
             Text(
               'Choose your preferred visual appearance',
-              style: TextStyle(fontSize: 13, color: subtextColor),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
             ),
             AppSpacing.gapVerticalMd,
             _buildThemeRadioOption(
@@ -108,14 +107,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required ThemeController? themeController,
     required bool isDark,
   }) {
+    final theme = Theme.of(context);
     final isSelected = currentMode == mode;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final subtextColor =
-        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
-    final activeColor = isDark ? Colors.white : AppColors.primary;
-    final activeBgColor = isDark
-        ? Colors.white.withValues(alpha: 0.15)
-        : AppColors.primary.withValues(alpha: 0.15);
+    final activeColor = theme.colorScheme.onSurface;
+    final subtextColor = theme.colorScheme.onSurfaceVariant;
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
@@ -123,8 +118,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: isSelected
-              ? activeBgColor
-              : (isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9)),
+              ? theme.colorScheme.onSurface.withValues(alpha: isDark ? 0.15 : 0.1)
+              : theme.colorScheme.surfaceContainerHighest,
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -137,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title,
         style: TextStyle(
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          color: isSelected ? activeColor : textColor,
+          color: isSelected ? activeColor : theme.colorScheme.onSurface,
         ),
       ),
       subtitle: Text(
@@ -193,16 +188,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _showSecurityModal() {
     final googleUser = _authService.currentUser;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final subtextColor =
-        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
-    final activeIconColor = isDark ? Colors.white : AppColors.primary;
+    final theme = Theme.of(context);
+    final textColor = theme.colorScheme.onSurface;
+    final subtextColor = theme.colorScheme.onSurfaceVariant;
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: cardColor,
+      backgroundColor: theme.colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -222,7 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             AppSpacing.gapVerticalMd,
             ListTile(
-              leading: Icon(Icons.lock_outline, color: activeIconColor),
+              leading: Icon(Icons.lock_outline, color: textColor),
               title: Text('Change Password', style: TextStyle(color: textColor)),
               subtitle: Text(
                 'Password reset email via Google Authentication',
@@ -240,9 +232,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(
+              leading: Icon(
                 Icons.verified_user_outlined,
-                color: AppColors.success,
+                color: textColor,
               ),
               title: Text(
                 'Two-Factor Authentication',
@@ -252,7 +244,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 'Protected by Google Account Security',
                 style: TextStyle(fontSize: 12, color: subtextColor),
               ),
-              trailing: const Icon(Icons.check_circle, color: AppColors.success),
+              trailing: Icon(Icons.check_circle, color: textColor),
             ),
           ],
         ),
@@ -269,14 +261,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'French',
       'German',
     ];
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final activeColor = isDark ? Colors.white : AppColors.primary;
+    final theme = Theme.of(context);
+    final textColor = theme.colorScheme.onSurface;
+    final activeColor = theme.colorScheme.onSurface;
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: cardColor,
+      backgroundColor: theme.colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -322,16 +313,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showAboutUsDialog() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final theme = Theme.of(context);
+
     showAboutDialog(
       context: context,
       applicationName: 'Easy English IELTS',
       applicationVersion: 'v1.0.0',
       applicationIcon: CircleAvatar(
-        backgroundColor: isDark ? Colors.white : AppColors.primary,
+        backgroundColor: theme.colorScheme.surfaceContainerHighest,
         child: Icon(
           Icons.school,
-          color: isDark ? AppColors.carbonBlack : Colors.white,
+          color: theme.colorScheme.onSurface,
         ),
       ),
       children: const [
@@ -343,16 +335,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showHelpCenter() {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final subtextColor =
-        isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
-    final activeIconColor = isDark ? Colors.white : AppColors.primary;
+    final theme = Theme.of(context);
+    final textColor = theme.colorScheme.onSurface;
+    final subtextColor = theme.colorScheme.onSurfaceVariant;
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: cardColor,
+      backgroundColor: theme.colorScheme.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -372,7 +361,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             AppSpacing.gapVerticalMd,
             ListTile(
-              leading: Icon(Icons.email_outlined, color: activeIconColor),
+              leading: Icon(Icons.email_outlined, color: textColor),
               title: Text('Contact Support', style: TextStyle(color: textColor)),
               subtitle: Text(
                 'support@easy-english.uz',
@@ -382,7 +371,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ListTile(
               leading: Icon(
                 Icons.question_answer_outlined,
-                color: isDark ? const Color(0xFFCBD5E1) : AppColors.secondary,
+                color: subtextColor,
               ),
               title: Text(
                 'Frequently Asked Questions',
@@ -406,22 +395,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final email = googleUser?.email ?? 'ronaldrichards@gmail.com';
     final photoUrl = googleUser?.photoURL;
 
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
-    final backgroundColor = isDark
-        ? const Color(0xFF0F172A)
-        : const Color(0xFFF8FAFC);
-    final textColor = isDark ? Colors.white : Colors.black87;
-    final subtextColor = isDark
-        ? const Color(0xFF94A3B8)
-        : const Color(0xFF64748B);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final cardColor = theme.colorScheme.surface;
+    final textColor = theme.colorScheme.onSurface;
+    final subtextColor = theme.colorScheme.onSurfaceVariant;
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Profile',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -437,6 +425,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               decoration: BoxDecoration(
                 color: cardColor,
                 borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
@@ -451,15 +442,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // Google Avatar Photo
                   CircleAvatar(
                     radius: 36,
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                    backgroundColor: theme.colorScheme.surfaceContainerHighest,
                     backgroundImage: photoUrl != null && photoUrl.isNotEmpty
                         ? NetworkImage(photoUrl)
                         : null,
                     child: photoUrl == null || photoUrl.isEmpty
-                        ? const Icon(
+                        ? Icon(
                             Icons.person,
                             size: 38,
-                            color: AppColors.primary,
+                            color: textColor,
                           )
                         : null,
                   ),
@@ -498,6 +489,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               decoration: BoxDecoration(
                 color: cardColor,
                 borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                ),
               ),
               child: Column(
                 children: [
@@ -505,9 +499,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon: Icons.lock_outline_rounded,
                     title: 'Security',
                     onTap: _showSecurityModal,
-                    isDark: isDark,
+                    theme: theme,
                   ),
-                  _buildDivider(isDark),
+                  _buildDivider(theme),
                   _buildProfileTile(
                     icon: Icons.notifications_none_rounded,
                     title: 'Notifications',
@@ -519,28 +513,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       );
                     },
-                    isDark: isDark,
+                    theme: theme,
                   ),
-                  _buildDivider(isDark),
+                  _buildDivider(theme),
                   _buildProfileTile(
                     icon: Icons.translate_rounded,
                     title: 'Language',
                     trailingText: _selectedLanguage,
                     onTap: _showLanguageModal,
-                    isDark: isDark,
+                    theme: theme,
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 24),
 
-            // 3. Preferences Section (Excludes Appointments)
+            // 3. Preferences Section
             _buildSectionHeader('Preferences', subtextColor),
             const SizedBox(height: 8),
             Container(
               decoration: BoxDecoration(
                 color: cardColor,
                 borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                ),
               ),
               child: Column(
                 children: [
@@ -548,9 +545,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon: Icons.info_outline_rounded,
                     title: 'About Us',
                     onTap: _showAboutUsDialog,
-                    isDark: isDark,
+                    theme: theme,
                   ),
-                  _buildDivider(isDark),
+                  _buildDivider(theme),
                   _buildProfileTile(
                     icon: Icons.brightness_6_outlined,
                     title: 'Theme',
@@ -558,7 +555,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ThemeController.maybeOf(context)?.value ?? ThemeMode.system,
                     ),
                     onTap: _showThemeSelectorModal,
-                    isDark: isDark,
+                    theme: theme,
                   ),
                 ],
               ),
@@ -572,6 +569,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               decoration: BoxDecoration(
                 color: cardColor,
                 borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.3),
+                ),
               ),
               child: Column(
                 children: [
@@ -579,9 +579,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon: Icons.help_outline_rounded,
                     title: 'Help Center',
                     onTap: _showHelpCenter,
-                    isDark: isDark,
+                    theme: theme,
                   ),
-                  _buildDivider(isDark),
+                  _buildDivider(theme),
                   _buildProfileTile(
                     icon: Icons.logout_rounded,
                     title: 'Sign Out',
@@ -589,7 +589,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     iconColor: AppColors.danger,
                     onTap: _handleSignOut,
                     showArrow: false,
-                    isDark: isDark,
+                    theme: theme,
                   ),
                 ],
               ),
@@ -624,12 +624,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Color? iconColor,
     Color? titleColor,
     bool showArrow = true,
-    required bool isDark,
+    required ThemeData theme,
   }) {
+    final textColor = theme.colorScheme.onSurface;
+    final subtextColor = theme.colorScheme.onSurfaceVariant;
+
     final titleStyle = TextStyle(
       fontSize: 15,
       fontWeight: FontWeight.w600,
-      color: titleColor ?? (isDark ? Colors.white : Colors.black87),
+      color: titleColor ?? textColor,
     );
 
     return InkWell(
@@ -642,9 +645,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Icon(
               icon,
               size: 22,
-              color:
-                  iconColor ??
-                  (isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569)),
+              color: iconColor ?? subtextColor,
             ),
             const SizedBox(width: 14),
             Expanded(child: Text(title, style: titleStyle)),
@@ -653,21 +654,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 trailingText,
                 style: TextStyle(
                   fontSize: 14,
-                  color: isDark
-                      ? const Color(0xFF94A3B8)
-                      : const Color(0xFF64748B),
+                  color: subtextColor,
                 ),
               ),
               const SizedBox(width: 8),
             ],
-            if (trailingWidget != null) trailingWidget,
+            ?trailingWidget,
             if (showArrow && trailingWidget == null)
               Icon(
                 Icons.arrow_forward_rounded,
                 size: 18,
-                color: isDark
-                    ? const Color(0xFF64748B)
-                    : const Color(0xFF94A3B8),
+                color: subtextColor.withValues(alpha: 0.6),
               ),
           ],
         ),
@@ -675,13 +672,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildDivider(bool isDark) {
+  Widget _buildDivider(ThemeData theme) {
     return Divider(
       height: 1,
       thickness: 1,
       indent: 52,
       endIndent: 16,
-      color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+      color: theme.colorScheme.outline.withValues(alpha: 0.2),
     );
   }
 }

@@ -17,13 +17,16 @@ class SentenceInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Your Sentence:',
-          style: TextStyle(
-            color: Colors.white,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: theme.colorScheme.onSurface,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
@@ -33,19 +36,27 @@ class SentenceInputField extends StatelessWidget {
           controller: controller,
           maxLines: 4,
           onTapOutside: (_) => FocusScope.of(context).unfocus(),
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: theme.colorScheme.onSurface),
           decoration: InputDecoration(
             hintText: 'Type your sentence incorporating "$targetWord"...',
-            hintStyle: const TextStyle(color: Color(0xFF64748B)),
+            hintStyle: TextStyle(color: theme.colorScheme.onSurfaceVariant),
             filled: true,
-            fillColor: const Color(0xFF1E293B),
+            fillColor: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFF334155)),
+              borderSide: BorderSide(
+                color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.2),
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.2),
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 2),
+              borderSide: BorderSide(color: theme.colorScheme.onSurface, width: 1.5),
             ),
           ),
         ),
@@ -56,19 +67,19 @@ class SentenceInputField extends StatelessWidget {
           child: ElevatedButton(
             onPressed: isEvaluating ? null : onSubmit,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF10B981),
+              backgroundColor: theme.colorScheme.onSurface,
+              foregroundColor: theme.colorScheme.surface,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
             child: isEvaluating
-                ? const CircularProgressIndicator(color: Colors.white)
+                ? CircularProgressIndicator(color: theme.colorScheme.surface)
                 : const Text(
                     'Submit & Evaluate',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
                     ),
                   ),
           ),

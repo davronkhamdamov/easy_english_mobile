@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'core/debug/api_debugger_overlay.dart';
+import 'core/ads/admob_service.dart';
 import 'core/network/api_client.dart';
 import 'core/notifications/push_notification_service.dart';
 import 'design_system/design_system.dart';
@@ -13,6 +13,11 @@ void main() async {
   
   final initialMode = await ThemeController.loadThemeMode();
   final themeController = ThemeController(initialMode);
+
+  // Initialize Google Mobile Ads SDK for real ad monetization
+  AdMobService.initialize().catchError((e) {
+    debugPrint('AdMobService init error: $e');
+  });
 
   try {
     await Firebase.initializeApp(
@@ -54,15 +59,11 @@ class _EasyIeltsAppState extends State<EasyIeltsApp> {
         valueListenable: _themeController,
         builder: (context, mode, child) {
           return MaterialApp(
-            navigatorKey: ApiDebuggerOverlay.navigatorKey,
             title: 'Easy IELTS',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: mode,
-            builder: (context, child) {
-              return ApiDebuggerOverlay(child: child ?? const SizedBox());
-            },
             home: const AuthWrapper(),
           );
         },

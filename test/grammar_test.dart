@@ -10,6 +10,7 @@ import 'package:easy_english/features/grammar/data/models/grammar_topic_model.da
 import 'package:easy_english/features/grammar/data/repositories/grammar_repository_impl.dart';
 import 'package:easy_english/features/grammar/domain/usecases/get_grammar_roadmap.dart';
 import 'package:easy_english/features/grammar/presentation/providers/grammar_provider.dart';
+import 'package:easy_english/features/grammar/presentation/screens/grammar_article_screen.dart';
 import 'package:easy_english/features/grammar/presentation/screens/grammar_exercise_screen.dart';
 import 'package:easy_english/features/grammar/presentation/screens/grammar_mistakes_screen.dart';
 import 'package:easy_english/features/grammar/presentation/screens/grammar_roadmap_screen.dart';
@@ -106,6 +107,36 @@ void main() {
       expect(mistakes.first.ruleCategory, 'Past Simple');
     });
 
+    test('GrammarRemoteDataSourceImpl handles map-wrapped JSON responses', () async {
+      final client = MockApiClient(
+        onGet: (path) async {
+          if (path.contains('/grammar/topics')) {
+            return http.Response(jsonEncode({
+              'topics': [
+                {'id': 'gram_top_02', 'title': 'Past Continuous', 'cefr_level': 'B1', 'description': 'Past actions', 'is_completed': false, 'progress_percent': 50}
+              ]
+            }), 200);
+          }
+          if (path.contains('/grammar/mistakes')) {
+            return http.Response(jsonEncode({
+              'results': [
+                {'id': 'm2', 'original_text': 'He go', 'corrected_text': 'He goes', 'rule_category': 'Present Simple', 'occurrence_count': 1, 'last_failed_at': '2026-08-10T14:30:00Z'}
+              ]
+            }), 200);
+          }
+          return http.Response('{}', 200);
+        },
+      );
+      final ds = GrammarRemoteDataSourceImpl(client: client);
+      final topics = await ds.fetchRoadmapTopics();
+      expect(topics.length, 1);
+      expect(topics.first.title, 'Past Continuous');
+
+      final mistakes = await ds.fetchMistakeRecords();
+      expect(mistakes.length, 1);
+      expect(mistakes.first.ruleCategory, 'Present Simple');
+    });
+
     test('GrammarRepositoryImpl bubbles API network exceptions', () async {
       final client = MockApiClient(
         onGet: (path) async => http.Response('Server Error', 500),
@@ -133,10 +164,10 @@ void main() {
       expect(retried, true);
     });
 
-    testWidgets('GrammarRoadmapScreen renders CEFR chips and topics', (tester) async {
+    testWidgets('GrammarRoadmapScreen renders grammar topics directly', (tester) async {
       final client = MockApiClient(
         onGet: (path) async => http.Response(jsonEncode([
-          {'id': 't1', 'title': 'Conditionals', 'cefr_level': 'B1', 'description': 'If clauses', 'is_completed': false, 'progress_percent': 40}
+          {'id': 't1', 'title': 'Conditionals', 'cefr_level': 'A1', 'description': 'If clauses', 'is_completed': false, 'progress_percent': 40}
         ]), 200),
       );
       final provider = GrammarProvider(repository: GrammarRepositoryImpl(remoteDataSource: GrammarRemoteDataSourceImpl(client: client)));
@@ -145,7 +176,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Grammar Roadmap'), findsOneWidget);
-      expect(find.text('All'), findsOneWidget);
       expect(find.text('Conditionals'), findsOneWidget);
     });
 
@@ -187,5 +217,16 @@ void main() {
       expect(find.text('Present Perfect'), findsOneWidget);
       expect(find.text('Failed 3x'), findsOneWidget);
     });
+
+    testWidgets('GrammarArticleScreen renders article content and quiz', (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: GrammarArticleScreen()));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Grammar Masterclass'), findsOneWidget);
+      expect(find.text('English Articles: A, An, The & Zero Article'), findsOneWidget);
+      expect(find.text('QUICK QUIZ'), findsOneWidget);
+    });
   });
 }
+
+

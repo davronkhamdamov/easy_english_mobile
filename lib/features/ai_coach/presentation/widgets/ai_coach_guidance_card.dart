@@ -7,25 +7,34 @@ class AiCoachGuidanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF334155)),
+        border: Border.all(
+          color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.auto_awesome, color: Color(0xFFF59E0B), size: 20),
-              SizedBox(width: 8),
+              Icon(
+                Icons.auto_awesome,
+                color: theme.colorScheme.onSurface,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
               Text(
                 'Coach Guidance',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: theme.colorScheme.onSurface,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -35,8 +44,8 @@ class AiCoachGuidanceCard extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             notes,
-            style: const TextStyle(
-              color: Color(0xFFCBD5E1),
+            style: TextStyle(
+              color: theme.colorScheme.onSurfaceVariant,
               fontSize: 14,
               height: 1.5,
             ),

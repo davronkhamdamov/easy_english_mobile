@@ -13,17 +13,6 @@ class FiveTierPlanWidget extends StatelessWidget {
     this.onTierSelected,
   });
 
-  Color _getStatusColor(String status) {
-    switch (status) {
-      case 'completed':
-        return const Color(0xFF10B981); // Green
-      case 'in_progress':
-        return const Color(0xFF3B82F6); // Blue
-      case 'locked':
-      default:
-        return const Color(0xFF64748B); // Slate Grey
-    }
-  }
 
   IconData _getStatusIcon(String status) {
     switch (status) {
@@ -39,15 +28,17 @@ class FiveTierPlanWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final tiers = plan.allTiers;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           '5-Tier Learning Roadmap',
-          style: TextStyle(
-            color: Colors.white,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: theme.colorScheme.onSurface,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -61,7 +52,6 @@ class FiveTierPlanWidget extends StatelessWidget {
           itemBuilder: (context, index) {
             final tier = tiers[index];
             final isSelected = index == selectedIndex;
-            final color = _getStatusColor(tier.status);
 
             return GestureDetector(
               onTap: () => onTierSelected?.call(index),
@@ -69,12 +59,14 @@ class FiveTierPlanWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? const Color(0xFF1E293B)
-                      : const Color(0xFF0F172A),
+                      ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+                      : theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: isSelected ? color : const Color(0xFF334155),
-                    width: isSelected ? 2 : 1,
+                    color: isSelected
+                        ? theme.colorScheme.onSurface
+                        : theme.colorScheme.outline.withValues(alpha: isDark ? 0.15 : 0.25),
+                    width: isSelected ? 1.5 : 1,
                   ),
                 ),
                 child: Column(
@@ -82,13 +74,17 @@ class FiveTierPlanWidget extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(_getStatusIcon(tier.status), color: color, size: 22),
+                        Icon(
+                          _getStatusIcon(tier.status),
+                          color: theme.colorScheme.onSurface,
+                          size: 22,
+                        ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             tier.title,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: theme.colorScheme.onSurface,
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
                             ),
@@ -100,13 +96,16 @@ class FiveTierPlanWidget extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: color.withValues(alpha: 0.15),
+                            color: theme.colorScheme.surfaceContainerHighest,
                             borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                            ),
                           ),
                           child: Text(
                             tier.status.replaceAll('_', ' ').toUpperCase(),
                             style: TextStyle(
-                              color: color,
+                              color: theme.colorScheme.onSurface,
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
@@ -116,7 +115,10 @@ class FiveTierPlanWidget extends StatelessWidget {
                     ),
                     if (isSelected && tier.items.isNotEmpty) ...[
                       const SizedBox(height: 12),
-                      const Divider(color: Color(0xFF334155), height: 1),
+                      Divider(
+                        color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                        height: 1,
+                      ),
                       const SizedBox(height: 12),
                       ...tier.items.map(
                         (item) => Padding(
@@ -126,14 +128,14 @@ class FiveTierPlanWidget extends StatelessWidget {
                               Icon(
                                 Icons.circle,
                                 size: 6,
-                                color: color.withValues(alpha: 0.8),
+                                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                               ),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
                                   item,
-                                  style: const TextStyle(
-                                    color: Color(0xFFE2E8F0),
+                                  style: TextStyle(
+                                    color: theme.colorScheme.onSurfaceVariant,
                                     fontSize: 13,
                                   ),
                                 ),

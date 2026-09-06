@@ -32,6 +32,7 @@ class NewDashboardHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     UserEntity? user;
     try {
@@ -52,34 +53,52 @@ class NewDashboardHeaderWidget extends StatelessWidget {
 
     Widget avatarWidget;
     if (effectiveAvatarUrl != null && effectiveAvatarUrl.isNotEmpty) {
-      avatarWidget = ClipOval(
-        child: Image.network(
-          effectiveAvatarUrl,
-          width: 44,
-          height: 44,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => CircleAvatar(
-            radius: 22,
-            backgroundColor: theme.colorScheme.primaryContainer,
-            child: Text(
-              effectiveName.isNotEmpty ? effectiveName[0].toUpperCase() : 'R',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onPrimaryContainer,
+      avatarWidget = Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+            width: 1.5,
+          ),
+        ),
+        child: ClipOval(
+          child: Image.network(
+            effectiveAvatarUrl,
+            width: 44,
+            height: 44,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => CircleAvatar(
+              radius: 22,
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+              child: Text(
+                effectiveName.isNotEmpty ? effectiveName[0].toUpperCase() : 'R',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.onSurface,
+                ),
               ),
             ),
           ),
         ),
       );
     } else {
-      avatarWidget = CircleAvatar(
-        radius: 22,
-        backgroundColor: theme.colorScheme.primaryContainer,
-        child: Text(
-          effectiveName.isNotEmpty ? effectiveName[0].toUpperCase() : 'R',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: theme.colorScheme.onPrimaryContainer,
+      avatarWidget = Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+            width: 1.5,
+          ),
+        ),
+        child: CircleAvatar(
+          radius: 22,
+          backgroundColor: theme.colorScheme.surfaceContainerHighest,
+          child: Text(
+            effectiveName.isNotEmpty ? effectiveName[0].toUpperCase() : 'R',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onSurface,
+            ),
           ),
         ),
       );
@@ -118,16 +137,20 @@ class NewDashboardHeaderWidget extends StatelessWidget {
                 height: 46,
                 decoration: BoxDecoration(
                   color: theme.colorScheme.surfaceContainerHighest.withValues(
-                    alpha: 0.5,
+                    alpha: 0.4,
                   ),
                   shape: BoxShape.circle,
+                  border: Border.all(
+                    color: theme.colorScheme.outline.withValues(alpha: isDark ? 0.2 : 0.15),
+                    width: 1,
+                  ),
                 ),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     Icon(
                       Icons.notifications_none_rounded,
-                      size: 24,
+                      size: 22,
                       color: theme.colorScheme.onSurface,
                     ),
                     if (hasUnreadNotifications)
@@ -137,8 +160,8 @@ class NewDashboardHeaderWidget extends StatelessWidget {
                         child: Container(
                           width: 8,
                           height: 8,
-                          decoration: const BoxDecoration(
-                            color: Colors.redAccent,
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.onSurface,
                             shape: BoxShape.circle,
                           ),
                         ),

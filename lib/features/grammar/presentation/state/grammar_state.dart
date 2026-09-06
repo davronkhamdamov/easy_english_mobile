@@ -3,7 +3,7 @@ import '../../domain/entities/grammar_mistake_record.dart';
 import '../../domain/entities/grammar_topic.dart';
 
 class GrammarState {
-  final String selectedCefrLevel; // 'All', 'A1', 'A2', 'B1', 'B2', 'C1'
+  final String selectedCefrLevel; // 'A1', 'A2', 'B1', 'B2', 'C1'
   final List<GrammarTopic> topics;
   final List<GrammarMistakeRecord> mistakes;
   final GrammarEvaluation? currentEvaluation;
@@ -12,7 +12,7 @@ class GrammarState {
   final String? errorMessage;
 
   const GrammarState({
-    this.selectedCefrLevel = 'All',
+    this.selectedCefrLevel = 'A1',
     this.topics = const [],
     this.mistakes = const [],
     this.currentEvaluation,

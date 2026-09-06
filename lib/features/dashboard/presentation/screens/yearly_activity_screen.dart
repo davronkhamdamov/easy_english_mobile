@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
 
 /// Full-screen 12-Month Activity Heatmap Screen inspired by habit tracking apps.
 /// Displays month-by-month activity grids (3x4 layout) for the full year.
@@ -27,8 +26,9 @@ class YearlyActivityScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final bgColor = isDark ? AppColors.darkBackground : AppColors.lightBackground;
-    final textPrimaryColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+    final bgColor = theme.scaffoldBackgroundColor;
+    final textPrimaryColor = theme.colorScheme.onSurface;
+    final textSecondaryColor = theme.colorScheme.onSurfaceVariant;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -38,7 +38,7 @@ class YearlyActivityScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(
             Icons.chevron_left_rounded,
-            color: isDark ? Colors.white : AppColors.lightTextPrimary,
+            color: textPrimaryColor,
             size: 30,
           ),
           onPressed: () => Navigator.of(context).pop(),
@@ -72,8 +72,8 @@ class YearlyActivityScreen extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 year,
-                style: const TextStyle(
-                  color: Colors.blueAccent,
+                style: TextStyle(
+                  color: textSecondaryColor,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -94,7 +94,7 @@ class YearlyActivityScreen extends StatelessWidget {
                 itemBuilder: (context, monthIndex) {
                   final monthName = _months[monthIndex];
                   final monthMap = yearlyData?[monthIndex] ?? _generateMockMonthData(monthIndex);
-                  return _buildMonthBlock(context, monthName, monthMap, isDark);
+                  return _buildMonthBlock(context, theme, monthName, monthMap, isDark);
                 },
               ),
               const SizedBox(height: 30),
@@ -107,11 +107,12 @@ class YearlyActivityScreen extends StatelessWidget {
 
   Widget _buildMonthBlock(
     BuildContext context,
+    ThemeData theme,
     String monthName,
     Map<int, int> dayActivity,
     bool isDark,
   ) {
-    final textPrimaryColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+    final textPrimaryColor = theme.colorScheme.onSurface;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +139,7 @@ class YearlyActivityScreen extends StatelessWidget {
                     width: tileSize.clamp(6.0, 14.0),
                     height: tileSize.clamp(6.0, 14.0),
                     decoration: BoxDecoration(
-                      color: _getHeatmapColor(level, isDark),
+                      color: _getHeatmapColor(theme, level, isDark),
                       borderRadius: BorderRadius.circular(2.5),
                     ),
                   );
@@ -151,17 +152,19 @@ class YearlyActivityScreen extends StatelessWidget {
     );
   }
 
-  Color _getHeatmapColor(int level, bool isDark) {
+  Color _getHeatmapColor(ThemeData theme, int level, bool isDark) {
     if (level == 0) {
-      return isDark ? const Color(0xFF2D2E33) : const Color(0xFFE9ECEF);
+      return isDark
+          ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.35)
+          : theme.colorScheme.outline.withValues(alpha: 0.15);
     } else if (level == 1) {
-      return const Color(0xFFD8F3DC); // Light green
+      return theme.colorScheme.onSurface.withValues(alpha: 0.25);
     } else if (level == 2) {
-      return const Color(0xFF74C69D); // Medium green
+      return theme.colorScheme.onSurface.withValues(alpha: 0.55);
     } else if (level == 3) {
-      return const Color(0xFF2D6A4F); // Deep green
+      return theme.colorScheme.onSurface.withValues(alpha: 0.85);
     } else {
-      return const Color(0xFF1B4332); // Dark green
+      return theme.colorScheme.onSurface;
     }
   }
 

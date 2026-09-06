@@ -1,4 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:easy_english/core/network/api_client.dart';
 import 'package:easy_english/features/word_bank/data/datasources/word_bank_remote_datasource.dart';
 import 'package:easy_english/features/word_bank/data/models/flashcard_item_model.dart';
 import 'package:easy_english/features/word_bank/data/repositories/word_bank_repository_impl.dart';
@@ -230,4 +232,83 @@ void main() {
       expect(provider.state.filteredWordItems.length, 0);
     });
   });
+
+  group('WordBankRemoteDataSourceImpl API Contract Tests', () {
+    test('Handles direct array JSON responses', () async {
+      final client = _MockWordBankApiClient(
+        onGet: (path) async {
+          if (path.contains('/wordbank/due/')) {
+            return http.Response(
+              '[{"id": "wb_due_1", "word": "Persist", "phonetic": "/persist/", "cefr_level": "B2", "definition": "Continue firmly", "example": "Persist with it"}]',
+              200,
+            );
+          }
+          if (path.contains('/wordbank/')) {
+            return http.Response(
+              '[{"id": "wb_1", "word": "Foster", "phonetic": "/foster/", "cefr_level": "C1", "definition": "Encourage", "example": "Foster growth"}]',
+              200,
+            );
+          }
+          return http.Response('[]', 200);
+        },
+      );
+
+      final ds = WordBankRemoteDataSourceImpl(apiClient: client);
+      final items = await ds.fetchWordBankItems();
+      expect(items.length, 1);
+      expect(items.first.word, 'Foster');
+
+      final due = await ds.fetchDueFlashcards();
+      expect(due.length, 1);
+      expect(due.first.word, 'Persist');
+    });
+
+    test('Handles map-wrapped JSON responses (results, data, due_cards)', () async {
+      final client = _MockWordBankApiClient(
+        onGet: (path) async {
+          if (path.contains('/wordbank/due/')) {
+            return http.Response(
+              '{"due_cards": [{"id": "wb_due_2", "word": "Resilient", "phonetic": "/resilient/", "cefr_level": "B2", "definition": "Able to recover", "example": "Resilient spirit"}]}',
+              200,
+            );
+          }
+          if (path.contains('/wordbank/')) {
+            return http.Response(
+              '{"results": [{"id": "wb_2", "word": "Eloquent", "phonetic": "/eloquent/", "cefr_level": "C1", "definition": "Fluent speech", "example": "Eloquent speaker"}]}',
+              200,
+            );
+          }
+          return http.Response('{}', 200);
+        },
+      );
+
+      final ds = WordBankRemoteDataSourceImpl(apiClient: client);
+      final items = await ds.fetchWordBankItems();
+      expect(items.length, 1);
+      expect(items.first.word, 'Eloquent');
+
+      final due = await ds.fetchDueFlashcards();
+      expect(due.length, 1);
+      expect(due.first.word, 'Resilient');
+    });
+  });
+}
+
+class _MockWordBankApiClient extends ApiClient {
+  final Future<http.Response> Function(String path)? onGet;
+  final Future<http.Response> Function(String path, Map<String, dynamic> body)? onPost;
+
+  _MockWordBankApiClient({this.onGet, this.onPost});
+
+  @override
+  Future<http.Response> get(String path) async {
+    if (onGet != null) return await onGet!(path);
+    return http.Response('[]', 200);
+  }
+
+  @override
+  Future<http.Response> post(String path, Map<String, dynamic> body) async {
+    if (onPost != null) return await onPost!(path, body);
+    return http.Response('{}', 200);
+  }
 }
