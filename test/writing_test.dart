@@ -239,6 +239,16 @@ void main() {
         expect(provider.selectedTaskType, equals('task1'));
       },
     );
+
+    test('WritingProvider initializes directly with initialTaskType: task1', () {
+      final provider = WritingProvider(
+        getWritingPrompts: FakeGetWritingPromptsUseCase(),
+        initialTaskType: 'task1',
+      );
+
+      expect(provider.selectedTask, equals(1));
+      expect(provider.selectedTaskType, equals('task1'));
+    });
   });
 
   group('Writing Feature Presentation UI Widget Tests', () {
@@ -256,6 +266,29 @@ void main() {
         expect(find.text('Task 2 (Essay)'), findsOneWidget);
         expect(find.byType(WritingEditor), findsOneWidget);
         expect(find.text('Evaluate Essay with AI'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'WritingScreen initializes with initialTaskType task1 and loads Task 1 prompt',
+      (WidgetTester tester) async {
+        final provider = WritingProvider(
+          getWritingPrompts: FakeGetWritingPromptsUseCase(),
+          initialTaskType: 'task1',
+        );
+        await tester.pumpWidget(
+          MaterialApp(
+            home: WritingScreen(
+              provider: provider,
+              initialTaskType: 'task1',
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Task 1'), findsWidgets);
+        expect(find.text('Task 1 Graph'), findsOneWidget);
+        expect(find.text('Target: 150+ words'), findsOneWidget);
       },
     );
 

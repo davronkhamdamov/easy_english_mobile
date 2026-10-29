@@ -27,7 +27,7 @@ class WritingPromptCard extends StatelessWidget {
     final promptText = p?.promptText ?? fallbackPromptText;
     final title = p?.title ?? 'IELTS Writing Prompt';
     final topic = p?.topic ?? 'General';
-    final minWords = p?.minWordCount ?? 250;
+    final minWords = p?.minWordCount ?? (p?.taskTypeInt == 1 ? 150 : 250);
     final difficulty = p?.difficulty ?? 'Intermediate';
 
     return Card(

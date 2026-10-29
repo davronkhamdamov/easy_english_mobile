@@ -206,5 +206,66 @@ void main() {
       await tester.tap(find.byIcon(Icons.close_rounded));
       await tester.pumpAndSettle();
     });
+
+    testWidgets('InteractiveTextPlaygroundScreen displays Writing Task 1 with rubric and chart visualizer', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: InteractiveTextPlaygroundScreen(),
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // Check category filter chips include Writing Task 1
+      final task1Chip = find.text('Writing Task 1');
+      expect(task1Chip, findsOneWidget);
+
+      // Scroll and tap on Writing Task 1 category chip
+      await tester.ensureVisible(task1Chip);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(task1Chip);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // Verify Writing Task 1 header and rubric elements
+      expect(find.text('3. IELTS Writing Task 1 (Graph & Data Report)'), findsOneWidget);
+      expect(find.text('IELTS Task 1 Academic Diagnostic Rubric'), findsOneWidget);
+      expect(find.text('TASK 1: 150+ WORDS'), findsOneWidget);
+      expect(find.text('Bar Chart (Renewables)'), findsOneWidget);
+      expect(find.text('Process Flow (Desalination)'), findsOneWidget);
+      expect(find.text('Data Overview: 2010 vs 2025 (%)'), findsOneWidget);
+      expect(find.text('Norway'), findsOneWidget);
+
+      // Switch to Process Flow
+      final processChip = find.text('Process Flow (Desalination)');
+      await tester.ensureVisible(processChip);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(processChip);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Industrial Process Flow Sequence'), findsOneWidget);
+      expect(find.text('Reverse Osmosis'), findsOneWidget);
+
+      // Expand Band 9 Sample
+      final sampleButton = find.text('Band 9 Sample');
+      expect(sampleButton, findsOneWidget);
+      await tester.ensureVisible(sampleButton);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      await tester.tap(sampleButton);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.text('Band 9.0 Official Model Report Answer'), findsOneWidget);
+      expect(find.text('Hide Sample'), findsOneWidget);
+
+      // Verify Launch Task 1 AI Practice button exists
+      expect(find.text('Launch Task 1 AI Practice (150 words) →'), findsOneWidget);
+    });
   });
 }

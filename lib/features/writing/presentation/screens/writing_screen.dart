@@ -10,8 +10,13 @@ import '../widgets/writing_task_selector.dart';
 /// IELTS Writing Practice & AI Evaluation Screen.
 class WritingScreen extends StatefulWidget {
   final WritingProvider? provider;
+  final String? initialTaskType;
 
-  const WritingScreen({super.key, this.provider});
+  const WritingScreen({
+    super.key,
+    this.provider,
+    this.initialTaskType,
+  });
 
   @override
   State<WritingScreen> createState() => _WritingScreenState();
@@ -24,7 +29,13 @@ class _WritingScreenState extends State<WritingScreen> {
   @override
   void initState() {
     super.initState();
-    _provider = widget.provider ?? WritingProvider();
+    _provider = widget.provider ??
+        WritingProvider(
+          initialTaskType: widget.initialTaskType ?? 'task2',
+        );
+    if (widget.initialTaskType != null && widget.provider != null) {
+      _provider.selectTaskType(widget.initialTaskType!);
+    }
     _provider.addListener(_onProviderStateChanged);
     _provider.loadPrompts();
   }

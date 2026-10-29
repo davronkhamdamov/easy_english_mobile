@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:easy_english/features/practice/data/datasources/polysemy_vocab_data.dart';
-import 'package:easy_english/features/practice/domain/entities/polysemy_vocab_item.dart';
 import 'package:easy_english/features/practice/presentation/screens/polysemy_category_screen.dart';
 import 'package:easy_english/features/practice/presentation/screens/vocab_context_quiz_screen.dart';
 import 'package:easy_english/features/practice/presentation/widgets/polysemy_featured_banner_widget.dart';

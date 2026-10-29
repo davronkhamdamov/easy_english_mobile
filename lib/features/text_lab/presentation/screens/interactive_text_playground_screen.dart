@@ -30,6 +30,7 @@ enum LabCategory {
   richMarkdown,
   sponsoredAds,
   sentenceBuilder,
+  writingTask1Lab,
   writingLab,
   speakingLab,
   grammarDiagnostics,
@@ -51,8 +52,10 @@ extension LabCategoryMeta on LabCategory {
         return 'Sponsored Ads';
       case LabCategory.sentenceBuilder:
         return 'Sentence Builder';
+      case LabCategory.writingTask1Lab:
+        return 'Writing Task 1';
       case LabCategory.writingLab:
-        return 'AI Writing';
+        return 'Writing Task 2';
       case LabCategory.speakingLab:
         return 'Speaking & Voice';
       case LabCategory.grammarDiagnostics:
@@ -76,6 +79,8 @@ extension LabCategoryMeta on LabCategory {
         return Icons.campaign_rounded;
       case LabCategory.sentenceBuilder:
         return Icons.construction_rounded;
+      case LabCategory.writingTask1Lab:
+        return Icons.bar_chart_rounded;
       case LabCategory.writingLab:
         return Icons.edit_note_rounded;
       case LabCategory.speakingLab:
@@ -277,6 +282,9 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
 
   // --- AI Writing State ---
   int _selectedWritingCriterion = 0; // 0: Task, 1: Coherence, 2: Lexical, 3: Grammar
+  int _selectedTask1Criterion = 0; // 0: Task Achievement, 1: Coherence, 2: Lexical, 3: Grammar
+  int _selectedTask1SampleIndex = 0; // 0: Bar Chart, 1: Process Diagram
+  bool _showTask1ModelAnswer = false;
 
   // --- Speaking Lab State ---
   bool _isPlayingAudio = false;
@@ -546,28 +554,45 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
               const SizedBox(height: 24),
             ],
 
-            // 3. AI WRITING LAB
+            // 3. IELTS WRITING TASK 1 LAB (Graph & Report)
+            if (_selectedCategory == LabCategory.all ||
+                _selectedCategory == LabCategory.writingTask1Lab) ...[
+              _buildCategoryHeader(
+                title: '3. IELTS Writing Task 1 (Graph & Data Report)',
+                subtitle:
+                    'Analyze bar charts, line graphs, and process diagrams with 150-word targeted Task Achievement, data comparison, and trend vocabulary.',
+                category: LabCategory.writingTask1Lab,
+                badgeText: 'TASK 1 REPORT (150W)',
+                isDark: isDark,
+                onOpenFull: () => _navigateToScreen(const WritingScreen(initialTaskType: 'task1')),
+              ),
+              const SizedBox(height: 12),
+              _buildWritingTask1LabExample(isDark),
+              const SizedBox(height: 24),
+            ],
+
+            // 4. IELTS WRITING TASK 2 LAB (Discursive Essay)
             if (_selectedCategory == LabCategory.all ||
                 _selectedCategory == LabCategory.writingLab) ...[
               _buildCategoryHeader(
-                title: '3. AI Writing Assistant (Diagnostic & Rubric)',
+                title: '4. IELTS Writing Task 2 (Discursive Essay)',
                 subtitle:
                     'Examine multi-criterion IELTS Band 8.5 essay scoring breakdown with annotated lexical & coherence highlights.',
                 category: LabCategory.writingLab,
-                badgeText: 'EVALUATION ENGINE',
+                badgeText: 'TASK 2 ESSAY (250W)',
                 isDark: isDark,
-                onOpenFull: () => _navigateToScreen(const WritingScreen()),
+                onOpenFull: () => _navigateToScreen(const WritingScreen(initialTaskType: 'task2')),
               ),
               const SizedBox(height: 12),
               _buildWritingLabExample(isDark),
               const SizedBox(height: 24),
             ],
 
-            // 4. SPEAKING & PRONUNCIATION LAB
+            // 5. SPEAKING & PRONUNCIATION LAB
             if (_selectedCategory == LabCategory.all ||
                 _selectedCategory == LabCategory.speakingLab) ...[
               _buildCategoryHeader(
-                title: '4. Speaking & Pronunciation (Voice & Phonetics)',
+                title: '5. Speaking & Pronunciation (Voice & Phonetics)',
                 subtitle:
                     'Practice syllable stress, listen to native phonetic audio, and evaluate spoken accuracy with speech waveforms.',
                 category: LabCategory.speakingLab,
@@ -580,11 +605,11 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
               const SizedBox(height: 24),
             ],
 
-            // 5. GRAMMAR DIAGNOSTICS LAB
+            // 6. GRAMMAR DIAGNOSTICS LAB
             if (_selectedCategory == LabCategory.all ||
                 _selectedCategory == LabCategory.grammarDiagnostics) ...[
               _buildCategoryHeader(
-                title: '5. Grammar Diagnostics (Error Detection & Fix)',
+                title: '6. Grammar Diagnostics (Error Detection & Fix)',
                 subtitle:
                     'Identify subtle grammatical slips, analyze rule explanations, and apply instant one-tap corrections.',
                 category: LabCategory.grammarDiagnostics,
@@ -598,11 +623,11 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
               const SizedBox(height: 24),
             ],
 
-            // 6. VIDEO & LISTENING LAB
+            // 7. VIDEO & LISTENING LAB
             if (_selectedCategory == LabCategory.all ||
                 _selectedCategory == LabCategory.listeningLab) ...[
               _buildCategoryHeader(
-                title: '6. Video & Listening (Interactive Transcripts)',
+                title: '7. Video & Listening (Interactive Transcripts)',
                 subtitle:
                     'Synchronized video playback with interactive clickable subtitle text for native immersive listening.',
                 category: LabCategory.listeningLab,
@@ -665,7 +690,7 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
               ),
               const SizedBox(width: 4),
               Text(
-                '6 Interactive Labs + Ads',
+                '7 Interactive Labs + Ads',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
@@ -1832,7 +1857,629 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
   }
 
   // ==========================================
-  // CATEGORY 3: AI WRITING LAB
+  // CATEGORY 3: IELTS WRITING TASK 1 LAB
+  // ==========================================
+
+  Widget _buildWritingTask1LabExample(bool isDark) {
+    final List<Map<String, dynamic>> criteria = [
+      {
+        'name': 'Task Achievement',
+        'score': 'Band 8.5',
+        'color': AppColors.primary,
+      },
+      {
+        'name': 'Coherence & Cohesion',
+        'score': 'Band 8.5',
+        'color': AppColors.secondary,
+      },
+      {
+        'name': 'Lexical Resource',
+        'score': _selectedTask1SampleIndex == 0 ? 'Band 9.0' : 'Band 8.5',
+        'color': AppColors.success,
+      },
+      {
+        'name': 'Grammar Accuracy',
+        'score': _selectedTask1SampleIndex == 0 ? 'Band 8.5' : 'Band 9.0',
+        'color': AppColors.warning,
+      },
+    ];
+
+    final isChart = _selectedTask1SampleIndex == 0;
+
+    return DSCard(
+      variant: DSCardVariant.elevated,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.bar_chart_rounded,
+                      size: 20,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'IELTS Task 1 Academic Diagnostic Rubric',
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.label.copyWith(
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              const DSBadge(
+                label: 'TASK 1: 150+ WORDS',
+                variant: DSBadgeVariant.primary,
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Sample Switcher Chips
+          Row(
+            children: [
+              ChoiceChip(
+                avatar: const Icon(Icons.show_chart_rounded, size: 15),
+                label: const Text('Bar Chart (Renewables)'),
+                selected: isChart,
+                selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                labelStyle: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: isChart ? FontWeight.bold : FontWeight.normal,
+                  color: isChart ? AppColors.primary : null,
+                ),
+                onSelected: (_) {
+                  setState(() {
+                    _selectedTask1SampleIndex = 0;
+                    _showTask1ModelAnswer = false;
+                  });
+                },
+              ),
+              const SizedBox(width: 8),
+              ChoiceChip(
+                avatar: const Icon(Icons.account_tree_outlined, size: 15),
+                label: const Text('Process Flow (Desalination)'),
+                selected: !isChart,
+                selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                labelStyle: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: !isChart ? FontWeight.bold : FontWeight.normal,
+                  color: !isChart ? AppColors.primary : null,
+                ),
+                onSelected: (_) {
+                  setState(() {
+                    _selectedTask1SampleIndex = 1;
+                    _showTask1ModelAnswer = false;
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // Task Prompt snippet container
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark
+                  ? AppColors.darkSurfaceVariant
+                  : AppColors.lightSurfaceVariant,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.assignment_outlined, size: 15, color: AppColors.primary),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        isChart
+                            ? 'Prompt: Renewable Electricity Generation'
+                            : 'Prompt: Industrial Seawater Desalination',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: const Text(
+                        '150+ words',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  isChart
+                      ? 'The bar chart illustrates the percentage of electricity generated from renewable sources in 4 European nations between 2010 and 2025. Summarise by selecting main features and making comparisons.'
+                      : 'The diagram illustrates the multi-stage industrial process of seawater desalination and purification for municipal urban drinking supplies. Summarise the main features.',
+                  style: TextStyle(
+                    fontSize: 11.5,
+                    height: 1.4,
+                    fontStyle: FontStyle.italic,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Visual Data Representation Box
+          if (isChart) ...[
+            _buildTask1ChartVisualizer(isDark),
+          ] else ...[
+            _buildTask1ProcessVisualizer(isDark),
+          ],
+          const SizedBox(height: 14),
+
+          // Criteria Tabs
+          Row(
+            children: List.generate(criteria.length, (i) {
+              final isSel = _selectedTask1Criterion == i;
+              final scoreStr = criteria[i]['score'] as String;
+              final nameStr = criteria[i]['name'] as String;
+              final shortName = nameStr.contains('&')
+                  ? nameStr.split('&').first.trim()
+                  : nameStr.split(' ').first;
+
+              return Expanded(
+                child: InkWell(
+                  onTap: () => setState(() => _selectedTask1Criterion = i),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 2),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    decoration: BoxDecoration(
+                      color: isSel
+                          ? AppColors.primary
+                          : (isDark
+                              ? AppColors.darkSurfaceVariant
+                              : AppColors.lightSurfaceVariant),
+                      borderRadius: BorderRadius.circular(6),
+                      border: isSel
+                          ? null
+                          : Border.all(
+                              color: isDark
+                                  ? AppColors.darkBorder
+                                  : AppColors.lightBorder,
+                            ),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          scoreStr,
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: isSel ? Colors.white : AppColors.primary,
+                          ),
+                        ),
+                        Text(
+                          shortName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: isSel
+                                ? Colors.white70
+                                : (isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+          const SizedBox(height: 12),
+
+          // Diagnostic detail box
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF161A24) : const Color(0xFFF4F7FC),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.check_circle_rounded,
+                      size: 16,
+                      color: criteria[_selectedTask1Criterion]['color'] as Color,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${criteria[_selectedTask1Criterion]['name']} (Task 1 Rubric)',
+                      style: const TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  _getTask1CriterionFeedback(
+                    _selectedTask1Criterion,
+                    _selectedTask1SampleIndex,
+                  ),
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.45,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Expandable Band 9 Model Answer
+          if (_showTask1ModelAnswer) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.workspace_premium_rounded,
+                          size: 16, color: AppColors.primary),
+                      SizedBox(width: 6),
+                      Text(
+                        'Band 9.0 Official Model Report Answer',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _getTask1ModelAnswer(_selectedTask1SampleIndex),
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      height: 1.5,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+
+          // Action Buttons: Launch Task 1 Practice & View Model Answer
+          Row(
+            children: [
+              Expanded(
+                child: DSButton(
+                  text: 'Launch Task 1 AI Practice (150 words) →',
+                  variant: DSButtonVariant.primary,
+                  size: DSButtonSize.sm,
+                  onPressed: () => _navigateToScreen(
+                    const WritingScreen(initialTaskType: 'task1'),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              DSButton(
+                text: _showTask1ModelAnswer ? 'Hide Sample' : 'Band 9 Sample',
+                variant: DSButtonVariant.outline,
+                size: DSButtonSize.sm,
+                onPressed: () {
+                  setState(() => _showTask1ModelAnswer = !_showTask1ModelAnswer);
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTask1ChartVisualizer(bool isDark) {
+    final List<Map<String, dynamic>> countries = [
+      {'country': 'Norway', 'start': 64, 'end': 88, 'color': AppColors.primary},
+      {'country': 'Germany', 'start': 17, 'end': 52, 'color': AppColors.secondary},
+      {'country': 'Spain', 'start': 33, 'end': 48, 'color': AppColors.success},
+      {'country': 'United Kingdom', 'start': 7, 'end': 41, 'color': AppColors.warning},
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF131722) : const Color(0xFFF9FAFD),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Expanded(
+                child: Text(
+                  'Data Overview: 2010 vs 2025 (%)',
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Text(
+                'All Nations Increased',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ...countries.map((item) {
+            final start = item['start'] as int;
+            final end = item['end'] as int;
+            final name = item['country'] as String;
+            final color = item['color'] as Color;
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        name,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        '2010: $start%  ➔  2025: $end% (+${end - start}%)',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.bold,
+                          color: color,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: SizedBox(
+                      height: 8,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: end,
+                            child: Container(color: color),
+                          ),
+                          Expanded(
+                            flex: 100 - end,
+                            child: Container(
+                              color: isDark
+                                  ? Colors.white10
+                                  : Colors.black.withValues(alpha: 0.06),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTask1ProcessVisualizer(bool isDark) {
+    final stages = [
+      {'step': '1', 'title': 'Intake & Grill', 'desc': 'Screen coarse debris'},
+      {'step': '2', 'title': 'Pre-filtration', 'desc': 'Sand beds filtration'},
+      {'step': '3', 'title': 'Reverse Osmosis', 'desc': 'High pressure RO membranes'},
+      {'step': '4', 'title': 'Mineralization', 'desc': 'Lime & tap delivery'},
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF131722) : const Color(0xFFF9FAFD),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Industrial Process Flow Sequence',
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: List.generate(stages.length, (i) {
+              final stage = stages[i];
+              return Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? AppColors.darkSurfaceVariant
+                              : AppColors.lightSurfaceVariant,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 9,
+                              backgroundColor: AppColors.primary,
+                              child: Text(
+                                stage['step']!,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              stage['title']!,
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              stage['desc']!,
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 8.5,
+                                color: isDark
+                                    ? AppColors.darkTextSecondary
+                                    : AppColors.lightTextSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (i < stages.length - 1)
+                      const Icon(
+                        Icons.chevron_right_rounded,
+                        size: 14,
+                        color: AppColors.primary,
+                      ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getTask1CriterionFeedback(int index, int sampleIndex) {
+    if (sampleIndex == 0) {
+      // Bar Chart Sample
+      switch (index) {
+        case 0:
+          return 'Task Achievement (Band 8.5): Fully satisfies all requirements. Identifies the universal upward trajectory in renewable power generation across all 4 nations. Selects key benchmark metrics: Norway consistently leading (64% to 88%) and the UK experiencing the steepest relative growth (7% to 41%, nearly sixfold). Excludes personal conjecture.';
+        case 1:
+          return 'Coherence & Cohesion (Band 8.5): Information is logically sequenced. Features a clear paraphrased introduction, an overarching overview paragraph highlighting macro trends, and two organized body paragraphs grouped by high-share (Norway, Germany) versus emerging nations (Spain, UK). Accurate cohesive devices ("In stark contrast", "respectively").';
+        case 2:
+          return 'Lexical Resource (Band 9.0): Sophisticated data-reporting lexicon and precise collocations: "experienced a sixfold surge", "accounted for the overwhelming majority", "marginal plateau", "substantial divergence in starting shares". Zero inappropriate idioms.';
+        case 3:
+        default:
+          return 'Grammatical Range & Accuracy (Band 8.5): Wide variety of comparative structures ("more than double that of its initial figure", "whereas Norway remained the forerunner") and accurate passive reporting verbs ("is observed to increase", "were recorded at"). Zero punctuation or agreement errors.';
+      }
+    } else {
+      // Process Diagram Sample
+      switch (index) {
+        case 0:
+          return 'Task Achievement (Band 8.5): Covers every stage in the desalination lifecycle from initial coastal screening to reverse osmosis membrane separation, remineralization, and municipal delivery. The overview clearly identifies the 3 macro-phases of the industrial cycle.';
+        case 1:
+          return 'Coherence & Cohesion (Band 8.5): Follows a strictly chronological flow. Connectives are natural and varied: "Initially", "Following pre-treatment filtration", "Subsequently forced under high pressure", "In the penultimate phase", and "Finally distributed".';
+        case 2:
+          return 'Lexical Resource (Band 8.5): Accurate technical vocabulary: "semi-permeable membrane", "reverse osmosis", "saline solution", "potable tap water", "mineral stabilization", and "effluent discharge".';
+        case 3:
+        default:
+          return 'Grammatical Range & Accuracy (Band 9.0): Flawless command of present passive voice constructions ("is filtered", "is pressurized", "is neutralized with calcium carbonate"), essential for Band 9 IELTS process diagram reports.';
+      }
+    }
+  }
+
+  String _getTask1ModelAnswer(int sampleIndex) {
+    if (sampleIndex == 0) {
+      return 'The bar chart compares the proportion of electricity generated from renewable sources across four European countries—Norway, Germany, Spain, and the UK—between 2010 and 2025.\n\nOverall, all four nations experienced an upward trajectory in renewable energy adoption over the 15-year period. Norway consistently generated the highest share of green electricity, whereas the UK demonstrated the most dramatic relative expansion, surging nearly sixfold.\n\nIn 2010, Norway led with 64% of its electricity originating from renewables, rising steadily to 88% by 2025. Germany started at 17% and exhibited significant acceleration after 2015, culminating at 52%.\n\nMeanwhile, Spain began with roughly a third (33%) of its power from renewable resources, rising modestly to 48% in 2025. By contrast, the UK recorded the lowest initial output at merely 7%, but climbed steeply to finish at 41%, narrowing the gap with Spain.';
+    } else {
+      return 'The flow diagram illustrates the sequential industrial process by which seawater is desalinated and treated for municipal drinking supply.\n\nOverall, the procedure encompasses four primary stages: intake and coarse screening, pre-treatment filtration, high-pressure reverse osmosis separation, and chemical remineralization before household distribution.\n\nInitially, seawater is drawn through coastal intake pipes equipped with screening grills to eliminate solid debris. The water is then transferred to pre-treatment tanks where sand filters strip away suspended particulates.\n\nSubsequently, high-pressure pumps force the saline liquid through semi-permeable reverse osmosis membranes, separating fresh water from concentrated brine, which is safely returned to the ocean. Finally, the desalinated water is treated with lime to re-stabilize minerals and ensure potable quality before being pumped to municipal reservoirs.';
+    }
+  }
+
+  // ==========================================
+  // CATEGORY 4: IELTS WRITING TASK 2 LAB
   // ==========================================
 
   Widget _buildWritingLabExample(bool isDark) {
@@ -1845,34 +2492,41 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
 
     return DSCard(
       variant: DSCardVariant.elevated,
-      header: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.analytics_rounded,
-                  size: 18, color: AppColors.primary),
-              const SizedBox(width: 6),
-              Text(
-                'IELTS Task 2 Diagnostic Rubric',
-                style: AppTypography.label.copyWith(
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          const DSBadge(
-            label: 'OVERALL: 8.5',
-            variant: DSBadgeVariant.primary,
-          ),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    const Icon(Icons.analytics_rounded,
+                        size: 18, color: AppColors.primary),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        'IELTS Task 2 Diagnostic Rubric',
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTypography.label.copyWith(
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              const DSBadge(
+                label: 'TASK 2: 250+ WORDS',
+                variant: DSBadgeVariant.primary,
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
           // Prompt card snippet
           Container(
             padding: const EdgeInsets.all(10),
@@ -1989,6 +2643,20 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
                   ),
                 ),
               ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Action Button: Launch Task 2 Practice
+          SizedBox(
+            width: double.infinity,
+            child: DSButton(
+              text: 'Launch Task 2 AI Practice (250 words) →',
+              variant: DSButtonVariant.primary,
+              size: DSButtonSize.sm,
+              onPressed: () => _navigateToScreen(
+                const WritingScreen(initialTaskType: 'task2'),
+              ),
             ),
           ),
         ],

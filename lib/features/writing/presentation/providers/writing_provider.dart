@@ -19,11 +19,46 @@ class WritingProvider extends ChangeNotifier {
   String? _errorMessage;
   String? _validationError;
 
+  static const List<WritingPrompt> fallbackPrompts = [
+    WritingPrompt(
+      id: 'default_task1_renewables',
+      taskType: 'task1',
+      topic: 'Charts & Trends',
+      title: 'Renewable Electricity Generation (2010–2025)',
+      promptText:
+          'The bar chart illustrates the percentage of electricity generated from renewable sources in four European countries between 2010 and 2025.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.',
+      minWordCount: 150,
+      difficulty: 'Academic',
+    ),
+    WritingPrompt(
+      id: 'default_task1_desalination',
+      taskType: 'task1',
+      topic: 'Process Diagram',
+      title: 'Seawater Desalination Plant',
+      promptText:
+          'The diagram below illustrates the stages involved in purifying and desalinating seawater for municipal consumption.\n\nSummarise the information by selecting and reporting the main features, and make comparisons where relevant. Write at least 150 words.',
+      minWordCount: 150,
+      difficulty: 'Academic',
+    ),
+    WritingPrompt(
+      id: 'default_task2_tech',
+      taskType: 'task2',
+      topic: 'Technology & Society',
+      title: 'AI Automation in Education',
+      promptText:
+          'Some people believe that artificial intelligence will eventually replace human teachers in schools and universities. Others argue that human educators remain indispensable for student development.\n\nDiscuss both views and give your own opinion. Write at least 250 words.',
+      minWordCount: 250,
+      difficulty: 'Intermediate',
+    ),
+  ];
+
   WritingProvider({
     GetWritingPromptsUseCase? getWritingPrompts,
     EvaluateEssayUseCase? evaluateEssay,
+    String initialTaskType = 'task2',
   })  : _getWritingPrompts = getWritingPrompts ?? GetWritingPromptsUseCase(),
-        _evaluateEssay = evaluateEssay ?? EvaluateEssayUseCase();
+        _evaluateEssay = evaluateEssay ?? EvaluateEssayUseCase(),
+        _selectedTaskType = initialTaskType;
 
   bool get isLoadingPrompts => _isLoadingPrompts;
   bool get isEvaluating => _isEvaluating;
@@ -87,10 +122,18 @@ class WritingProvider extends ChangeNotifier {
 
     try {
       final fetched = await _getWritingPrompts();
-      _allPrompts = fetched;
+      if (fetched.isNotEmpty) {
+        _allPrompts = fetched;
+      } else {
+        _allPrompts = fallbackPrompts;
+      }
       _updateSelectedPromptForCurrentTask();
     } catch (e) {
       _errorMessage = e.toString().replaceAll('Exception: ', '');
+      if (_allPrompts.isEmpty) {
+        _allPrompts = fallbackPrompts;
+        _updateSelectedPromptForCurrentTask();
+      }
     } finally {
       _isLoadingPrompts = false;
       notifyListeners();
