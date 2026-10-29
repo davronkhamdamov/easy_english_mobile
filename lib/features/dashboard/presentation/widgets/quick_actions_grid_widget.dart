@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../design_system/components/card/ds_card.dart';
 import 'quick_action_item_tile.dart';
 
@@ -18,7 +20,8 @@ class QuickActionModuleData {
 }
 
 /// Quick Actions Grid component for the Dashboard.
-/// Renders a 4-column grid of IELTS feature modules inside a clean monochrome card container.
+/// Renders a 4-column grid of IELTS feature modules inside a clean monochrome card container,
+/// dynamically styled with the active color palette.
 class QuickActionsGridWidget extends StatelessWidget {
   final Function(String moduleKey)? onModuleTap;
   final String title;
@@ -75,6 +78,11 @@ class QuickActionsGridWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final palette = ThemeScope.maybeOf(context)?.palette ?? AppColors.currentPalette;
+
+    final primaryAccent = isDark ? palette.darkPrimary : palette.primary;
+    final secondaryAccent = isDark ? palette.darkTextSecondary : palette.secondary;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,10 +114,23 @@ class QuickActionsGridWidget extends StatelessWidget {
             ),
             itemBuilder: (context, index) {
               final module = defaultModules[index];
+
+              // Rhythm of primary & secondary palette accents across the grid
+              final isPrimary = index % 2 == 0;
+              final accentColor = module.color ?? (isPrimary ? primaryAccent : secondaryAccent);
+              final bg = accentColor.withValues(
+                alpha: isDark ? (isPrimary ? 0.18 : 0.12) : (isPrimary ? 0.10 : 0.06),
+              );
+              final border = accentColor.withValues(
+                alpha: isDark ? (isPrimary ? 0.32 : 0.22) : (isPrimary ? 0.20 : 0.14),
+              );
+
               return QuickActionItemTile(
                 label: module.label,
                 icon: module.icon,
-                iconColor: module.color,
+                iconColor: accentColor,
+                backgroundColor: bg,
+                borderColor: border,
                 onTap: () => onModuleTap?.call(module.key),
               );
             },

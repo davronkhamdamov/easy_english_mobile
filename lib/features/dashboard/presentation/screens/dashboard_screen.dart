@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../../../design_system/design_system.dart';
 import '../../../ai_coach/presentation/screens/ai_coach_screen.dart';
@@ -9,6 +9,7 @@ import '../../../practice/presentation/screens/practice_screen.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
 import '../../../sentence_builder/presentation/screens/sentence_builder_screen.dart';
 import '../../../speaking/presentation/screens/speaking_screen.dart';
+import '../../../word_bank/presentation/screens/vocabulary_screen.dart';
 import '../../../word_bank/presentation/screens/word_bank_screen.dart';
 import '../../../writing/presentation/screens/writing_screen.dart';
 import '../../domain/repositories/dashboard_repository.dart';
@@ -20,6 +21,10 @@ import '../widgets/skill_activity_progress_card_widget.dart';
 import '../widgets/study_time_progress_card_widget.dart';
 
 /// Easy IELTS Student Dashboard featuring platform-native bottom navigation.
+///
+/// On iOS, navigation uses the native iOS 26 Liquid Glass tab bar
+/// (via [IOS26LiquidGlassNavigationBar]). On Android, a Material 3
+/// [NavigationBar] is used.
 class DashboardScreen extends StatefulWidget {
   final DashboardRepository? repository;
   final int initialIndex;
@@ -33,29 +38,48 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late int _currentIndex;
 
-  final List<FloatingNavItem> _iosNavItems = const [
-    FloatingNavItem(
-      icon: CupertinoIcons.house,
-      activeIcon: CupertinoIcons.house_fill,
+  /// Scroll controller for the active screen — forwarded to native for
+  /// tab-bar minimise-on-scroll.
+  final ScrollController _dashboardScrollController = ScrollController();
+
+  /// Bottom inset from the native tab bar (updated dynamically).
+  double _nativeTabBarInset = 100;
+
+  /// iOS 26 native tab items (SF Symbols).
+  static const _ios26NavItems = [
+    IOS26NavigationItem(
+      id: 'home',
+      sfSymbolName: 'house',
+      selectedSfSymbolName: 'house.fill',
       label: 'Home',
     ),
-    FloatingNavItem(
-      icon: CupertinoIcons.doc_text,
-      activeIcon: CupertinoIcons.doc_text_fill,
+    IOS26NavigationItem(
+      id: 'practice',
+      sfSymbolName: 'doc.text',
+      selectedSfSymbolName: 'doc.text.fill',
       label: 'Practice',
     ),
-    FloatingNavItem(
-      icon: CupertinoIcons.text_quote,
-      activeIcon: CupertinoIcons.text_quote,
+    IOS26NavigationItem(
+      id: 'vocabulary',
+      sfSymbolName: 'character.book.closed',
+      selectedSfSymbolName: 'character.book.closed.fill',
+      label: 'Vocabulary',
+    ),
+    IOS26NavigationItem(
+      id: 'textlab',
+      sfSymbolName: 'quote.bubble',
+      selectedSfSymbolName: 'quote.bubble.fill',
       label: 'Text Lab',
     ),
-    FloatingNavItem(
-      icon: CupertinoIcons.person,
-      activeIcon: CupertinoIcons.person_fill,
+    IOS26NavigationItem(
+      id: 'profile',
+      sfSymbolName: 'person',
+      selectedSfSymbolName: 'person.fill',
       label: 'Profile',
     ),
   ];
 
+  /// Android Material navigation items.
   final List<FloatingNavItem> _androidNavItems = const [
     FloatingNavItem(
       icon: Icons.home_outlined,
@@ -66,6 +90,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       icon: Icons.assignment_outlined,
       activeIcon: Icons.assignment_rounded,
       label: 'Practice',
+    ),
+    FloatingNavItem(
+      icon: Icons.menu_book_outlined,
+      activeIcon: Icons.menu_book_rounded,
+      label: 'Vocabulary',
     ),
     FloatingNavItem(
       icon: Icons.text_snippet_outlined,
@@ -82,7 +111,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex < _iosNavItems.length ? widget.initialIndex : 0;
+    _currentIndex =
+        widget.initialIndex < _ios26NavItems.length ? widget.initialIndex : 0;
+
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      _setupNativeTabBarListener();
+    }
+  }
+
+  void _setupNativeTabBarListener() {
+    // Listen for tab-bar geometry changes to update bottom padding
+    IOS26NavigationPlatform.instance.onTabBarFrameChanged = (geo) {
+      if (mounted) {
+        setState(() => _nativeTabBarInset = geo.height);
+      }
+    };
+    // Request initial geometry
+    IOS26NavigationPlatform.instance.getTabBarFrame().then((geo) {
+      if (mounted && geo != null) {
+        setState(() => _nativeTabBarInset = geo.height);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _dashboardScrollController.dispose();
+    super.dispose();
   }
 
   void _navigateTo(BuildContext context, Widget page) {
@@ -132,8 +187,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 1:
         return const PracticeScreen();
       case 2:
-        return const InteractiveTextPlaygroundScreen();
+        return const VocabularyScreen();
       case 3:
+        return const InteractiveTextPlaygroundScreen();
+      case 4:
         return _buildProfileContent();
       default:
         return _buildDashboardCanvasContent(isIOS: isIOS);
@@ -141,13 +198,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildDashboardCanvasContent({required bool isIOS}) {
+    // On iOS, bottom padding is dynamically informed by the native tab bar.
+    final bottomPad = isIOS ? _nativeTabBarInset + 16 : 16.0;
+
     return SafeArea(
+      bottom: false, // Let content extend behind the glass tab bar
       child: SingleChildScrollView(
-        padding: EdgeInsets.fromLTRB(16, 12, 16, isIOS ? 100 : 16),
+        controller: isIOS ? _dashboardScrollController : null,
+        padding: EdgeInsets.fromLTRB(16, 12, 16, bottomPad),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Header: Profile avatar & name, single-line "Hello, NAME", & notification bell
+            // Top Header: Profile avatar & name, "Hello, NAME", & notification bell
             const NewDashboardHeaderWidget(),
             const SizedBox(height: 16),
 
@@ -163,7 +225,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               vocabSubtitle: '31 min ago',
               onGrammarTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const GrammarRoadmapScreen()),
+                  MaterialPageRoute(
+                      builder: (_) => const GrammarRoadmapScreen()),
                 );
               },
               onVocabTap: () {
@@ -174,27 +237,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             const SizedBox(height: 14),
 
-            // Card 1: Study Time Progress Card (Static display, no navigation)
+            // Card 1: Study Time Progress Card
             const StudyTimeProgressCardWidget(
+              title: 'Learning time',
               totalTime: '01:47:19',
               grammarTime: '57m',
               vocabTime: '24m',
               practiceTime: '26m',
+              listeningTime: '26m',
             ),
             const SizedBox(height: 14),
 
-            // Card 2: Activity Matrix Progress Card -> Opens 12-Month Yearly Activity Screen
+            // Card 2: Activity Matrix Progress Card
             SkillActivityProgressCardWidget(
               title: 'Learning activity',
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const YearlyActivityScreen()),
+                  MaterialPageRoute(
+                      builder: (_) => const YearlyActivityScreen()),
                 );
               },
             ),
             const SizedBox(height: 14),
 
-            // Card 3: Quick Actions Grid Section at the end of Home items
+            // Card 3: Quick Actions Grid
             QuickActionsGridWidget(
               title: 'Quick actions',
               onModuleTap: (key) => _handleModuleTap(context, key),
@@ -214,6 +280,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
     if (isIOS) {
+      // ── iOS: Native Liquid Glass tab bar floating over content ──
       return Scaffold(
         body: Stack(
           children: [
@@ -226,16 +293,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
             ),
-            FloatingPillNavBar(
-              currentIndex: _currentIndex,
-              onTap: (index) => setState(() => _currentIndex = index),
-              items: _iosNavItems,
+            IOS26LiquidGlassNavigationBar(
+              items: _ios26NavItems,
+              selectedIndex: _currentIndex,
+              onSelected: (index) => setState(() => _currentIndex = index),
+              onGeometryChanged: (geo) {
+                if (mounted) setState(() => _nativeTabBarInset = geo.height);
+              },
             ),
           ],
         ),
       );
     }
 
+    // ── Android: Material 3 NavigationBar ──
     return Scaffold(
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 250),
@@ -246,7 +317,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
-        onDestinationSelected: (index) => setState(() => _currentIndex = index),
+        onDestinationSelected: (index) =>
+            setState(() => _currentIndex = index),
         destinations: _androidNavItems.map((item) {
           return NavigationDestination(
             icon: Icon(item.icon),

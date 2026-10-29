@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:easy_english/core/network/api_client.dart';
+import 'package:easy_english/core/theme/app_colors.dart';
+import 'package:easy_english/core/theme/app_theme.dart';
 import 'package:easy_english/features/word_bank/data/datasources/word_bank_remote_datasource.dart';
 import 'package:easy_english/features/word_bank/data/models/flashcard_item_model.dart';
 import 'package:easy_english/features/word_bank/data/repositories/word_bank_repository_impl.dart';
@@ -12,6 +15,7 @@ import 'package:easy_english/features/word_bank/domain/usecases/get_due_cards.da
 import 'package:easy_english/features/word_bank/domain/usecases/get_word_bank.dart';
 import 'package:easy_english/features/word_bank/domain/usecases/review_flashcard.dart';
 import 'package:easy_english/features/word_bank/presentation/providers/word_bank_provider.dart';
+import 'package:easy_english/features/word_bank/presentation/screens/word_bank_screen.dart';
 
 class FakeWordBankRemoteDataSource implements WordBankRemoteDataSource {
   final List<FlashcardItemModel> items = [
@@ -292,13 +296,59 @@ void main() {
       expect(due.first.word, 'Resilient');
     });
   });
+
+  group('WordBankScreen FloatingActionButton Palette Theming Tests', () {
+    testWidgets('FAB in dark mode uses Obsidian OLED darkSurfaceVariant and darkTextPrimary, not completely white', (tester) async {
+      final fakeRepo = WordBankRepositoryImpl(remoteDataSource: FakeWordBankRemoteDataSource());
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.darkTheme,
+          home: WordBankScreen(repository: fakeRepo),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final fabFinder = find.byType(FloatingActionButton);
+      expect(fabFinder, findsOneWidget);
+
+      final fab = tester.widget<FloatingActionButton>(fabFinder);
+      // Background must NOT be pure white (0xFFFFFFFF)
+      expect(fab.backgroundColor, isNot(equals(Colors.white)));
+      expect(fab.backgroundColor, AppColors.currentPalette.darkSurfaceVariant);
+      expect(fab.foregroundColor, AppColors.currentPalette.darkTextPrimary);
+      expect(fab.backgroundColor != fab.foregroundColor, isTrue);
+
+      expect(find.text('Review Flashcards (1 Due)'), findsOneWidget);
+      expect(find.byIcon(Icons.style_outlined), findsOneWidget);
+    });
+
+    testWidgets('FAB in light mode uses global palette primary and white foreground', (tester) async {
+      final fakeRepo = WordBankRepositoryImpl(remoteDataSource: FakeWordBankRemoteDataSource());
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: WordBankScreen(repository: fakeRepo),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final fabFinder = find.byType(FloatingActionButton);
+      expect(fabFinder, findsOneWidget);
+
+      final fab = tester.widget<FloatingActionButton>(fabFinder);
+      expect(fab.backgroundColor, AppColors.currentPalette.primary);
+      expect(fab.foregroundColor, Colors.white);
+      expect(fab.backgroundColor != fab.foregroundColor, isTrue);
+    });
+  });
 }
 
 class _MockWordBankApiClient extends ApiClient {
   final Future<http.Response> Function(String path)? onGet;
-  final Future<http.Response> Function(String path, Map<String, dynamic> body)? onPost;
 
-  _MockWordBankApiClient({this.onGet, this.onPost});
+  _MockWordBankApiClient({this.onGet});
 
   @override
   Future<http.Response> get(String path) async {
@@ -308,7 +358,6 @@ class _MockWordBankApiClient extends ApiClient {
 
   @override
   Future<http.Response> post(String path, Map<String, dynamic> body) async {
-    if (onPost != null) return await onPost!(path, body);
     return http.Response('{}', 200);
   }
 }

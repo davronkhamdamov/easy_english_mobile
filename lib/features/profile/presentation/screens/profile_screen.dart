@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../auth/data/auth_service.dart';
 import '../../../../design_system/design_system.dart';
 import '../../../notification/presentation/notifications_screen.dart';
+import '../widgets/color_palette_selector_sheet.dart';
 
 /// Full-featured Profile Screen styled with the global monochrome design system.
 class ProfileScreen extends StatefulWidget {
@@ -94,6 +95,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showColorPaletteSelectorModal() {
+    ColorPaletteSelectorSheet.show(context);
+  }
+
+  Widget _buildPalettePreviewDots(AppColorPalette palette) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: palette.previewColors.take(3).map((c) {
+        return Container(
+          margin: const EdgeInsets.only(right: 3),
+          width: 9,
+          height: 9,
+          decoration: BoxDecoration(
+            color: c,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: Colors.black.withValues(alpha: 0.15),
+              width: 0.5,
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
@@ -555,6 +581,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ThemeController.maybeOf(context)?.value ?? ThemeMode.system,
                     ),
                     onTap: _showThemeSelectorModal,
+                    theme: theme,
+                  ),
+                  _buildDivider(theme),
+                  _buildProfileTile(
+                    icon: Icons.palette_outlined,
+                    title: 'Color Palette',
+                    trailingWidget: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildPalettePreviewDots(
+                          ThemeController.maybeOf(context)?.palette ?? AppColors.currentPalette,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          (ThemeController.maybeOf(context)?.palette ?? AppColors.currentPalette).name,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: subtextColor,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 18,
+                          color: subtextColor.withValues(alpha: 0.6),
+                        ),
+                      ],
+                    ),
+                    onTap: _showColorPaletteSelectorModal,
                     theme: theme,
                   ),
                 ],

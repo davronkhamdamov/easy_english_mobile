@@ -5,8 +5,9 @@ import '../../../dashboard/presentation/widgets/essential_vocabularies_section_w
 import '../../../dashboard/presentation/widgets/grammar_banner_carousel_widget.dart';
 import '../../../youtube_listening/presentation/screens/youtube_listening_screen.dart';
 import '../../../youtube_listening/presentation/widgets/youtube_listening_feature_card.dart';
+import '../widgets/polysemy_featured_banner_widget.dart';
 
-/// Practice Screen featuring Grammar Roadmap, Essential Vocabularies & YouListen Video Pronunciation.
+/// Practice Screen featuring Grammar Roadmap, IELTS Multi-Meaning Vocabularies & YouListen Video Pronunciation.
 /// Styled using the global ThemeData and AppColors design tokens.
 class PracticeScreen extends StatelessWidget {
   const PracticeScreen({super.key});
@@ -48,14 +49,18 @@ class PracticeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // 2. App Store Inspired Essential Vocabularies Section
+              // 2. IELTS Multi-Meaning Vocabulary Practice (Top 100 & 200 MCQ Context Tests)
+              const PolysemyFeaturedBannerWidget(),
+              const SizedBox(height: 24),
+
+              // 3. App Store Inspired Essential Vocabularies Section
               EssentialVocabulariesSectionWidget(
                 onSeeAllTap: () =>
                     _navigateTo(context, const WordBankScreen()),
               ),
               const SizedBox(height: 24),
 
-              // 3. YouListen YouTube Video & Pronunciation Listening Feature
+              // 4. YouListen YouTube Video & Pronunciation Listening Feature
               YoutubeListeningFeatureCard(
                 onTap: () =>
                     _navigateTo(context, const YoutubeListeningScreen()),

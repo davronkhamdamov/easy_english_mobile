@@ -491,6 +491,21 @@ class _CodeBlockCardState extends State<_CodeBlockCard> {
                 ),
               ),
             ),
+            // Copy button
+            Padding(
+              padding: const EdgeInsets.only(top: 6, right: 6),
+              child: IconButton(
+                icon: Icon(
+                  _copied ? Icons.check_rounded : Icons.copy_rounded,
+                  size: 16,
+                  color: _copied
+                      ? (isDark ? const Color(0xFF4ADE80) : const Color(0xFF16A34A))
+                      : (isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary),
+                ),
+                tooltip: 'Copy code',
+                onPressed: _copyToClipboard,
+              ),
+            ),
           ],
         ),
       ),

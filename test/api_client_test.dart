@@ -71,6 +71,11 @@ void main() {
       // Verify middleware registration
       expect(ApiClient.middlewares.contains(mockMiddleware), isTrue);
 
+      // Verify forbidden callback
+      ApiClient.onForbiddenCallback?.call(forbiddenResponse);
+      expect(callbackFired, isTrue);
+      expect(callbackResponse?.statusCode, equals(403));
+
       // Verify ForbiddenException formatting
       final exception = ForbiddenException(
         message: 'Access denied to resource',

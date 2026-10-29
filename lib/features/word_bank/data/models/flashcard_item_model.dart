@@ -29,15 +29,18 @@ class FlashcardItemModel extends FlashcardItem {
     return FlashcardItemModel(
       id: json['id']?.toString() ?? '',
       word: json['word']?.toString() ?? '',
-      phonetic: json['phonetic']?.toString() ?? '',
+      phonetic: json['phonetic']?.toString() ?? json['ipa_pronunciation']?.toString() ?? '',
       cefrLevel:
           json['cefr_level']?.toString() ?? json['cefr']?.toString() ?? 'B2',
       definition: json['definition']?.toString() ?? '',
-      example: json['example']?.toString() ?? '',
+      example: json['example']?.toString() ?? json['example_sentence']?.toString() ?? '',
       audioUrl: json['audio_url']?.toString(),
       meaningIndex: (json['meaning_index'] as num?)?.toInt() ?? 0,
       collocations:
           (json['collocations'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          (json['academic_collocations'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],
@@ -55,7 +58,7 @@ class FlashcardItemModel extends FlashcardItem {
           (json['grammatical_forms'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
-          const [],
+          (json['part_of_speech'] != null ? [json['part_of_speech'].toString()] : const []),
       idioms:
           (json['idioms'] as List<dynamic>?)
               ?.map((e) => e.toString())

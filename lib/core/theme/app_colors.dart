@@ -1,37 +1,44 @@
 import 'package:flutter/material.dart';
+import 'app_palette.dart';
 
 /// Design system color palette providing tokens for both Light and Dark themes.
-/// Configured using the custom slate & monochrome color scale:
-/// - Bright Snow (#F8F9FA)
-/// - Platinum (#E9ECEF)
-/// - Alabaster Grey (#DEE2E6)
-/// - Pale Slate (#CED4DA)
-/// - Pale Slate 2 (#ADB5BD)
-/// - Slate Grey (#6C757D)
-/// - Iron Grey (#495057)
-/// - Gunmetal (#343A40)
-/// - Carbon Black (#212529)
+/// Standardized globally on the Obsidian OLED minimal monochromatic palette.
 class AppColors {
   AppColors._();
 
-  // Custom Palette Tokens
-  static const Color brightSnow = Color(0xFFF8F9FA);
-  static const Color platinum = Color(0xFFE9ECEF);
-  static const Color alabasterGrey = Color(0xFFDEE2E6);
-  static const Color paleSlate = Color(0xFFCED4DA);
-  static const Color paleSlate2 = Color(0xFFADB5BD);
-  static const Color slateGrey = Color(0xFF6C757D);
-  static const Color ironGrey = Color(0xFF495057);
-  static const Color gunmetal = Color(0xFF343A40);
-  static const Color carbonBlack = Color(0xFF212529);
+  // Active palette configuration (Dedicated Obsidian OLED)
+  static AppColorPalette currentPalette = AppColorPalette.obsidian;
 
-  // Main Brand Accents
-  static const Color primary = carbonBlack; // Main Brand Color
-  static const Color primaryHover = gunmetal;
-  static const Color primaryLight = platinum;
+  // Obsidian OLED Monochrome Scale Tokens
+  static const Color pitchBlack = Color(0xFF000000);
+  static const Color obsidianDark = Color(0xFF121214);
+  static const Color obsidianElevated = Color(0xFF1C1C1F);
+  static const Color obsidianBorder = Color(0xFF2C2C30);
+  static const Color titaniumGrey = Color(0xFFAAAAAF);
+  static const Color mutedGrey = Color(0xFF707075);
+  static const Color borderGrey = Color(0xFFDCDCE0);
+  static const Color lightGrey = Color(0xFFEBEBEF);
+  static const Color pureSnow = Color(0xFFF5F5F7);
+  static const Color pureWhite = Color(0xFFFFFFFF);
 
-  static const Color secondary = ironGrey;
-  static const Color secondaryLight = alabasterGrey;
+  // Backward-compatible scale aliases mapped to the Obsidian OLED spectrum
+  static const Color brightSnow = pureWhite;
+  static const Color platinum = lightGrey;
+  static const Color alabasterGrey = borderGrey;
+  static const Color paleSlate = titaniumGrey;
+  static const Color paleSlate2 = mutedGrey;
+  static const Color slateGrey = mutedGrey;
+  static const Color ironGrey = obsidianBorder;
+  static const Color gunmetal = obsidianDark;
+  static const Color carbonBlack = pitchBlack;
+
+  // Main Brand Accents (Obsidian OLED)
+  static const Color primary = pitchBlack; // Light mode primary: pure pitch black
+  static const Color primaryHover = Color(0xFF1A1A1A);
+  static const Color primaryLight = pureSnow;
+
+  static const Color secondary = Color(0xFF505055);
+  static const Color secondaryLight = lightGrey;
 
   // Lime / Green Accent (matches login screen progress & icons)
   static const Color accentGreen = Color(0xFF7CD327); // Vibrant lime green
@@ -50,29 +57,33 @@ class AppColors {
   static const Color dangerLight = Color(0xFFFEF2F2);
 
   // Social & Auth Surface Colors
-  static const Color socialAppleBg = carbonBlack;
-  static const Color socialGoogleBg = platinum;
-  static const Color socialGuestBg = platinum;
+  static const Color socialAppleBg = pitchBlack;
+  static const Color socialGoogleBg = lightGrey;
+  static const Color socialGuestBg = lightGrey;
 
-  // Light Mode Colors
-  static const Color lightBackground = brightSnow;
-  static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightSurfaceVariant = platinum;
-  static const Color lightTextPrimary = carbonBlack;
-  static const Color lightTextSecondary = ironGrey;
-  static const Color lightTextMuted = slateGrey;
-  static const Color lightBorder = alabasterGrey;
-  static const Color lightGlassBackground = Color(0xCCF8F9FA);
-  static const Color lightGlassBorder = Color(0x60DEE2E6);
+  // Light Mode Colors (Obsidian Light Minimal)
+  static const Color lightBackground = pureWhite;
+  static const Color lightSurface = pureSnow;
+  static const Color lightSurfaceVariant = lightGrey;
+  static const Color lightTextPrimary = pitchBlack;
+  static const Color lightTextSecondary = Color(0xFF505055);
+  static const Color lightTextMuted = Color(0xFF8E8E93);
+  static const Color lightBorder = borderGrey;
+  static const Color lightGlassBackground = Color(0xCCFFFFFF);
+  static const Color lightGlassBorder = Color(0x60DCDCE0);
 
-  // Dark Mode Colors
-  static const Color darkBackground = carbonBlack;
-  static const Color darkSurface = gunmetal;
-  static const Color darkSurfaceVariant = ironGrey;
-  static const Color darkTextPrimary = brightSnow;
-  static const Color darkTextSecondary = paleSlate;
-  static const Color darkTextMuted = paleSlate2;
-  static const Color darkBorder = ironGrey;
-  static const Color darkGlassBackground = Color(0x33343A40);
-  static const Color darkGlassBorder = Color(0x20ADB5BD);
+  // Dark Mode Colors (Obsidian OLED True Pitch Black)
+  static const Color darkBackground = pitchBlack; // Pure #000000 OLED
+  static const Color darkSurface = obsidianDark; // Deep #121214 surface
+  static const Color darkSurfaceVariant = obsidianElevated; // #1C1C1F
+  static const Color darkTextPrimary = pureWhite; // Crisp #FFFFFF text
+  static const Color darkTextSecondary = titaniumGrey; // #AAAAAF
+  static const Color darkTextMuted = mutedGrey; // #707075
+  static const Color darkBorder = obsidianBorder; // #2C2C30
+  static const Color darkGlassBackground = Color(0x331C1C1F);
+  static const Color darkGlassBorder = Color(0x20707075);
+
+  /// Helper to get the active primary color from the current BuildContext theme.
+  static Color primaryOf(BuildContext context) =>
+      Theme.of(context).colorScheme.primary;
 }

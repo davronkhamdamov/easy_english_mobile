@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:easy_english/features/dashboard/data/datasources/dashboard_remote_datasource.dart';
@@ -15,6 +16,7 @@ import 'package:easy_english/features/dashboard/presentation/widgets/quick_actio
 import 'package:easy_english/features/dashboard/presentation/widgets/skill_activity_progress_card_widget.dart';
 import 'package:easy_english/features/dashboard/presentation/widgets/study_time_progress_card_widget.dart';
 import 'package:easy_english/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:easy_english/features/word_bank/presentation/screens/vocabulary_screen.dart';
 import 'package:easy_english/features/grammar/domain/entities/grammar_topic.dart';
 import 'package:easy_english/design_system/design_system.dart';
 
@@ -307,6 +309,90 @@ void main() {
     );
 
     testWidgets(
+      'StudyTimeProgressCardWidget shows tooltips for grammar, vocabulary, and listening when clicking bars',
+      (WidgetTester tester) async {
+        LearningTimeSegment? tappedSegment;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: StudyTimeProgressCardWidget(
+                title: 'Learning time',
+                totalTime: '01:47:19',
+                grammarTime: '57m',
+                vocabTime: '24m',
+                listeningTime: '26m',
+                onSegmentTap: (segment) => tappedSegment = segment,
+              ),
+            ),
+          ),
+        );
+
+        // Verify title
+        expect(find.text('Learning time'), findsOneWidget);
+
+        // Verify Tooltip widgets exist for all 3 categories
+        expect(find.byKey(const Key('study_time_bar_grammar')), findsOneWidget);
+        expect(find.byKey(const Key('study_time_bar_vocabulary')), findsOneWidget);
+        expect(find.byKey(const Key('study_time_bar_listening')), findsOneWidget);
+
+        // 1. Click Grammar bar -> shows Grammar tooltip
+        await tester.tap(find.byKey(const Key('study_time_bar_grammar')));
+        await tester.pump();
+        expect(find.text('Grammar: 57m practised'), findsOneWidget);
+        expect(tappedSegment?.key, equals('grammar'));
+        expect(tappedSegment?.label, equals('Grammar'));
+
+        // 2. Click Vocabulary bar -> shows Vocabulary tooltip
+        await tester.tap(find.byKey(const Key('study_time_bar_vocabulary')));
+        await tester.pump();
+        expect(find.text('Vocabulary: 24m practised'), findsOneWidget);
+        expect(tappedSegment?.key, equals('vocabulary'));
+        expect(tappedSegment?.label, equals('Vocabulary'));
+
+        // 3. Click Listening bar -> shows Listening tooltip
+        await tester.tap(find.byKey(const Key('study_time_bar_listening')));
+        await tester.pump();
+        expect(find.text('Listening: 26m practised'), findsOneWidget);
+        expect(tappedSegment?.key, equals('listening'));
+        expect(tappedSegment?.label, equals('Listening'));
+      },
+    );
+
+    testWidgets(
+      'StudyTimeProgressCardWidget shows tooltips when tapping breakdown duration texts',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: StudyTimeProgressCardWidget(
+                totalTime: '01:47:19',
+                grammarTime: '57m',
+                vocabTime: '24m',
+                practiceTime: '26m',
+              ),
+            ),
+          ),
+        );
+
+        // Tap the breakdown "57m"
+        await tester.tap(find.byKey(const Key('study_time_breakdown_grammar')));
+        await tester.pump();
+        expect(find.text('Grammar: 57m practised'), findsOneWidget);
+
+        // Tap the breakdown "24m"
+        await tester.tap(find.byKey(const Key('study_time_breakdown_vocabulary')));
+        await tester.pump();
+        expect(find.text('Vocabulary: 24m practised'), findsOneWidget);
+
+        // Tap the breakdown "26m"
+        await tester.tap(find.byKey(const Key('study_time_breakdown_listening')));
+        await tester.pump();
+        expect(find.text('Listening: 26m practised'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
       'SkillActivityProgressCardWidget renders title and activity grid',
       (WidgetTester tester) async {
         bool cardTapped = false;
@@ -349,7 +435,7 @@ void main() {
     );
 
     testWidgets(
-      'DashboardScreen renders iOS FloatingPillNavBar when TargetPlatform.iOS',
+      'DashboardScreen renders iOS 26 Liquid Glass Navigation Bar when TargetPlatform.iOS',
       (WidgetTester tester) async {
         await tester.pumpWidget(
           MaterialApp(
@@ -359,7 +445,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        expect(find.byType(FloatingPillNavBar), findsOneWidget);
+        expect(find.byType(IOS26LiquidGlassNavigationBar), findsOneWidget);
         expect(find.byType(NavigationBar), findsNothing);
       },
     );
@@ -376,7 +462,59 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byType(NavigationBar), findsOneWidget);
-        expect(find.byType(FloatingPillNavBar), findsNothing);
+        expect(find.byType(IOS26LiquidGlassNavigationBar), findsNothing);
+        expect(find.text('Home'), findsOneWidget);
+        expect(find.text('Practice'), findsOneWidget);
+        expect(find.text('Vocabulary'), findsOneWidget);
+        expect(find.text('Text Lab'), findsOneWidget);
+        expect(find.text('Profile'), findsOneWidget);
+
+        // Tap Vocabulary tab next to Practice
+        await tester.tap(find.text('Vocabulary'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        expect(find.byType(VocabularyScreen), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'FloatingPillNavBar renders liquid tabs and handles tap callback',
+      (WidgetTester tester) async {
+        int tappedIndex = -1;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: FloatingPillNavBar(
+                currentIndex: 0,
+                onTap: (index) => tappedIndex = index,
+                items: const [
+                  FloatingNavItem(
+                    icon: CupertinoIcons.house,
+                    activeIcon: CupertinoIcons.house_fill,
+                    label: 'Today',
+                  ),
+                  FloatingNavItem(
+                    icon: CupertinoIcons.rocket,
+                    label: 'Games',
+                  ),
+                  FloatingNavItem(
+                    icon: CupertinoIcons.square_stack_3d_up,
+                    label: 'Apps',
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Today'), findsOneWidget);
+        expect(find.text('Games'), findsOneWidget);
+        expect(find.text('Apps'), findsOneWidget);
+
+        await tester.tap(find.text('Games'));
+        expect(tappedIndex, equals(1));
       },
     );
   });

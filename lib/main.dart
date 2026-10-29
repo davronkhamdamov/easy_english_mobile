@@ -12,7 +12,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   final initialMode = await ThemeController.loadThemeMode();
-  final themeController = ThemeController(initialMode);
+  final initialPalette = await ThemeController.loadPalette();
+  final themeController = ThemeController(initialMode, initialPalette);
 
   // Initialize Google Mobile Ads SDK for real ad monetization
   AdMobService.initialize().catchError((e) {
@@ -55,15 +56,15 @@ class _EasyIeltsAppState extends State<EasyIeltsApp> {
   Widget build(BuildContext context) {
     return ThemeScope(
       themeController: _themeController,
-      child: ValueListenableBuilder<ThemeMode>(
-        valueListenable: _themeController,
-        builder: (context, mode, child) {
+      child: ListenableBuilder(
+        listenable: _themeController,
+        builder: (context, child) {
           return MaterialApp(
             title: 'Easy IELTS',
             debugShowCheckedModeBanner: false,
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: mode,
+            theme: AppTheme.lightThemeFor(_themeController.palette),
+            darkTheme: AppTheme.darkThemeFor(_themeController.palette),
+            themeMode: _themeController.themeMode,
             home: const AuthWrapper(),
           );
         },

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/flashcard_item.dart';
+import '../screens/word_definition_screen.dart';
 
 class WordBankItemCard extends StatelessWidget {
   final FlashcardItem item;
   final VoidCallback? onPlayAudio;
   final VoidCallback? onDelete;
+  final VoidCallback? onTapWord;
 
   const WordBankItemCard({
     super.key,
     required this.item,
     this.onPlayAudio,
     this.onDelete,
+    this.onTapWord,
   });
 
   @override
@@ -41,13 +44,34 @@ class WordBankItemCard extends StatelessWidget {
                   child: Row(
                     children: [
                       Flexible(
-                        child: Text(
-                          item.word,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.onSurface,
+                        child: InkWell(
+                          onTap: onTapWord ??
+                              () => WordDefinitionScreen.open(context, word: item.word),
+                          borderRadius: BorderRadius.circular(6),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    item.word,
+                                    style: theme.textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: theme.colorScheme.onSurface,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                Icon(
+                                  Icons.open_in_new_rounded,
+                                  size: 13,
+                                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                                ),
+                              ],
+                            ),
                           ),
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 8),

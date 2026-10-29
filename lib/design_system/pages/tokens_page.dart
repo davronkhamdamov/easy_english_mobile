@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../design_system.dart';
+import '../../features/profile/presentation/widgets/color_palette_selector_sheet.dart';
 
 class DSTokensPage extends StatefulWidget {
   final ThemeController themeController;
@@ -56,6 +57,92 @@ class _DSTokensPageState extends State<DSTokensPage> {
             color: isDark
                 ? AppColors.darkTextSecondary
                 : AppColors.lightTextSecondary,
+          ),
+        ),
+        AppSpacing.gapVerticalLg,
+
+        // Active Color Palette Selector
+        Container(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            border: Border.all(
+              color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? widget.themeController.palette.darkPrimary.withValues(alpha: 0.15)
+                      : widget.themeController.palette.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.palette_outlined,
+                  size: 22,
+                  color: isDark
+                      ? widget.themeController.palette.darkPrimary
+                      : widget.themeController.palette.primary,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          widget.themeController.palette.name,
+                          style: AppTypography.h3.copyWith(
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? AppColors.darkSurfaceVariant
+                                : AppColors.lightSurfaceVariant,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            widget.themeController.palette.badge,
+                            style: AppTypography.caption.copyWith(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      widget.themeController.palette.description,
+                      style: AppTypography.caption.copyWith(
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              DSButton(
+                text: 'Switch Palette',
+                size: DSButtonSize.sm,
+                variant: DSButtonVariant.outline,
+                onPressed: () => ColorPaletteSelectorSheet.show(context),
+              ),
+            ],
           ),
         ),
         AppSpacing.gapVerticalLg,

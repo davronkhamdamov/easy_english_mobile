@@ -5,6 +5,8 @@ import 'package:audioplayers/audioplayers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../features/word_bank/domain/entities/word_definition_entry.dart';
+import '../../../features/word_bank/presentation/screens/word_definition_screen.dart';
 import 'word_lookup_info.dart';
 
 /// Custom animated dropdown popup card that displays detailed vocabulary information
@@ -336,17 +338,37 @@ class _DSWordDropdownCardState extends State<DSWordDropdownCard> {
               Row(
                 children: [
                   Flexible(
-                    child: Text(
-                      info.word,
-                      style: AppTypography.h2.copyWith(
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
+                    child: InkWell(
+                      onTap: () {
+                        widget.onClose();
+                        WordDefinitionScreen.open(context, word: info.word);
+                      },
+                      borderRadius: BorderRadius.circular(6),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              info.word,
+                              style: AppTypography.h2.copyWith(
+                                color: isDark
+                                    ? AppColors.darkTextPrimary
+                                    : AppColors.lightTextPrimary,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(
+                            Icons.open_in_new_rounded,
+                            size: 13,
+                            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                          ),
+                        ],
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   if (info.cefrLevel.isNotEmpty) ...[
@@ -381,13 +403,15 @@ class _DSWordDropdownCardState extends State<DSWordDropdownCard> {
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
-                        info.partOfSpeech,
+                        formatPartOfSpeechShort(info.partOfSpeech),
                         style: TextStyle(
                           color: isDark
                               ? AppColors.darkTextSecondary
                               : AppColors.lightTextSecondary,
-                          fontSize: 10,
+                          fontSize: 11,
                           fontStyle: FontStyle.italic,
+                          fontFamily: 'Georgia',
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -610,10 +634,26 @@ class _DSWordDropdownCardState extends State<DSWordDropdownCard> {
           ),
         ),
 
-        // Quick Copy and Pronounce button
+        // Quick Definition, Copy, and Pronounce buttons
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            InkWell(
+              onTap: () {
+                widget.onClose();
+                WordDefinitionScreen.open(context, word: widget.info!.word);
+              },
+              borderRadius: BorderRadius.circular(20),
+              child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: Icon(
+                  Icons.auto_stories_outlined,
+                  size: 17,
+                  color: isDark ? Colors.white70 : Colors.black54,
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
             InkWell(
               onTap: _handleCopy,
               borderRadius: BorderRadius.circular(20),

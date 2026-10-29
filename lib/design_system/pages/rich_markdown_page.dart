@@ -394,7 +394,7 @@ DSRichMarkdown(
             children: [
               Row(
                 children: [
-                  const Icon(Icons.remove_red_eye_rounded, size: 18, color: AppColors.primary),
+                  Icon(Icons.remove_red_eye_rounded, size: 18, color: AppColors.primary),
                   const SizedBox(width: 8),
                   Text(
                     'Live Render Output',
@@ -446,7 +446,7 @@ DSRichMarkdown(
             children: [
               Row(
                 children: [
-                  const Icon(Icons.code_rounded, size: 18, color: AppColors.primary),
+                  Icon(Icons.code_rounded, size: 18, color: AppColors.primary),
                   const SizedBox(width: 8),
                   Text(
                     'Markdown Source Editor',

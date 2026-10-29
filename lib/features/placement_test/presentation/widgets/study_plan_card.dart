@@ -36,7 +36,7 @@ class StudyPlanCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.auto_awesome, color: AppColors.primary),
+                        Icon(Icons.auto_awesome, color: AppColors.primary),
                         const SizedBox(width: 8),
                         Text(
                           'Personalized IELTS Study Plan',
@@ -49,7 +49,7 @@ class StudyPlanCard extends StatelessWidget {
                     Chip(
                       label: Text('Target Band ${plan.targetBand}'),
                       backgroundColor: AppColors.primaryLight,
-                      labelStyle: const TextStyle(
+                      labelStyle: TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                       ),
@@ -83,7 +83,7 @@ class StudyPlanCard extends StatelessWidget {
                       children: [
                         Text(
                           item.day,
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary, fontSize: 12),
+                          style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary, fontSize: 12),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -140,7 +140,7 @@ class StudyPlanCard extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           value,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.primary),
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.primary),
         ),
       ],
     );

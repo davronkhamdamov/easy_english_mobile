@@ -76,7 +76,7 @@ class TranscriptCard extends StatelessWidget {
             ),
             const Divider(height: 16),
             if (isTranscribing) ...[
-              const LinearProgressIndicator(color: AppColors.primary),
+              LinearProgressIndicator(color: AppColors.primary),
               const SizedBox(height: 12),
               Center(
                 child: Text(

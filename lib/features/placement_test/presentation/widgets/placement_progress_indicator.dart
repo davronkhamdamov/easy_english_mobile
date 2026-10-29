@@ -114,7 +114,7 @@ class PlacementProgressIndicator extends StatelessWidget {
               ? (session.currentQuestionIndex + 1) / session.totalQuestions
               : 0.0,
           backgroundColor: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-          valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
           minHeight: 4,
         ),
       ],

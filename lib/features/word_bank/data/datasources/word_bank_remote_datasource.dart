@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 import '../../../../core/network/api_client.dart';
 import '../models/flashcard_item_model.dart';
 
@@ -21,40 +22,69 @@ class WordBankRemoteDataSourceImpl implements WordBankRemoteDataSource {
 
   @override
   Future<List<FlashcardItemModel>> fetchWordBankItems() async {
-    final response = await _apiClient.get('/api/v1/wordbank/');
-    if (response.statusCode == 200) {
-      final decoded = jsonDecode(response.body);
-      final List<dynamic> jsonList = _extractList(
-        decoded,
-        const ['results', 'data', 'items', 'wordbank', 'flashcards'],
-      );
-      return jsonList
-          .whereType<Map>()
-          .map((json) => FlashcardItemModel.fromJson(Map<String, dynamic>.from(json)))
-          .toList();
+    try {
+      final response = await _apiClient.get('/api/v1/wordbank/');
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        final List<dynamic> jsonList = _extractList(
+          decoded,
+          const ['results', 'data', 'items', 'wordbank', 'flashcards', 'words'],
+        );
+        if (jsonList.isNotEmpty) {
+          return jsonList
+              .whereType<Map>()
+              .map((json) => FlashcardItemModel.fromJson(Map<String, dynamic>.from(json)))
+              .toList();
+        }
+      }
+    } catch (_) {
+      // Remote API call failed, fallback below
     }
-    throw Exception(
-      'Failed to fetch word bank items (Status: ${response.statusCode})',
-    );
+
+    final bundled = await _loadBundledVocabulary();
+    if (bundled.isNotEmpty) {
+      return bundled;
+    }
+    throw Exception('Failed to fetch word bank items');
   }
 
   @override
   Future<List<FlashcardItemModel>> fetchDueFlashcards() async {
-    final response = await _apiClient.get('/api/v1/wordbank/due/');
-    if (response.statusCode == 200) {
-      final decoded = jsonDecode(response.body);
-      final List<dynamic> jsonList = _extractList(
-        decoded,
-        const ['due_cards', 'results', 'data', 'items', 'flashcards'],
-      );
-      return jsonList
-          .whereType<Map>()
-          .map((json) => FlashcardItemModel.fromJson(Map<String, dynamic>.from(json)))
-          .toList();
+    try {
+      final response = await _apiClient.get('/api/v1/wordbank/due/');
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        final List<dynamic> jsonList = _extractList(
+          decoded,
+          const ['due_cards', 'results', 'data', 'items', 'flashcards', 'words'],
+        );
+        if (jsonList.isNotEmpty) {
+          return jsonList
+              .whereType<Map>()
+              .map((json) => FlashcardItemModel.fromJson(Map<String, dynamic>.from(json)))
+              .toList();
+        }
+      }
+    } catch (_) {
+      // Remote API call failed, fallback below
     }
-    throw Exception(
-      'Failed to fetch due flashcards (Status: ${response.statusCode})',
-    );
+
+    final all = await fetchWordBankItems();
+    return all.take(5).toList();
+  }
+
+  Future<List<FlashcardItemModel>> _loadBundledVocabulary() async {
+    try {
+      final raw = await rootBundle.loadString('assets/data/vocabulary_bank.json');
+      final decoded = jsonDecode(raw);
+      if (decoded is Map && decoded['words'] is List) {
+        return (decoded['words'] as List)
+            .whereType<Map>()
+            .map((json) => FlashcardItemModel.fromJson(Map<String, dynamic>.from(json)))
+            .toList();
+      }
+    } catch (_) {}
+    return const [];
   }
 
   @override

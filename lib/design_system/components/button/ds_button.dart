@@ -234,10 +234,16 @@ class _DSButtonState extends State<DSButton>
             AppSpacing.gapHorizontalSm,
           ],
         ],
-        AnimatedDefaultTextStyle(
-          duration: AppAnimations.fast,
-          style: textStyle.copyWith(color: textColor),
-          child: Text(widget.text),
+        Flexible(
+          child: AnimatedDefaultTextStyle(
+            duration: AppAnimations.fast,
+            style: textStyle.copyWith(color: textColor),
+            child: Text(
+              widget.text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ),
         if (widget.rightIcon != null && !widget.isLoading) ...[
           AppSpacing.gapHorizontalSm,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../../practice/data/datasources/polysemy_vocab_data.dart';
+import '../../../practice/presentation/screens/polysemy_category_screen.dart';
 import '../../../word_bank/presentation/screens/word_bank_screen.dart';
 
 // TODO: Replace mock vocabulary essentials with WordBank repository data
@@ -8,6 +10,7 @@ class VocabularyEssentialItem {
   final String subtitle;
   final String actionLabel;
   final IconData icon;
+  final String? categoryId;
 
   const VocabularyEssentialItem({
     required this.id,
@@ -15,6 +18,7 @@ class VocabularyEssentialItem {
     required this.subtitle,
     required this.actionLabel,
     required this.icon,
+    this.categoryId,
   });
 }
 
@@ -24,14 +28,31 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
   final List<VocabularyEssentialItem> items;
   final VoidCallback? onSeeAllTap;
 
-  // TODO: Replace mock items with WordBank domain entities
+  // Curated IELTS vocabulary collections with dedicated polysemy practice
   static const List<VocabularyEssentialItem> mockVocabularies = [
+    VocabularyEssentialItem(
+      id: 'v100',
+      title: 'Top 100 IELTS Words',
+      subtitle: 'Multi-meaning words tested in Reading & Task 2',
+      actionLabel: 'Practice',
+      icon: Icons.menu_book_rounded,
+      categoryId: 'ielts_100',
+    ),
+    VocabularyEssentialItem(
+      id: 'v200',
+      title: 'Top 200 Academic Words',
+      subtitle: 'Band 7.5–9.0 polysemes & contextual usage',
+      actionLabel: 'Practice',
+      icon: Icons.psychology_rounded,
+      categoryId: 'ielts_200',
+    ),
     VocabularyEssentialItem(
       id: 'v1',
       title: 'Academic Band 8+ Words',
       subtitle: '50 High-frequency terms for Task 2 essays',
       actionLabel: 'Practice',
       icon: Icons.style_outlined,
+      categoryId: 'ielts_100',
     ),
     VocabularyEssentialItem(
       id: 'v2',
@@ -75,6 +96,21 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
     this.items = mockVocabularies,
     this.onSeeAllTap,
   });
+
+  void _handleItemTap(BuildContext context, VocabularyEssentialItem item) {
+    if (item.categoryId != null) {
+      final category = PolysemyVocabData.getCategoryById(item.categoryId!);
+      if (category != null) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => PolysemyCategoryScreen(category: category),
+          ),
+        );
+        return;
+      }
+    }
+    _openWordBank(context);
+  }
 
   void _openWordBank(BuildContext context) {
     if (onSeeAllTap != null) {
@@ -159,7 +195,7 @@ class EssentialVocabulariesSectionWidget extends StatelessWidget {
     final theme = Theme.of(context);
 
     return InkWell(
-      onTap: () => _openWordBank(context),
+      onTap: () => _handleItemTap(context, item),
       borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),

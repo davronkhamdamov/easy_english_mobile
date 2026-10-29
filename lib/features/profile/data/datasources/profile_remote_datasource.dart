@@ -31,8 +31,8 @@ class ProfileRemoteDatasource {
   }) async {
     final response = await _client.post('/api/v1/user/profile', {
       'full_name': fullName,
-      if (bio != null) 'bio': bio,
-      if (avatarUrl != null) 'avatar_url': avatarUrl,
+      'bio': ?bio,
+      'avatar_url': ?avatarUrl,
       'role': role,
     });
 
@@ -54,9 +54,9 @@ class ProfileRemoteDatasource {
     String? avatarUrl,
   }) async {
     final body = <String, dynamic>{
-      if (fullName != null) 'full_name': fullName,
-      if (bio != null) 'bio': bio,
-      if (avatarUrl != null) 'avatar_url': avatarUrl,
+      'full_name': ?fullName,
+      'bio': ?bio,
+      'avatar_url': ?avatarUrl,
     };
 
     final response = await _client.put('/api/v1/user/profile', body);

@@ -5,7 +5,6 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../design_system/components/badge/ds_badge.dart';
 import '../../../../design_system/components/button/ds_button.dart';
-import '../../../../design_system/components/card/ds_card.dart';
 import '../../../../design_system/components/rich_markdown/ds_rich_markdown.dart';
 import '../../../../design_system/components/rich_markdown/ds_rich_markdown_theme.dart';
 import '../../domain/entities/grammar_topic.dart';
@@ -720,7 +719,7 @@ When presenting opinions, theories, or general consensus without attributing to 
           children: [
             Row(
               children: [
-                const Icon(Icons.quiz_rounded, size: 18, color: AppColors.primary),
+                Icon(Icons.quiz_rounded, size: 18, color: AppColors.primary),
                 const SizedBox(width: 8),
                 Text(
                   'Knowledge Check (${_selectedArticle.quizQuestions.length} Questions)',

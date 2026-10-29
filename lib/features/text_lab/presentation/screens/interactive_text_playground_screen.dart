@@ -20,10 +20,12 @@ import '../../../sentence_builder/presentation/screens/sentence_builder_screen.d
 import '../../../speaking/presentation/screens/speaking_screen.dart';
 import '../../../writing/presentation/screens/writing_screen.dart';
 import '../../../youtube_listening/presentation/screens/youtube_listening_screen.dart';
+import 'ielts_article_test_screen.dart';
 
 /// Categories available in the Language & AI Lab.
 enum LabCategory {
   all,
+  ieltsTestingLab,
   lookupWords,
   richMarkdown,
   sponsoredAds,
@@ -39,6 +41,8 @@ extension LabCategoryMeta on LabCategory {
     switch (this) {
       case LabCategory.all:
         return 'All Labs';
+      case LabCategory.ieltsTestingLab:
+        return 'IELTS Exam Lab';
       case LabCategory.lookupWords:
         return 'Look Up Words';
       case LabCategory.richMarkdown:
@@ -62,6 +66,8 @@ extension LabCategoryMeta on LabCategory {
     switch (this) {
       case LabCategory.all:
         return Icons.grid_view_rounded;
+      case LabCategory.ieltsTestingLab:
+        return Icons.assignment_turned_in_rounded;
       case LabCategory.lookupWords:
         return Icons.text_snippet_rounded;
       case LabCategory.richMarkdown:
@@ -312,6 +318,14 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
   bool _isPlayingVideoSnippet = false;
   double _playbackSpeed = 1.0;
 
+  // --- IELTS Test Lab State ---
+  int _ieltsLabQuestionIndex = 0; // 0: MCQ Single, 1: Fill Blank, 2: TFNG, 3: Matching Headings
+  String? _ieltsLabSelectedOption;
+  String? _ieltsLabTfngOption;
+  final TextEditingController _ieltsLabBlankController =
+      TextEditingController(text: 'evapotranspiration');
+  String? _ieltsLabSelectedHeading;
+
   @override
   void initState() {
     super.initState();
@@ -330,6 +344,7 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
     _customTextController.dispose();
     _markdownInputController.dispose();
     _sentenceInputController.dispose();
+    _ieltsLabBlankController.dispose();
     super.dispose();
   }
 
@@ -461,11 +476,29 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
               const SizedBox(height: 20),
             ],
 
-            // 2. RICH MARKDOWN LAB (New Component)
+            // 2. IELTS COMPREHENSIVE TESTING LAB (New Testing Page)
+            if (_selectedCategory == LabCategory.all ||
+                _selectedCategory == LabCategory.ieltsTestingLab) ...[
+              _buildCategoryHeader(
+                title: '2. IELTS Academic Reading & Testing Lab',
+                subtitle:
+                    'Simulate authentic IELTS tests using rich article passages with Multiple Choice, Fill in Blanks, True/False/Not Given, Matching Headings & Features.',
+                category: LabCategory.ieltsTestingLab,
+                badgeText: 'FULL EXAM SIMULATOR',
+                isDark: isDark,
+                onOpenFull: () =>
+                    _navigateToScreen(const IeltsArticleTestScreen()),
+              ),
+              const SizedBox(height: 12),
+              _buildIeltsTestLabExample(isDark),
+              const SizedBox(height: 24),
+            ],
+
+            // 3. RICH MARKDOWN LAB (New Component)
             if (_selectedCategory == LabCategory.all ||
                 _selectedCategory == LabCategory.richMarkdown) ...[
               _buildCategoryHeader(
-                title: '2. Grammar Article & Rich Markdown Engine',
+                title: '3. Grammar Article & Rich Markdown Engine',
                 subtitle:
                     'Read full masterclass lessons with GitHub callout alerts, interactive copyable code blocks, GFM tables, checklists, custom badges & instant word lookup.',
                 category: LabCategory.richMarkdown,
@@ -2445,6 +2478,490 @@ Supports standard CommonMark, GitHub Flavored Markdown (GFM), and custom UI comp
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  // ==========================================
+  // IELTS COMPREHENSIVE TEST LAB EXAMPLE
+  // ==========================================
+
+  Widget _buildIeltsTestLabExample(bool isDark) {
+    return DSCard(
+      variant: DSCardVariant.elevated,
+      header: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.assignment_turned_in_rounded,
+                size: 18,
+                color: AppColors.primary,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                'IELTS Reading & Question Simulator',
+                style: AppTypography.label.copyWith(
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const DSBadge(
+            label: 'C1 ACADEMIC • BAND 8.5',
+            variant: DSBadgeVariant.primary,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Article Context Banner
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF19202E) : const Color(0xFFF1F5FD),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: AppColors.primary.withValues(alpha: 0.2),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const DSBadge(label: 'Urban Architecture', variant: DSBadgeVariant.neutral),
+                    const SizedBox(width: 8),
+                    const DSBadge(label: 'Passage 2', variant: DSBadgeVariant.primary),
+                    const Spacer(),
+                    Icon(
+                      Icons.schedule_rounded,
+                      size: 14,
+                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '14 min read',
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'The Urban Canopy: Vertical Forests & Biophilic Architecture',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                DSRichMarkdown(
+                  '''By contrast, vertical canopies mitigate ambient thermal loading via ==evapotranspiration==—a physiological process whereby vegetation absorbs groundwater through roots and releases moisture vapor through stomata. Exterior wall temperatures drop by up to **14°C**, reducing mechanical HVAC requirements by **28%**.
+
+> [!NOTE] Key Academic Collocation
+> **Evapotranspiration** combines soil evaporation and plant transpiration for thermal equilibrium.''',
+                  themeData: isDark
+                      ? DSRichMarkdownThemeData.dark(baseFontSize: 13.5)
+                      : DSRichMarkdownThemeData.light(baseFontSize: 13.5),
+                  enableInteractiveWordLookup: true,
+                  onWordTap: _onWordTapped,
+                  onWordSaved: _onWordSaved,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Question Type Selector
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.quiz_rounded, size: 16, color: AppColors.primary),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Interactive Question Types:',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                    ),
+                  ),
+                ],
+              ),
+              const DSBadge(label: 'LIVE DEMO', variant: DSBadgeVariant.success),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Question Type Switch Chips
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildIeltsTypeChip(0, 'Multiple Choice (MCQ)', isDark),
+                _buildIeltsTypeChip(1, 'Fill in the Blank', isDark),
+                _buildIeltsTypeChip(2, 'True / False / Not Given', isDark),
+                _buildIeltsTypeChip(3, 'Matching Headings', isDark),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // Active Demo Question
+          if (_ieltsLabQuestionIndex == 0) _buildIeltsLabMcqDemo(isDark),
+          if (_ieltsLabQuestionIndex == 1) _buildIeltsLabBlankDemo(isDark),
+          if (_ieltsLabQuestionIndex == 2) _buildIeltsLabTfngDemo(isDark),
+          if (_ieltsLabQuestionIndex == 3) _buildIeltsLabHeadingDemo(isDark),
+
+          const SizedBox(height: 16),
+
+          // Launch Full IELTS Test Page Button
+          DSButton(
+            text: 'Launch Full IELTS Exam Page (3 Articles & 20+ Questions) →',
+            variant: DSButtonVariant.primary,
+            size: DSButtonSize.lg,
+            fullWidth: true,
+            leftIcon: const Icon(Icons.launch_rounded, size: 18),
+            onPressed: () => _navigateToScreen(const IeltsArticleTestScreen()),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIeltsTypeChip(int index, String label, bool isDark) {
+    final isSelected = _ieltsLabQuestionIndex == index;
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: ChoiceChip(
+        label: Text(label),
+        selected: isSelected,
+        selectedColor: AppColors.primary,
+        labelStyle: TextStyle(
+          color: isSelected
+              ? Colors.white
+              : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+          fontSize: 12,
+        ),
+        onSelected: (val) {
+          if (val) {
+            setState(() => _ieltsLabQuestionIndex = index);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildIeltsLabMcqDemo(bool isDark) {
+    final options = [
+      'A: Reflecting ultraviolet photons',
+      'B: Evapotranspiration of absorbed groundwater',
+      'C: Creating permanent shadow cones across boulevards',
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF141720) : const Color(0xFFF9FAFD),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Q: According to Paragraph B, what is the primary mechanism by which vertical forests alleviate ambient heat?',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5),
+          ),
+          const SizedBox(height: 10),
+          ...options.map((opt) {
+            final letter = opt.split(':').first;
+            final isSelected = _ieltsLabSelectedOption == letter;
+            final isCorrect = letter == 'B';
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 6.0),
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  setState(() => _ieltsLabSelectedOption = letter);
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? (isCorrect
+                            ? AppColors.success.withValues(alpha: 0.15)
+                            : AppColors.danger.withValues(alpha: 0.15))
+                        : (isDark ? Colors.white10 : Colors.white),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: isSelected
+                          ? (isCorrect ? AppColors.success : AppColors.danger)
+                          : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(opt, style: const TextStyle(fontSize: 13)),
+                      ),
+                      if (isSelected) ...[
+                        const SizedBox(width: 8),
+                        Icon(
+                          isCorrect ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                          size: 18,
+                          color: isCorrect ? AppColors.success : AppColors.danger,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
+          if (_ieltsLabSelectedOption == 'B')
+            Padding(
+              padding: const EdgeInsets.only(top: 6.0),
+              child: Text(
+                '✓ Correct! "evapotranspiration—a physiological process whereby vegetation absorbs groundwater..."',
+                style: const TextStyle(fontSize: 12, color: AppColors.success, fontWeight: FontWeight.bold),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIeltsLabBlankDemo(bool isDark) {
+    final text = _ieltsLabBlankController.text.trim().toLowerCase();
+    final isCorrect = text == 'evapotranspiration';
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF141720) : const Color(0xFFF9FAFD),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Q: Complete the sentence (NO MORE THAN TWO WORDS):',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.warning),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Vertical canopies mitigate ambient thermal loading via the biological process of ______.',
+            style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: _ieltsLabBlankController,
+            onChanged: (val) => setState(() {}),
+            decoration: InputDecoration(
+              hintText: 'Type answer...',
+              filled: true,
+              fillColor: isDark ? Colors.white10 : Colors.white,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+              suffixIcon: Icon(
+                isCorrect ? Icons.check_circle_rounded : Icons.info_outline_rounded,
+                color: isCorrect ? AppColors.success : AppColors.warning,
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            isCorrect ? '✓ Match found in Paragraph B!' : 'Target answer from passage: "evapotranspiration"',
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w600,
+              color: isCorrect ? AppColors.success : AppColors.darkTextSecondary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIeltsLabTfngDemo(bool isDark) {
+    final isTrue = _ieltsLabTfngOption == 'TRUE';
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF141720) : const Color(0xFFF9FAFD),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Q: The total vegetated area of Milan\'s Bosco Verticale is approximately ten times the land footprint it occupies.',
+            style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: ['TRUE', 'FALSE', 'NOT GIVEN'].map((opt) {
+              final isSelected = _ieltsLabTfngOption == opt;
+              final isCorr = opt == 'TRUE';
+
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: InkWell(
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      setState(() => _ieltsLabTfngOption = opt);
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? (isCorr
+                                ? AppColors.success.withValues(alpha: 0.15)
+                                : AppColors.danger.withValues(alpha: 0.15))
+                            : (isDark ? Colors.white10 : Colors.white),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: isSelected
+                              ? (isCorr ? AppColors.success : AppColors.danger)
+                              : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                        ),
+                      ),
+                      child: Text(
+                        opt,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: isSelected
+                              ? (isCorr ? AppColors.success : AppColors.danger)
+                              : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          if (_ieltsLabTfngOption != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                isTrue
+                    ? '✓ Correct! Paragraph A: 30,000 m² biomass on a 3,000 m² footprint (exactly 10x).'
+                    : 'Paragraph A confirms 30,000 m² on 3,000 m² footprint (10x), so TRUE is correct.',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: isTrue ? AppColors.success : AppColors.danger,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIeltsLabHeadingDemo(bool isDark) {
+    final headings = [
+      'i. Financial reservations and maintenance practicalities',
+      'ii. Thermodynamic advantages and ambient cooling',
+      'iii. Psychological equilibrium and stress alleviation',
+    ];
+    final isCorrect = _ieltsLabSelectedHeading == 'ii';
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF141720) : const Color(0xFFF9FAFD),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: isDark ? AppColors.darkBorder : AppColors.lightBorder),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Q: Match Paragraph B (ambient cooling and evapotranspiration) to its heading:',
+            style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 10),
+          ...headings.map((h) {
+            final key = h.split('.').first.trim();
+            final isSelected = _ieltsLabSelectedHeading == key;
+            final isCorr = key == 'ii';
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 6.0),
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  setState(() => _ieltsLabSelectedHeading = key);
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? (isCorr
+                            ? AppColors.success.withValues(alpha: 0.15)
+                            : AppColors.danger.withValues(alpha: 0.15))
+                        : (isDark ? Colors.white10 : Colors.white),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: isSelected
+                          ? (isCorr ? AppColors.success : AppColors.danger)
+                          : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(child: Text(h, style: const TextStyle(fontSize: 12.5))),
+                      if (isSelected)
+                        Icon(
+                          isCorr ? Icons.check_circle_rounded : Icons.cancel_rounded,
+                          size: 18,
+                          color: isCorr ? AppColors.success : AppColors.danger,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
+          if (_ieltsLabSelectedHeading != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 6.0),
+              child: Text(
+                isCorrect
+                    ? '✓ Correct! Heading ii captures the thermodynamic cooling mechanisms of Paragraph B.'
+                    : 'Heading ii (Thermodynamic advantages) best captures Paragraph B.',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: isCorrect ? AppColors.success : AppColors.danger,
+                ),
+              ),
+            ),
         ],
       ),
     );

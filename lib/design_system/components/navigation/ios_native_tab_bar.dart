@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Theme;
 import 'package:flutter/services.dart';
 
 /// Navigation item model for [IosNativeTabBar].
@@ -15,13 +16,14 @@ class IosNavItem {
 }
 
 /// Native iOS Bottom Navigation Bar adhering strictly to Apple's Human Interface Guidelines (HIG).
-class IosNativeTabBar extends StatelessWidget {
+class IosNativeTabBar extends StatelessWidget implements PreferredSizeWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
   final List<IosNavItem> items;
   final Color? backgroundColor;
   final Color? activeColor;
   final Color? inactiveColor;
+  final double iconSize;
 
   const IosNativeTabBar({
     super.key,
@@ -31,11 +33,17 @@ class IosNativeTabBar extends StatelessWidget {
     this.backgroundColor,
     this.activeColor,
     this.inactiveColor,
+    this.iconSize = 28.0,
   });
 
   @override
+  Size get preferredSize => const Size.fromHeight(50.0);
+
+  @override
   Widget build(BuildContext context) {
-    final isDark = CupertinoTheme.brightnessOf(context) == Brightness.dark;
+    final isDark = (CupertinoTheme.maybeBrightnessOf(context) ??
+            Theme.of(context).brightness) ==
+        Brightness.dark;
 
     final barBg = backgroundColor ??
         (isDark ? const Color(0xCC1D1D1F) : const Color(0xCCF9F9F9));
@@ -52,6 +60,7 @@ class IosNativeTabBar extends StatelessWidget {
       activeColor: activeCl,
       inactiveColor: inactiveCl,
       backgroundColor: barBg,
+      iconSize: iconSize,
       border: Border(
         top: BorderSide(
           color: isDark

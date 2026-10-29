@@ -23,7 +23,7 @@ class PlacementAudioPlayerWidget extends StatelessWidget {
       color: AppColors.secondaryLight.withValues(alpha: 0.4),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: AppColors.secondary, width: 1),
+        side: BorderSide(color: AppColors.secondary, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(14.0),
@@ -32,7 +32,7 @@ class PlacementAudioPlayerWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.headphones, color: AppColors.secondary),
+                Icon(Icons.headphones, color: AppColors.secondary),
                 const SizedBox(width: 8),
                 Text(
                   'Listening Audio Recording',

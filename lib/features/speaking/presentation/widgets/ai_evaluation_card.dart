@@ -116,7 +116,7 @@ class AIEvaluationCard extends StatelessWidget {
   Widget _buildTipsAccordion(ThemeData theme, bool isDark) {
     return ExpansionTile(
       title: Text('Pronunciation Tips (${evaluation.pronunciationTips.length})', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-      leading: const Icon(Icons.record_voice_over, color: AppColors.secondary, size: 20),
+      leading: Icon(Icons.record_voice_over, color: AppColors.secondary, size: 20),
       childrenPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       children: evaluation.pronunciationTips.map((t) => Padding(
         padding: const EdgeInsets.only(bottom: 8.0),

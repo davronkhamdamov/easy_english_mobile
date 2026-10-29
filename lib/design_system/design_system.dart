@@ -1,6 +1,7 @@
 // Design System Master Export Barrel
 export '../core/theme/app_animations.dart';
 export '../core/theme/app_colors.dart';
+export '../core/theme/app_palette.dart';
 export '../core/theme/app_shadows.dart';
 export '../core/theme/app_spacing.dart';
 export '../core/theme/app_theme.dart';
@@ -26,6 +27,9 @@ export 'components/rich_markdown/ds_markdown_builders.dart';
 export 'components/navigation/floating_pill_nav_bar.dart';
 export 'components/navigation/ios_native_tab_bar.dart';
 export 'components/navigation/cupertino_large_title_navigation_bar.dart';
+export '../core/navigation/ios26_navigation_item.dart';
+export '../core/navigation/ios26_navigation_platform.dart';
+export '../core/navigation/ios26_liquid_glass_navigation_bar.dart';
 export 'pages/component_page_wrapper.dart';
 export 'pages/button_page.dart';
 export 'pages/input_page.dart';

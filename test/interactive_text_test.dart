@@ -172,7 +172,7 @@ void main() {
     testWidgets('DashboardScreen includes Text Lab navigation tab', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: DashboardScreen(initialIndex: 2),
+          home: DashboardScreen(initialIndex: 3),
         ),
       );
 

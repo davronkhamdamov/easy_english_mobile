@@ -91,7 +91,7 @@ class _PlacementTestScreenState extends State<PlacementTestScreen> {
 
   Widget _buildBody(bool isDark) {
     if (_provider.isLoading) {
-      return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+      return Center(child: CircularProgressIndicator(color: AppColors.primary));
     }
     if (_provider.errorMessage != null && _provider.questions.isEmpty) {
       return PlacementErrorWidget(errorMessage: _provider.errorMessage!, onRetry: () => _provider.loadQuestions());

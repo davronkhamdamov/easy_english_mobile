@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../domain/repositories/word_bank_repository.dart';
 import '../providers/word_bank_provider.dart';
 import '../widgets/add_word_bottom_sheet.dart';
@@ -79,7 +82,22 @@ class _WordBankScreenState extends State<WordBankScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final palette = ThemeScope.maybeOf(context)?.palette ?? AppColors.currentPalette;
     final state = _provider.state;
+    final hasItems = state.wordItems.isNotEmpty;
+
+    final fabBgColor = hasItems
+        ? (isDark ? palette.darkSurfaceVariant : palette.primary)
+        : (isDark ? palette.darkSurface : palette.lightSurfaceVariant);
+    final fabFgColor = hasItems
+        ? (isDark ? palette.darkTextPrimary : Colors.white)
+        : (isDark ? palette.darkTextMuted : palette.lightTextMuted);
+    final fabBorderColor = hasItems
+        ? (isDark ? palette.darkBorder : palette.lightBorder)
+        : (isDark
+            ? palette.darkBorder.withValues(alpha: 0.3)
+            : palette.lightBorder.withValues(alpha: 0.5));
 
     return Scaffold(
       appBar: AppBar(
@@ -97,11 +115,32 @@ class _WordBankScreenState extends State<WordBankScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: state.wordItems.isEmpty ? null : _startFlashcardReview,
-        icon: const Icon(Icons.style),
-        label: Text('Review Flashcards (${state.dueTodayCount} Due)'),
-        backgroundColor: theme.colorScheme.primary,
-        foregroundColor: Colors.white,
+        heroTag: 'word_bank_review_flashcards_fab',
+        onPressed: hasItems ? _startFlashcardReview : null,
+        icon: Icon(
+          Icons.style_outlined,
+          color: fabFgColor,
+          size: 20,
+        ),
+        label: Text(
+          'Review Flashcards (${state.dueTodayCount} Due)',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            letterSpacing: -0.2,
+            color: fabFgColor,
+          ),
+        ),
+        backgroundColor: fabBgColor,
+        foregroundColor: fabFgColor,
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+          side: BorderSide(
+            color: fabBorderColor,
+            width: 1.2,
+          ),
+        ),
       ),
       body: state.isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -129,12 +168,16 @@ class _WordBankScreenState extends State<WordBankScreen> {
                       ),
                       const SizedBox(height: 16),
                       if (state.filteredWordItems.isEmpty)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 40),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 40),
                           child: Center(
                             child: Text(
                               'No vocabulary items found.',
-                              style: TextStyle(color: Colors.grey),
+                              style: TextStyle(
+                                color: isDark
+                                    ? palette.darkTextMuted
+                                    : palette.lightTextMuted,
+                              ),
                             ),
                           ),
                         )

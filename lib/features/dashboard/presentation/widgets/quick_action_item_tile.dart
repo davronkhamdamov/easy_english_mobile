@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_theme.dart';
 
 /// Single item tile for the Quick Actions grid.
-/// Displays a monochrome circular icon container with a clean text label underneath.
+/// Displays a circular icon container styled dynamically using the active color palette,
+/// with a clean text label underneath.
 class QuickActionItemTile extends StatelessWidget {
   final String label;
   final IconData icon;
   final VoidCallback onTap;
   final Color? iconColor;
   final Color? backgroundColor;
+  final Color? borderColor;
 
   const QuickActionItemTile({
     super.key,
@@ -16,20 +20,30 @@ class QuickActionItemTile extends StatelessWidget {
     required this.onTap,
     this.iconColor,
     this.backgroundColor,
+    this.borderColor,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final effectiveIconColor = iconColor ?? theme.colorScheme.onSurface;
+    final isDark = theme.brightness == Brightness.dark;
+    final palette = ThemeScope.maybeOf(context)?.palette ?? AppColors.currentPalette;
+
+    final primaryAccent = isDark ? palette.darkPrimary : palette.primary;
+
+    final effectiveIconColor = iconColor ?? primaryAccent;
     final effectiveBgColor = backgroundColor ??
-        theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4);
+        primaryAccent.withValues(alpha: isDark ? 0.16 : 0.08);
+    final effectiveBorderColor = borderColor ??
+        primaryAccent.withValues(alpha: isDark ? 0.28 : 0.18);
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
+        splashColor: primaryAccent.withValues(alpha: 0.12),
+        highlightColor: primaryAccent.withValues(alpha: 0.06),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 4.0),
           child: Column(
@@ -42,6 +56,19 @@ class QuickActionItemTile extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: effectiveBgColor,
                   shape: BoxShape.circle,
+                  border: Border.all(
+                    color: effectiveBorderColor,
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: (isDark ? Colors.black : primaryAccent).withValues(
+                        alpha: isDark ? 0.25 : 0.06,
+                      ),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Icon(
                   icon,

@@ -28,7 +28,7 @@ class PlacementReadingPassageWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.menu_book, size: 18, color: AppColors.primary),
+                Icon(Icons.menu_book, size: 18, color: AppColors.primary),
                 const SizedBox(width: 6),
                 Text(
                   'Reading Passage',
